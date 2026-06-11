@@ -18,6 +18,8 @@ import {
 import { GROUP_IDS } from '../data/groups';
 import { useLive } from './liveStore';
 import { orderGroupByLive, type TeamStat } from '../utils/liveTable';
+import { decodeBracket, readShareCodeFromHash, shareUrl } from '../utils/shareCode';
+import { scorePrediction, type ScoreBreakdown } from '../utils/score';
 
 interface GroupView {
   /** Effective order shown & used to resolve the bracket (live or predicted). */
@@ -54,17 +56,67 @@ interface Store {
   /** Discard the live best-3rds override, snapping back to the real best 8. */
   resetLiveThirds: () => void;
   resetAll: () => void;
+  /** Live score of the current prediction vs real results. */
+  score: ScoreBreakdown;
+  /** Build a shareable link encoding the current prediction. */
+  buildShareUrl: () => string;
+  /** True when viewing a bracket opened from a shared link (not yet saved). */
+  sharedView: boolean;
+  /** Persist the shared bracket as the viewer's own and exit shared view. */
+  saveSharedAsMine: () => void;
+  /** Discard the shared bracket and return to the viewer's own saved bracket. */
+  dismissShared: () => void;
 }
 
 const Ctx = createContext<Store | null>(null);
 
 export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, setState] = useState<BracketState>(() => loadState());
+  // If the URL carries a shared prediction (?p=), preview it without clobbering
+  // the viewer's own saved bracket until they choose to save it.
+  const sharedInitial = useMemo(() => {
+    const code = readShareCodeFromHash();
+    return code ? decodeBracket(code) : null;
+  }, []);
+
+  const [ownState, setOwnState] = useState<BracketState>(() => loadState());
+  const [sharedState, setSharedState] = useState<BracketState | null>(sharedInitial);
+  const sharedView = sharedState !== null;
+  const state = sharedState ?? ownState;
+  const setState: typeof setOwnState = (updater) => {
+    if (sharedView) setSharedState(updater as never);
+    else setOwnState(updater);
+  };
+
   const { matches, liveMode } = useLive();
 
+  // Only the viewer's own bracket is persisted; a previewed shared bracket is not.
   useEffect(() => {
-    saveState(state);
-  }, [state]);
+    saveState(ownState);
+  }, [ownState]);
+
+  const saveSharedAsMine = useCallback(() => {
+    setSharedState((shared) => {
+      if (shared) {
+        setOwnState(shared);
+        // Strip the ?p= param so a refresh doesn't re-enter shared view.
+        try {
+          window.history.replaceState(null, '', `${window.location.pathname}#/`);
+        } catch {
+          /* ignore */
+        }
+      }
+      return null;
+    });
+  }, []);
+
+  const dismissShared = useCallback(() => {
+    setSharedState(null);
+    try {
+      window.history.replaceState(null, '', `${window.location.pathname}#/`);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   // Live mode shows the standings view (points) and lets the user reorder for
   // "what-if" scenarios. Even with zero results everyone simply sits on 0 pts.
@@ -167,7 +219,10 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setState((prev) => (prev.liveThirds === undefined ? prev : { ...prev, liveThirds: undefined }));
   }, []);
 
-  const resetAll = useCallback(() => setState(createInitialState()), []);
+  const resetAll = useCallback(() => {
+    if (sharedView) setSharedState(createInitialState());
+    else setOwnState(createInitialState());
+  }, [sharedView]);
 
   const groupViews = useMemo(() => {
     const out = {} as Record<GroupId, GroupView>;
@@ -254,6 +309,32 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const groupView = useCallback((group: GroupId) => groupViews[group], [groupViews]);
 
+  // Live score always grades the *prediction* (raw group orders, thirds,
+  // winners), never the live what-if view, so it reflects "how good was your
+  // call". Uses the viewer's own bracket, or the shared one when previewing.
+  const score = useMemo<ScoreBreakdown>(
+    () =>
+      scorePrediction(
+        {
+          groups: state.groups,
+          thirdPlaceQualifiers: state.thirdPlaceQualifiers,
+          winners: state.winners,
+        },
+        matches,
+      ),
+    [state.groups, state.thirdPlaceQualifiers, state.winners, matches],
+  );
+
+  const buildShareUrl = useCallback(
+    () =>
+      shareUrl({
+        groups: state.groups,
+        thirdPlaceQualifiers: state.thirdPlaceQualifiers,
+        winners: state.winners,
+      }),
+    [state.groups, state.thirdPlaceQualifiers, state.winners],
+  );
+
   const value = useMemo<Store>(
     () => ({
       state,
@@ -270,6 +351,11 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
       resetLiveGroup,
       resetLiveThirds,
       resetAll,
+      score,
+      buildShareUrl,
+      sharedView,
+      saveSharedAsMine,
+      dismissShared,
     }),
     [
       state,
@@ -284,6 +370,11 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
       resetLiveGroup,
       resetLiveThirds,
       resetAll,
+      score,
+      buildShareUrl,
+      sharedView,
+      saveSharedAsMine,
+      dismissShared,
     ],
   );
 

@@ -10,6 +10,11 @@ you choose (defaults to your own local time, with TRT and many others available)
 
 - **Bracket predictor** — reorder all 12 groups, choose the 8 best third-placed
   qualifiers, and click through Round of 32 → Final. Picks persist in your browser.
+- **Share & score** — share your bracket as a link (the whole prediction is encoded
+  in the URL — no backend), save it as an image, or post to X. Opening a shared link
+  previews that bracket without touching your own, and a live **scorecard** grades any
+  prediction against real results (group winners, qualifiers and each knockout round,
+  weighted toward the final).
 - **Accurate knockout rules** — Round-of-32 pairings and the *allowed groups* for
   each best-third-placed slot follow FIFA's published structure (Annex C).
 - **Hover cards** — hover any team for a quick summary: home/away kits, recent form
@@ -78,7 +83,8 @@ Deployed as a GitHub Pages project site, so `vite.config.ts` sets
 ```
 data/      teams, groups, venues, 104-match schedule, Annex C third-place table,
            kits, full 48-team squads, pre-tournament form
-utils/     time-zone formatting, third-place solver, bracket resolution, live table
+utils/     time-zone formatting, third-place solver, bracket resolution, live table,
+           share-code (URL encode/decode), prediction scoring
 components/ Jersey, Flag, hover card, group cards, knockout bracket, match cards,
            settings + live stores
 pages/     Bracket, Teams, Team detail, Calendar
