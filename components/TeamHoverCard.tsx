@@ -6,7 +6,7 @@ import { Jersey } from './Jersey';
 import { Flag } from './Flag';
 import { RecentForm, ResultBadge } from './RecentForm';
 import { useLive } from './liveStore';
-import { matchesForTeam, resultFor, scoreText } from '../utils/liveTable';
+import { matchesForTeam, resultFor, scoreText, liveStatusLabel } from '../utils/liveTable';
 
 const CONF_LABEL: Record<string, string> = {
   UEFA: 'UEFA (Europe)',
@@ -54,7 +54,7 @@ const LiveMatchList: React.FC<{ teamId: string; max?: number }> = ({ teamId, max
             <span className="truncate text-slate-200">{opp?.name ?? oppRaw}</span>
             <span className="ml-auto whitespace-nowrap text-[11px] text-slate-500">
               {m.status === 'live' ? (
-                <span className="font-bold text-rose-400">{m.rawStatus || 'LIVE'}</span>
+                <span className="font-bold text-rose-400">{liveStatusLabel(m)}</span>
               ) : (
                 m.date?.slice(5)
               )}

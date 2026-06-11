@@ -8,7 +8,7 @@ import { useClock } from './settingsStore';
 import { TeamHover } from './TeamHoverCard';
 import { Flag } from './Flag';
 import { KNOCKOUT_START_DATE } from '../utils/bracket';
-import { resultForPair, scoreText } from '../utils/liveTable';
+import { resultForPair, scoreText, liveStatusLabel } from '../utils/liveTable';
 
 /** Human label for an unresolved slot, e.g. "Winner E", "3rd C/E/F/H/I". */
 export function slotLabel(ref: SlotRef): string {
@@ -113,9 +113,7 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
         <div className="flex items-center justify-between bg-white/[0.04] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-slate-500">
           <span>M{match.id}</span>
           {played ? (
-            <span className="font-bold text-rose-300">
-              {live?.status === 'live' ? live.rawStatus || 'LIVE' : 'FT'}
-            </span>
+            <span className="font-bold text-rose-300">{liveStatusLabel(live)}</span>
           ) : (
             <span>
               {clock.date(match.kickoff)} · {clock.time(match.kickoff)}

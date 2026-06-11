@@ -10,7 +10,7 @@ import { PlayerAvatar } from '../components/PlayerAvatar';
 import { RecentForm, ResultBadge } from '../components/RecentForm';
 import { useClock } from '../components/settingsStore';
 import { useLive } from '../components/liveStore';
-import { resultForPair, resultFor, scoreText } from '../utils/liveTable';
+import { resultForPair, resultFor, scoreText, liveStatusLabel } from '../utils/liveTable';
 
 const POSITION_ORDER: PlayerPosition[] = ['GK', 'DF', 'MF', 'FW'];
 const POSITION_LABEL: Record<PlayerPosition, string> = {
@@ -162,7 +162,7 @@ export const TeamDetailPage: React.FC = () => {
                         <span className="ml-auto flex items-center gap-1.5">
                           {live?.status === 'live' && (
                             <span className="text-[10px] font-bold uppercase text-rose-400">
-                              {live.rawStatus || 'live'}
+                              {liveStatusLabel(live)}
                             </span>
                           )}
                           <span className="font-bold tabular-nums text-white">

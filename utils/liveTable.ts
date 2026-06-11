@@ -165,6 +165,39 @@ export function scoreText(m: LiveMatch | undefined): string {
   return `${m.hs}–${m.as}`;
 }
 
+/**
+ * Human-readable label for a live/just-finished match status. Maps
+ * TheSportsDB's terse codes (1H, HT, 2H, ET, PEN…) to friendly text; a bare
+ * minute like "67" becomes "67'". Falls back to a sensible default.
+ */
+export function liveStatusLabel(m: LiveMatch | undefined): string {
+  if (!m) return '';
+  const raw = (m.rawStatus || '').trim();
+  if (m.status === 'finished') {
+    if (/^(AET)$/i.test(raw)) return 'After extra time';
+    if (/^(PEN|AP)$/i.test(raw)) return 'On penalties';
+    return 'Full time';
+  }
+  if (m.status === 'live') {
+    if (/^\d+\+?'?$/.test(raw)) return raw.replace(/'?$/, "'"); // "67" -> "67'"
+    const up = raw.toUpperCase();
+    const map: Record<string, string> = {
+      '1H': '1st half',
+      '2H': '2nd half',
+      HT: 'Half-time',
+      ET: 'Extra time',
+      BT: 'Break',
+      BREAK: 'Break',
+      P: 'Penalties',
+      PEN: 'Penalties',
+      LIVE: 'Live',
+      'IN PROGRESS': 'Live',
+    };
+    return map[up] || 'Live';
+  }
+  return '';
+}
+
 /** Result (W/D/L) for `teamId` in match `m`, or null if not decided. */
 export function resultFor(m: LiveMatch | undefined, teamId: string): 'W' | 'D' | 'L' | null {
   if (!m || m.hs == null || m.as == null) return null;
