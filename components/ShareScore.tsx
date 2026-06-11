@@ -149,38 +149,81 @@ export const ShareBar: React.FC = () => {
   );
 };
 
-/** Live scorecard: how the prediction is doing against real results. */
+const SCORE_OPEN_KEY = 'wc2026-score-open';
+
+/**
+ * Live scorecard, hidden behind a "Score my bracket" toggle so it doesn't
+ * clutter the page. The toggle only appears once something has been decided
+ * (score.possible > 0). Open/closed state is remembered.
+ */
 export const ScoreCard: React.FC = () => {
   const { score } = useBracket();
+  const [open, setOpen] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(SCORE_OPEN_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+  const toggle = useCallback(() => {
+    setOpen((v) => {
+      const next = !v;
+      try {
+        localStorage.setItem(SCORE_OPEN_KEY, next ? '1' : '0');
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }, []);
+
+  // Nothing decided yet -> no score to show.
   if (score.possible === 0) return null;
+
   const Stat: React.FC<{ label: string; value: number }> = ({ label, value }) => (
     <div className="flex flex-col items-center">
       <span className="font-display text-lg font-extrabold text-white">{value}</span>
       <span className="text-[10px] uppercase tracking-wider text-slate-500">{label}</span>
     </div>
   );
+
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-4 rounded-xl border border-emerald-400/30 bg-emerald-500/[0.06] p-3">
-      <div className="flex items-center gap-3">
-        <span className="text-xl">📊</span>
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-300/80">
-            Your bracket score
-          </p>
-          <p className="font-display text-2xl font-extrabold text-emerald-300">
-            {score.total}
-            <span className="ml-1 text-sm font-semibold text-slate-500">
-              / {score.possible} so far
-            </span>
-          </p>
+    <div className="mb-4">
+      <button
+        type="button"
+        onClick={toggle}
+        aria-expanded={open}
+        className="inline-flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-500/[0.08] px-3 py-1.5 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500/15"
+      >
+        <span>📊</span>
+        {open ? 'Hide score' : 'Score my bracket'}
+        <span className="text-[10px] text-slate-500">{open ? '▲' : '▼'}</span>
+      </button>
+
+      {open && (
+        <div className="mt-2 flex flex-wrap items-center gap-4 rounded-xl border border-emerald-400/30 bg-emerald-500/[0.06] p-3 animate-fade-in">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">📊</span>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-300/80">
+                Your bracket score
+              </p>
+              <p className="font-display text-2xl font-extrabold text-emerald-300">
+                {score.total}
+                <span className="ml-1 text-sm font-semibold text-slate-500">
+                  / {score.possible} so far
+                </span>
+              </p>
+            </div>
+          </div>
+          <div className="ml-auto flex items-center gap-5">
+            <Stat label="Groups" value={score.groupPoints} />
+            <Stat label="3rds" value={score.thirdsPoints} />
+            <Stat label="Knockout" value={score.knockoutPoints} />
+            <Stat label="Correct" value={score.correct} />
+          </div>
         </div>
-      </div>
-      <div className="ml-auto flex items-center gap-5">
-        <Stat label="Groups" value={score.groupPoints} />
-        <Stat label="3rds" value={score.thirdsPoints} />
-        <Stat label="Knockout" value={score.knockoutPoints} />
-        <Stat label="Correct" value={score.correct} />
-      </div>
+      )}
     </div>
   );
 };
