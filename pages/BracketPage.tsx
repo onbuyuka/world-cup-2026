@@ -33,7 +33,7 @@ const LiveToggle: React.FC = () => {
         {liveMode ? 'Live results: ON' : 'Live results: OFF'}
       </button>
       {liveMode && (
-        <span className="text-[11px] text-slate-500" title={updated ? `Last updated ${new Date(updated).toLocaleString()}` : undefined}>
+        <span className="whitespace-nowrap text-[11px] text-slate-500" title={updated ? `Last updated ${new Date(updated).toLocaleString()}` : undefined}>
           {loading
             ? 'loading…'
             : hasResults
@@ -52,23 +52,24 @@ const LiveToggle: React.FC = () => {
 const Toolbar: React.FC = () => {
   const { thirdCount, resetAll, liveActive } = useBracket();
   const complete = thirdCount === 8;
+  const hint = liveActive
+    ? 'Live mode tracks real results automatically — reorder groups or pick winners for “what-if” scenarios; your saved prediction stays separate.'
+    : complete
+      ? 'All eight third-placed qualifiers chosen — the Round of 32 is set.'
+      : 'Tap “3rd +” on third-placed teams until you have eight; they slot into the Round of 32 per FIFA’s rules.';
   return (
     <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-ink-850/70 p-3">
       <div
-        className={`rounded-lg px-3 py-1.5 text-sm font-bold ${
+        className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-bold ${
           complete ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-400/15 text-amber-300'
         }`}
       >
         Best third-placed teams: {thirdCount}/8
       </div>
-      <p className="text-xs text-slate-400">
-        {liveActive
-          ? 'Live mode follows real results as matches are played — group order and knockout winners update automatically. Reorder groups or pick winners for “what-if” scenarios; your saved prediction stays separate.'
-          : complete
-            ? 'All eight third-placed qualifiers chosen — the Round of 32 is set.'
-            : 'Tap “3rd +” on third-placed teams until you have eight; they slot into the Round of 32 per FIFA’s rules.'}
+      <p className="min-w-0 flex-1 truncate text-xs text-slate-400" title={hint}>
+        {hint}
       </p>
-      <div className="ml-auto flex items-center gap-3">
+      <div className="ml-auto flex shrink-0 items-center gap-3">
         <LiveToggle />
         <button
           type="button"
