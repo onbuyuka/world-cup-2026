@@ -7,6 +7,49 @@ import { resultForPair, type LiveMatch } from './liveTable';
 /** All knockout matches (Round of 32 → Final). */
 export const KO_MATCHES = MATCHES.filter((m) => m.stage !== 'Group');
 
+// --- Knockout bracket column ordering (shared by the on-site bracket and the
+// shareable image so they stay in sync) -------------------------------------
+const koFeeders = (id: number): (number | null)[] => {
+  const m = MATCHES_BY_ID[id];
+  const f = (ref: SlotRef) => (ref.kind === 'matchWinner' ? ref.match : null);
+  return [f(m.home), f(m.away)];
+};
+
+const koLeafOrder = (id: number): number[] => {
+  const [h, a] = koFeeders(id);
+  if (h == null && a == null) return [id];
+  return [...(h ? koLeafOrder(h) : []), ...(a ? koLeafOrder(a) : [])];
+};
+
+const koParentOf = (child: number): number | undefined =>
+  KO_MATCHES.find((m) => koFeeders(m.id).includes(child))?.id;
+
+const koUnique = (ids: (number | undefined)[]): number[] => {
+  const seen = new Set<number>();
+  const out: number[] = [];
+  for (const id of ids) {
+    if (id != null && !seen.has(id)) {
+      seen.add(id);
+      out.push(id);
+    }
+  }
+  return out;
+};
+
+const KO_R32 = koLeafOrder(104);
+const KO_R16 = koUnique(KO_R32.map(koParentOf));
+const KO_QF = koUnique(KO_R16.map(koParentOf));
+const KO_SF = koUnique(KO_QF.map(koParentOf));
+
+/** Knockout rounds as ordered columns (Round of 32 → Final). */
+export const KO_COLUMNS: { label: string; short: string; ids: number[] }[] = [
+  { label: 'Round of 32', short: 'R32', ids: KO_R32 },
+  { label: 'Round of 16', short: 'R16', ids: KO_R16 },
+  { label: 'Quarter-finals', short: 'QF', ids: KO_QF },
+  { label: 'Semi-finals', short: 'SF', ids: KO_SF },
+  { label: 'Final', short: 'Final', ids: [104] },
+];
+
 /**
  * First day of the knockout stage. Used to ignore group-stage results when
  * matching a live knockout fixture by its team pair (two teams from the same

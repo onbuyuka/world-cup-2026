@@ -1,51 +1,11 @@
 import React from 'react';
-import { MATCHES_BY_ID } from '../data/schedule';
 import { getTeam } from '../data/teams';
-import { KO_MATCHES, championOf } from '../utils/bracket';
+import { championOf, KO_COLUMNS } from '../utils/bracket';
 import { useBracket } from './bracketStore';
 import { MatchCard } from './MatchCard';
 import { Flag } from './Flag';
 
-// --- bracket tree ordering --------------------------------------------------
-const feeders = (id: number): (number | null)[] => {
-  const m = MATCHES_BY_ID[id];
-  const f = (ref: typeof m.home) => (ref.kind === 'matchWinner' ? ref.match : null);
-  return [f(m.home), f(m.away)];
-};
-
-const leafOrder = (id: number): number[] => {
-  const [h, a] = feeders(id);
-  if (h == null && a == null) return [id];
-  return [...(h ? leafOrder(h) : []), ...(a ? leafOrder(a) : [])];
-};
-
-const parentOf = (child: number): number | undefined =>
-  KO_MATCHES.find((m) => feeders(m.id).includes(child))?.id;
-
-const uniqueInOrder = (ids: (number | undefined)[]): number[] => {
-  const seen = new Set<number>();
-  const out: number[] = [];
-  for (const id of ids) {
-    if (id != null && !seen.has(id)) {
-      seen.add(id);
-      out.push(id);
-    }
-  }
-  return out;
-};
-
-const R32 = leafOrder(104);
-const R16 = uniqueInOrder(R32.map(parentOf));
-const QF = uniqueInOrder(R16.map(parentOf));
-const SF = uniqueInOrder(QF.map(parentOf));
-
-const COLUMNS: { label: string; ids: number[] }[] = [
-  { label: 'Round of 32', ids: R32 },
-  { label: 'Round of 16', ids: R16 },
-  { label: 'Quarter-finals', ids: QF },
-  { label: 'Semi-finals', ids: SF },
-  { label: 'Final', ids: [104] },
-];
+const COLUMNS = KO_COLUMNS;
 
 export const KnockoutBracket: React.FC = () => {
   const { resolved } = useBracket();
