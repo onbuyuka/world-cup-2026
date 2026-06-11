@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useBracket } from './bracketStore';
 import { getTeam } from '../data/teams';
 import { championOf, KO_COLUMNS, type ResolvedBracket } from '../utils/bracket';
 import { MATCHES_BY_ID } from '../data/schedule';
 import { slotLabel } from './MatchCard';
+import { Flag, flagPngUrl } from './Flag';
 
 const TWEET_TEXT = 'My 2026 World Cup bracket 🏆 — think you can beat it?';
 
@@ -37,6 +38,39 @@ const DownloadIcon: React.FC = () => (
 
 const FONT = 'Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
 const CELL_H = 44;
+const FLAG_W = 20;
+const FLAG_H = 13;
+
+/** team id -> loaded flag image (for canvas drawing). */
+type FlagMap = Map<string, HTMLImageElement>;
+
+/** Load an image for canvas use; resolves null on error so it never rejects. */
+function loadImage(src: string): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+/** Draw a flag rect with a hairline border, returning its right edge. */
+function drawFlag(
+  ctx: CanvasRenderingContext2D,
+  img: HTMLImageElement,
+  x: number,
+  cy: number,
+  w = FLAG_W,
+  h = FLAG_H,
+) {
+  const y = cy - h / 2;
+  ctx.drawImage(img, x, y, w, h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+  return x + w;
+}
 
 /** Path a rounded rectangle (we avoid ctx.roundRect for wider support). */
 function roundRectPath(
@@ -57,7 +91,7 @@ function roundRectPath(
   ctx.closePath();
 }
 
-/** One match cell: two team rows (codes / slot labels), winner highlighted. */
+/** One match cell: two team rows (flag + code / slot labels), winner lit. */
 function drawCell(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -65,6 +99,7 @@ function drawCell(
   w: number,
   id: number,
   resolved: ResolvedBracket,
+  flags: FlagMap,
 ) {
   const rm = resolved.matches[id];
   const m = MATCHES_BY_ID[id];
@@ -82,6 +117,7 @@ function drawCell(
 
   const row = (team: ReturnType<typeof getTeam>, fallback: string, idx: number) => {
     const top = y + idx * rowH;
+    const cy = top + rowH / 2;
     const isWin = !!team && winner === team.id;
     if (isWin) {
       ctx.save();
@@ -91,11 +127,16 @@ function drawCell(
       ctx.fillRect(x, top, w, rowH);
       ctx.restore();
     }
+    let tx = x + 10;
+    const flag = team ? flags.get(team.id) : undefined;
+    if (flag) {
+      tx = drawFlag(ctx, flag, x + 9, cy) + 7;
+    }
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.font = `700 12px ${FONT}`;
     ctx.fillStyle = team ? (isWin ? '#ffffff' : '#94a3b8') : '#475569';
-    ctx.fillText(team ? team.code : fallback, x + 10, top + rowH / 2 + 0.5);
+    ctx.fillText(team ? team.code : fallback, tx, cy + 0.5);
   };
 
   row(home, slotLabel(m.home).slice(0, 16), 0);
@@ -120,6 +161,28 @@ async function renderBracketImage(
   } catch {
     /* ignore */
   }
+
+  // Preload every flag in the bracket (deduped) so we can draw them on the
+  // canvas. flagcdn allows cross-origin canvas use, so the PNG stays untainted;
+  // any flag that fails to load is simply skipped (the code still renders).
+  const champId = championOf(resolved);
+  const teamIds = new Set<string>();
+  for (const col of KO_COLUMNS) {
+    for (const id of col.ids) {
+      const rm = resolved.matches[id];
+      if (rm?.home) teamIds.add(rm.home);
+      if (rm?.away) teamIds.add(rm.away);
+    }
+  }
+  const flags: FlagMap = new Map();
+  await Promise.all(
+    [...teamIds].map(async (tid) => {
+      const url = flagPngUrl(tid);
+      if (!url) return;
+      const img = await loadImage(url);
+      if (img) flags.set(tid, img);
+    }),
+  );
 
   const scale = 2;
   const W = 1180;
@@ -158,17 +221,20 @@ async function renderBracketImage(
 
   // Right-aligned header pills (champion, then score), drawn right → left.
   let rx = W - pad;
-  const drawPill = (
-    segments: { text: string; color: string; font: string }[],
-    border: string,
-    fill: string,
-  ) => {
+  type PillSeg =
+    | { text: string; color: string; font: string }
+    | { flag: HTMLImageElement };
+  const segW = (s: PillSeg) => {
+    if ('flag' in s) return FLAG_W;
+    ctx.font = s.font;
+    return ctx.measureText(s.text).width;
+  };
+  const drawPill = (segments: PillSeg[], border: string, fill: string) => {
     const padX = 12;
     const gap = 8;
     let inner = 0;
     segments.forEach((s, i) => {
-      ctx.font = s.font;
-      inner += ctx.measureText(s.text).width + (i ? gap : 0);
+      inner += segW(s) + (i ? gap : 0);
     });
     const w = inner + padX * 2;
     const h = 30;
@@ -184,19 +250,25 @@ async function renderBracketImage(
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     segments.forEach((s) => {
-      ctx.font = s.font;
-      ctx.fillStyle = s.color;
-      ctx.fillText(s.text, tx, y + h / 2 + 0.5);
-      tx += ctx.measureText(s.text).width + gap;
+      if ('flag' in s) {
+        drawFlag(ctx, s.flag, tx, titleY);
+      } else {
+        ctx.font = s.font;
+        ctx.fillStyle = s.color;
+        ctx.fillText(s.text, tx, titleY + 0.5);
+      }
+      tx += segW(s) + gap;
     });
     rx = x - 10;
   };
 
-  const champ = getTeam(championOf(resolved) ?? undefined);
+  const champ = getTeam(champId ?? undefined);
   if (champ) {
+    const champFlag = champId ? flags.get(champId) : undefined;
     drawPill(
       [
         { text: 'CHAMPION', color: 'rgba(252,211,77,0.9)', font: `800 11px ${FONT}` },
+        ...(champFlag ? [{ flag: champFlag }] : []),
         { text: champ.name, color: '#ffffff', font: `800 15px ${FONT}` },
       ],
       'rgba(251,191,36,0.45)',
@@ -225,7 +297,7 @@ async function renderBracketImage(
     const step = Math.pow(2, r) * band;
     col.ids.forEach((id, i) => {
       const yc = cellsTop + (i + 0.5) * step;
-      drawCell(ctx, colX, yc - CELL_H / 2, colW, id, resolved);
+      drawCell(ctx, colX, yc - CELL_H / 2, colW, id, resolved, flags);
     });
   });
 
@@ -239,7 +311,8 @@ async function renderBracketImage(
   return cv.toDataURL('image/png');
 }
 
-export const ShareBar: React.FC = () => {
+/** Shared copy/save/tweet actions, reused by the bar and the winner popup. */
+function useShareActions() {
   const { buildShareUrl, score, resolved } = useBracket();
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -278,6 +351,12 @@ export const ShareBar: React.FC = () => {
     window.open(intent, '_blank', 'noopener,noreferrer');
   }, [buildShareUrl]);
 
+  return { copied, busy, copyLink, saveImage, tweet };
+}
+
+export const ShareBar: React.FC = () => {
+  const { copied, busy, copyLink, saveImage, tweet } = useShareActions();
+
   const btn =
     'rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:bg-white/10 transition';
 
@@ -303,12 +382,122 @@ export const ShareBar: React.FC = () => {
   );
 };
 
+/**
+ * Celebration popup shown the moment a champion is first chosen (the bracket is
+ * complete). It congratulates the user and surfaces the share actions. It fires
+ * only on the null → champion transition (not on page load of an already-complete
+ * bracket, and not while previewing someone else's shared bracket).
+ */
+export const WinnerCelebration: React.FC = () => {
+  const { resolved, sharedView } = useBracket();
+  const champId = championOf(resolved);
+  const champ = getTeam(champId ?? undefined);
+  const prev = useRef<string | null>(champId);
+  const [show, setShow] = useState(false);
+  const { copied, busy, copyLink, saveImage, tweet } = useShareActions();
+
+  useEffect(() => {
+    if (sharedView) {
+      prev.current = champId;
+      return;
+    }
+    if (champId && !prev.current) setShow(true);
+    if (!champId) setShow(false);
+    prev.current = champId;
+  }, [champId, sharedView]);
+
+  // Close on Escape.
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShow(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [show]);
+
+  if (!show || !champ) return null;
+
+  const action =
+    'inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold transition';
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Bracket complete"
+      onClick={() => setShow(false)}
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-fade-in"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-md overflow-hidden rounded-2xl border border-amber-400/30 bg-gradient-to-b from-ink-850 to-ink-900 p-6 text-center shadow-2xl"
+      >
+        <button
+          type="button"
+          onClick={() => setShow(false)}
+          aria-label="Close"
+          className="absolute right-3 top-3 rounded-lg p-1 text-lg leading-none text-slate-500 transition hover:bg-white/10 hover:text-white"
+        >
+          ✕
+        </button>
+
+        <div className="text-5xl">🏆</div>
+        <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.25em] text-amber-300/80">
+          Your champion
+        </p>
+        <div className="mt-3 flex items-center justify-center gap-3">
+          <Flag team={champ} size={34} />
+          <span className="font-display text-3xl font-extrabold text-white">{champ.name}</span>
+        </div>
+        <p className="mx-auto mt-3 max-w-xs text-sm text-slate-400">
+          Your bracket is complete — share it and challenge your friends to beat it.
+        </p>
+
+        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
+          <button
+            type="button"
+            onClick={copyLink}
+            className={`${action} border border-white/15 text-slate-200 hover:bg-white/10`}
+          >
+            {copied ? '✓ Link copied' : '🔗 Copy link'}
+          </button>
+          <button
+            type="button"
+            onClick={saveImage}
+            disabled={busy}
+            className={`${action} bg-emerald-500/90 text-white hover:bg-emerald-400 disabled:opacity-60`}
+          >
+            <DownloadIcon />
+            {busy ? 'Saving…' : 'Save image'}
+          </button>
+          <button
+            type="button"
+            onClick={tweet}
+            className={`${action} border border-white/15 text-slate-200 hover:bg-white/10`}
+          >
+            𝕏 Share on X
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setShow(false)}
+          className="mt-4 text-xs font-semibold text-slate-500 transition hover:text-slate-300"
+        >
+          Keep editing
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const SCORE_OPEN_KEY = 'wc2026-score-open';
 
 /**
- * Live scorecard, hidden behind a "Score my bracket" toggle so it doesn't
- * clutter the page. The toggle only appears once something has been decided
- * (score.possible > 0). Open/closed state is remembered.
+ * Live scorecard, behind a "Score my bracket" toggle so it doesn't clutter the
+ * page. The toggle is always available; before any results exist it simply
+ * shows 0. Open/closed state is remembered.
  */
 export const ScoreCard: React.FC = () => {
   const { score } = useBracket();
@@ -331,8 +520,7 @@ export const ScoreCard: React.FC = () => {
     });
   }, []);
 
-  // Nothing decided yet -> no score to show.
-  if (score.possible === 0) return null;
+  const nothingToScore = score.possible === 0;
 
   const Stat: React.FC<{ label: string; value: number }> = ({ label, value }) => (
     <div className="flex flex-col items-center">
@@ -365,7 +553,7 @@ export const ScoreCard: React.FC = () => {
               <p className="font-display text-2xl font-extrabold text-emerald-300">
                 {score.total}
                 <span className="ml-1 text-sm font-semibold text-slate-500">
-                  / {score.possible} so far
+                  {nothingToScore ? 'pts — no results yet' : `/ ${score.possible} so far`}
                 </span>
               </p>
             </div>

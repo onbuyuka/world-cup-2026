@@ -19,6 +19,16 @@ const ISO: Record<string, string> = {
   england: 'gb-eng', croatia: 'hr', ghana: 'gh', panama: 'pa',
 };
 
+/**
+ * flagcdn raster URL for a team's flag, or null if we have no ISO code.
+ * Used by the canvas share-image renderer (flagcdn allows cross-origin canvas
+ * use, so the exported PNG stays untainted).
+ */
+export function flagPngUrl(teamId: string, width: 40 | 80 | 160 = 80): string | null {
+  const code = ISO[teamId];
+  return code ? `https://flagcdn.com/w${width}/${code}.png` : null;
+}
+
 interface Props {
   team: Team;
   /** Flag height in px (width follows a 3:2 ratio). */

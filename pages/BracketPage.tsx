@@ -4,7 +4,7 @@ import { BracketProvider, useBracket } from '../components/bracketStore';
 import { useLive } from '../components/liveStore';
 import { GroupCard } from '../components/GroupCard';
 import { KnockoutBracket } from '../components/KnockoutBracket';
-import { ShareBar, ScoreCard } from '../components/ShareScore';
+import { ShareBar, ScoreCard, WinnerCelebration } from '../components/ShareScore';
 
 /** Banner shown when viewing a bracket opened from a shared link. */
 const SharedBanner: React.FC = () => {
@@ -138,6 +138,7 @@ const Toolbar: React.FC = () => {
 export const BracketPage: React.FC = () => (
   <BracketProvider>
     <section className="animate-fade-in">
+      <WinnerCelebration />
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
