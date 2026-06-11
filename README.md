@@ -10,11 +10,15 @@ you choose (defaults to your own local time, with TRT and many others available)
 
 - **Bracket predictor** — reorder all 12 groups, choose the 8 best third-placed
   qualifiers, and click through Round of 32 → Final. Picks persist in your browser.
-- **Share & score** — share your bracket as a link (the whole prediction is encoded
-  in the URL — no backend), save it as an image, or post to X. Opening a shared link
-  previews that bracket without touching your own, and a live **scorecard** grades any
-  prediction against real results (group winners, qualifiers and each knockout round,
-  weighted toward the final).
+- **Share & score** — once you crown a champion, share buttons appear on the
+  *predicted champion* banner (and in a one-time celebration pop-up): copy a link,
+  post to X, or **save your bracket as an image**. The link encodes your whole
+  prediction in the URL (no backend); opening a shared link previews that bracket
+  without touching your own. The saved image is drawn on a canvas as the full
+  knockout tree (Round of 32 → Final, plus the third-place play-off) with flags,
+  highlighted winners and your champion. A **scorecard** is always available and
+  grades your prediction against real results — group winners, qualifiers and each
+  knockout round, weighted toward the final — showing 0 until the tournament starts.
 - **Accurate knockout rules** — Round-of-32 pairings and the *allowed groups* for
   each best-third-placed slot follow FIFA's published structure (Annex C).
 - **Hover cards** — hover any team for a quick summary: home/away kits, recent form
@@ -86,6 +90,7 @@ data/      teams, groups, venues, 104-match schedule, Annex C third-place table,
 utils/     time-zone formatting, third-place solver, bracket resolution, live table,
            share-code (URL encode/decode), prediction scoring
 components/ Jersey, Flag, hover card, group cards, knockout bracket, match cards,
+           share/score UI (canvas bracket image, scorecard, winner pop-up),
            settings + live stores
 pages/     Bracket, Teams, Team detail, Calendar
 scripts/   validateTable.mjs (Annex C check), fetchLiveResults.mjs (live snapshot)
