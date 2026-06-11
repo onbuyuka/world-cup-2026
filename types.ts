@@ -151,4 +151,10 @@ export interface BracketState {
   thirdPlaceQualifiers: GroupId[];
   /** match id -> winning team id (knockout picks). */
   winners: Record<number, string>;
+  /**
+   * Live-mode "what-if" group orders. Seeded from real results but manually
+   * overridable; kept separate so they never disturb the pre-tournament
+   * predictions in `groups`.
+   */
+  liveOverrides?: Partial<Record<GroupId, GroupStanding>>;
 }

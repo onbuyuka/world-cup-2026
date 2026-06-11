@@ -21,6 +21,12 @@ you choose (defaults to your own local time, with TRT and many others available)
   Defaults to your browser's local time, and Türkiye (TRT, UTC+3) is one click away.
 - **Calendar** — all 104 fixtures grouped by day, filterable by stage, with kickoff
   times shown in your selected time zone.
+- **Live results mode** — flip the **Live results** switch on the bracket to order
+  every group by real World Cup points (your prediction breaks ties for undecided
+  spots, so the knockout stays yours to pick). In Live mode the hover cards show a
+  team's actual World Cup matches, and team pages show real scores on group fixtures
+  as soon as they're played. Results come from a small JSON snapshot refreshed by a
+  scheduled GitHub Action — no API key or backend required.
 
 ## Data & accuracy
 
@@ -37,6 +43,13 @@ you choose (defaults to your own local time, with TRT and many others available)
   (last ~5 internationals each, scored from the team's perspective). See
   [`docs/DATA_PIPELINE.md`](docs/DATA_PIPELINE.md) for how the squad and form data were
   sourced and how to refresh it.
+- **Live results** are fetched from [TheSportsDB](https://www.thesportsdb.com) (free
+  public key) by [`scripts/fetchLiveResults.mjs`](scripts/fetchLiveResults.mjs), which
+  writes a compact [`public/liveResults.json`](public/liveResults.json). A scheduled
+  GitHub Action ([`.github/workflows/live-results.yml`](.github/workflows/live-results.yml))
+  re-runs it and commits the updated JSON to `gh-pages`, so the static site shows fresh
+  scores with no server or secret. Live standings are computed only from **finished**
+  matches; in-progress scores are shown but never counted until full time.
 - **Best-third-placed slotting is FIFA-exact.** All 495 combinations from the
   FIFA regulations' Annex C are encoded in [`data/thirdPlaceTable.ts`](data/thirdPlaceTable.ts);
   when 8 thirds are chosen the Round of 32 is filled straight from that table, so
@@ -62,11 +75,14 @@ Deployed as a GitHub Pages project site, so `vite.config.ts` sets
 ```
 data/      teams, groups, venues, 104-match schedule, Annex C third-place table,
            kits, full 48-team squads, pre-tournament form
-utils/     time-zone formatting, third-place solver, bracket resolution
-components/ Jersey, Flag, hover card, group cards, knockout bracket, match cards
+utils/     time-zone formatting, third-place solver, bracket resolution, live table
+components/ Jersey, Flag, hover card, group cards, knockout bracket, match cards,
+           settings + live stores
 pages/     Bracket, Teams, Team detail, Calendar
-scripts/   validateTable.mjs — checks the Annex C table (npm run validate:table)
+scripts/   validateTable.mjs (Annex C check), fetchLiveResults.mjs (live snapshot)
+public/    liveResults.json — live results snapshot read by the app at runtime
 docs/      DATA_PIPELINE.md — how squad & form data is sourced and refreshed
+.github/   workflows/live-results.yml — scheduled live-results refresh
 ```
 
 An independent fan project — not affiliated with FIFA.

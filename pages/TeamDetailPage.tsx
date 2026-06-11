@@ -7,8 +7,10 @@ import { VENUES } from '../data/venues';
 import { Jersey } from '../components/Jersey';
 import { Flag } from '../components/Flag';
 import { PlayerAvatar } from '../components/PlayerAvatar';
-import { RecentForm } from '../components/RecentForm';
+import { RecentForm, ResultBadge } from '../components/RecentForm';
 import { useClock } from '../components/settingsStore';
+import { useLive } from '../components/liveStore';
+import { resultForPair, resultFor, scoreText } from '../utils/liveTable';
 
 const POSITION_ORDER: PlayerPosition[] = ['GK', 'DF', 'MF', 'FW'];
 const POSITION_LABEL: Record<PlayerPosition, string> = {
@@ -32,6 +34,7 @@ export const TeamDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const clock = useClock();
+  const { matches: liveMatches } = useLive();
   const team = getTeam(id);
 
   // Go back to wherever the user came from (Calendar, Teams, Bracket); fall
@@ -141,6 +144,9 @@ export const TeamDetailPage: React.FC = () => {
                 const oppId = oppRef.kind === 'team' ? oppRef.teamId : undefined;
                 const opp = getTeam(oppId);
                 const v = VENUES[m.venueId];
+                const live = oppId ? resultForPair(liveMatches, team.id, oppId) : undefined;
+                const played = live && live.status !== 'scheduled';
+                const r = played ? resultFor(live, team.id) : null;
                 return (
                   <li key={m.id} className="text-sm">
                     <div className="flex items-center gap-2">
@@ -152,6 +158,19 @@ export const TeamDetailPage: React.FC = () => {
                       >
                         {opp?.name}
                       </Link>
+                      {played && (
+                        <span className="ml-auto flex items-center gap-1.5">
+                          {live?.status === 'live' && (
+                            <span className="text-[10px] font-bold uppercase text-rose-400">
+                              {live.rawStatus || 'live'}
+                            </span>
+                          )}
+                          <span className="font-bold tabular-nums text-white">
+                            {scoreText(live)}
+                          </span>
+                          {r && <ResultBadge r={r} size="sm" />}
+                        </span>
+                      )}
                     </div>
                     <p className="text-[11px] text-slate-500">
                       {clock.date(m.kickoff)} · {clock.time(m.kickoff)} · {v?.stadium}, {v?.city}

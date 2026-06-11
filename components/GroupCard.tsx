@@ -14,8 +14,10 @@ const POS_STYLE = [
 ];
 
 export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
-  const { state, thirdCount, moveTeam, toggleThird } = useBracket();
-  const order = state.groups[group];
+  const { state, thirdCount, moveTeam, toggleThird, groupView, liveActive, resetLiveGroup } =
+    useBracket();
+  const view = groupView(group);
+  const order = view.order;
   const thirdTeamId = order[2];
   const thirdSelected = state.thirdPlaceQualifiers.includes(group);
   const thirdDisabled = !thirdSelected && thirdCount >= 8;
@@ -26,15 +28,33 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
         <h3 className="font-display text-sm font-extrabold tracking-wide text-white">
           Group {group}
         </h3>
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-          drag order with ▲▼
-        </span>
+        {liveActive ? (
+          view.manual ? (
+            <button
+              type="button"
+              onClick={() => resetLiveGroup(group)}
+              title="Discard your what-if order and snap back to live results"
+              className="rounded bg-sky-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-300 hover:bg-sky-500/25"
+            >
+              ✎ custom · reset ↺
+            </button>
+          ) : (
+            <span className="rounded bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-300">
+              ● Live · drag for what-if
+            </span>
+          )
+        ) : (
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+            drag order with ▲▼
+          </span>
+        )}
       </div>
 
       <ul className="space-y-1">
         {order.map((teamId, idx) => {
           const team = getTeam(teamId);
           if (!team) return null;
+          const stat = view.table[teamId];
           return (
             <li
               key={teamId}
@@ -72,6 +92,17 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
                 </button>
               )}
 
+              {liveActive && (
+                <span
+                  className="w-12 text-right text-[11px] tabular-nums text-slate-400"
+                  title={`Played ${stat?.pld ?? 0} · GD ${
+                    stat ? (stat.gd > 0 ? '+' : '') + stat.gd : 0
+                  }`}
+                >
+                  <span className="font-bold text-white">{stat?.pts ?? 0}</span> pts
+                </span>
+              )}
+
               <div className="flex flex-col">
                 <button
                   type="button"
@@ -93,9 +124,11 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
                 </button>
               </div>
 
-              <span className="hidden w-16 justify-end sm:flex">
-                <FormPips form={team.recentForm} max={3} />
-              </span>
+              {!liveActive && (
+                <span className="hidden w-16 justify-end sm:flex">
+                  <FormPips form={team.recentForm} max={3} />
+                </span>
+              )}
             </li>
           );
         })}
@@ -110,3 +143,4 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
     </div>
   );
 };
+

@@ -1,0 +1,58 @@
+name: Refresh live results
+
+# Keeps public/liveResults.json on the deployed site fresh with real World Cup
+# results from TheSportsDB. It updates ONLY the JSON file on the gh-pages branch
+# (no rebuild needed — the app fetches it at runtime), so it's fast and cheap.
+# Uses TheSportsDB's public free key, so no repository secret is required.
+
+on:
+  schedule:
+    # Every 30 minutes. GitHub may delay scheduled runs under load; that's fine.
+    - cron: '*/30 * * * *'
+  workflow_dispatch: {}
+
+# Avoid overlapping runs; let the newest win.
+concurrency:
+  group: live-results
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (for the fetch script)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Checkout gh-pages (the live site)
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch results into the deployed site
+        run: LIVE_OUT="$GITHUB_WORKSPACE/site/liveResults.json" node main/scripts/fetchLiveResults.mjs
+
+      - name: Commit & push if the snapshot changed
+        working-directory: site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git status --porcelain | grep -q liveResults.json; then
+            git add liveResults.json
+            git commit -m "chore: refresh live results [skip ci]"
+            git push origin gh-pages
+            echo "Pushed updated liveResults.json"
+          else
+            echo "No change in liveResults.json"
+          fi

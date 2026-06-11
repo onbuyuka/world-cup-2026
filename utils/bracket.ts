@@ -14,7 +14,7 @@ export function createInitialState(): BracketState {
   for (const g of GROUPS) {
     groups[g.id] = [...g.teamIds] as GroupStanding;
   }
-  return { groups, thirdPlaceQualifiers: [], winners: {} };
+  return { groups, thirdPlaceQualifiers: [], winners: {}, liveOverrides: {} };
 }
 
 export interface ResolvedMatch {
@@ -94,6 +94,7 @@ export function loadState(): BracketState {
       groups: { ...base.groups, ...(parsed.groups ?? {}) },
       thirdPlaceQualifiers: parsed.thirdPlaceQualifiers ?? [],
       winners: parsed.winners ?? {},
+      liveOverrides: parsed.liveOverrides ?? {},
     };
   } catch {
     return createInitialState();
