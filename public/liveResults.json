@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-11T19:11:11.128Z",
+  "updated": "2026-06-11T20:12:09.760Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -13,10 +13,10 @@
       "awayId": "south-africa",
       "home": "Mexico",
       "away": "South Africa",
-      "hs": 0,
+      "hs": 1,
       "as": 0,
       "status": "live",
-      "rawStatus": "1H",
+      "rawStatus": "HT",
       "ts": "2026-06-11T19:00:00"
     },
     {
