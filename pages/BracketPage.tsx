@@ -50,10 +50,21 @@ const LiveToggle: React.FC = () => {
 };
 
 const Toolbar: React.FC = () => {
-  const { thirdCount, resetAll, liveActive } = useBracket();
+  const {
+    thirdCount,
+    resetAll,
+    liveActive,
+    groupStageComplete,
+    liveThirdsCustomized,
+    resetLiveThirds,
+  } = useBracket();
   const complete = thirdCount === 8;
   const hint = liveActive
-    ? 'Live mode tracks real results automatically — reorder groups or pick winners for “what-if” scenarios; your saved prediction stays separate.'
+    ? groupStageComplete
+      ? liveThirdsCustomized
+        ? 'Live: you’ve hand-picked which 3rd-placed teams advance. Reset to snap back to the real best 8.'
+        : 'Live: the 8 best 3rd-placed teams are auto-selected from real results. Tap “3rd ✓/＋” for “what-if” changes — your prediction stays separate.'
+      : 'Live mode tracks real results automatically. Best 3rd-placed teams lock in once the group stage finishes; you can still tweak for “what-if” scenarios.'
     : complete
       ? 'All eight third-placed qualifiers chosen — the Round of 32 is set.'
       : 'Tap “3rd +” on third-placed teams until you have eight; they slot into the Round of 32 per FIFA’s rules.';
@@ -70,6 +81,16 @@ const Toolbar: React.FC = () => {
         {hint}
       </p>
       <div className="ml-auto flex shrink-0 items-center gap-3">
+        {liveActive && liveThirdsCustomized && (
+          <button
+            type="button"
+            onClick={resetLiveThirds}
+            title="Discard your what-if 3rd-placed picks and snap back to the real best 8"
+            className="whitespace-nowrap rounded-lg bg-sky-500/15 px-3 py-1.5 text-xs font-semibold text-sky-300 hover:bg-sky-500/25"
+          >
+            Reset 3rds ↺
+          </button>
+        )}
         <LiveToggle />
         <button
           type="button"

@@ -14,12 +14,12 @@ const POS_STYLE = [
 ];
 
 export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
-  const { state, thirdCount, moveTeam, toggleThird, groupView, liveActive, resetLiveGroup } =
+  const { thirdCount, moveTeam, toggleThird, groupView, liveActive, resetLiveGroup, effectiveThirds } =
     useBracket();
   const view = groupView(group);
   const order = view.order;
   const thirdTeamId = order[2];
-  const thirdSelected = state.thirdPlaceQualifiers.includes(group);
+  const thirdSelected = effectiveThirds.includes(group);
   const thirdDisabled = !thirdSelected && thirdCount >= 8;
 
   return (

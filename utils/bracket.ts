@@ -130,6 +130,7 @@ export function loadState(): BracketState {
       winners: parsed.winners ?? {},
       liveOverrides: parsed.liveOverrides ?? {},
       liveWinners: parsed.liveWinners ?? {},
+      liveThirds: parsed.liveThirds,
     };
   } catch {
     return createInitialState();

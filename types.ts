@@ -163,4 +163,10 @@ export interface BracketState {
    * from `winners` so the pre-tournament prediction is never disturbed.
    */
   liveWinners?: Record<number, string>;
+  /**
+   * Live-mode best-third-placed selection. `undefined` means "use the real
+   * best 8 computed from live standings"; an array (even empty) is the user's
+   * own what-if choice. Separate from `thirdPlaceQualifiers` (the prediction).
+   */
+  liveThirds?: GroupId[];
 }
