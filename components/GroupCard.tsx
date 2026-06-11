@@ -94,12 +94,21 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
 
               {liveActive && (
                 <span
-                  className="w-12 text-right text-[11px] tabular-nums text-slate-400"
-                  title={`Played ${stat?.pld ?? 0} · GD ${
-                    stat ? (stat.gd > 0 ? '+' : '') + stat.gd : 0
-                  }`}
+                  className="w-14 text-right text-[11px] tabular-nums text-slate-400"
+                  title={
+                    stat?.inPlay
+                      ? `Provisional — ${stat.inPlay} match in progress · Played ${stat.pld} · GD ${
+                          stat.gd > 0 ? '+' : ''
+                        }${stat.gd}`
+                      : `Played ${stat?.pld ?? 0} · GD ${
+                          stat ? (stat.gd > 0 ? '+' : '') + stat.gd : 0
+                        }`
+                  }
                 >
-                  <span className="font-bold text-white">{stat?.pts ?? 0}</span> pts
+                  <span className={`font-bold ${stat?.inPlay ? 'text-rose-300' : 'text-white'}`}>
+                    {stat?.pts ?? 0}
+                  </span>
+                  {stat?.inPlay ? '*' : ''} pts
                 </span>
               )}
 

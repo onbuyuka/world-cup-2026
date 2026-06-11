@@ -47,6 +47,8 @@ export interface TeamStat {
   ga: number;
   gd: number;
   pts: number;
+  /** How many of the counted matches are still in progress (provisional). */
+  inPlay: number;
 }
 
 const emptyStat = (teamId: string): TeamStat => ({
@@ -59,6 +61,7 @@ const emptyStat = (teamId: string): TeamStat => ({
   ga: 0,
   gd: 0,
   pts: 0,
+  inPlay: 0,
 });
 
 /** True once a match has a usable final score. */
@@ -90,7 +93,12 @@ export function matchesForTeam(matches: LiveMatch[], teamId: string): LiveMatch[
     .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
 }
 
-/** Build a points table from the finished matches played *among* `teamIds`. */
+/**
+ * Build a points table from matches played *among* `teamIds`. Counts both
+ * finished and in-progress (live) matches that have a score, so the table
+ * reflects current live points; `inPlay` records how many of a team's counted
+ * matches are still live, letting the UI flag provisional points.
+ */
 export function computeGroupTable(
   teamIds: string[],
   matches: LiveMatch[],
@@ -102,21 +110,25 @@ export function computeGroupTable(
   for (const m of matches) {
     if (!m.homeId || !m.awayId) continue;
     if (!set.has(m.homeId) || !set.has(m.awayId)) continue;
-    if (m.status !== 'finished' || m.hs == null || m.as == null) continue;
+    if (!isPlayed(m)) continue; // finished OR live with both scores
 
     const home = table[m.homeId];
     const away = table[m.awayId];
     home.pld++;
     away.pld++;
-    home.gf += m.hs;
-    home.ga += m.as;
-    away.gf += m.as;
-    away.ga += m.hs;
-    if (m.hs > m.as) {
+    if (m.status === 'live') {
+      home.inPlay++;
+      away.inPlay++;
+    }
+    home.gf += m.hs!;
+    home.ga += m.as!;
+    away.gf += m.as!;
+    away.ga += m.hs!;
+    if (m.hs! > m.as!) {
       home.w++;
       away.l++;
       home.pts += 3;
-    } else if (m.hs < m.as) {
+    } else if (m.hs! < m.as!) {
       away.w++;
       home.l++;
       away.pts += 3;
@@ -135,7 +147,7 @@ export interface LiveGroupView {
   /** Team ids ordered by the live table; ties keep the predicted order. */
   order: string[];
   table: Record<string, TeamStat>;
-  /** Number of finished matches counted within the group. */
+  /** Matches counted within the group (finished + in-progress). */
   playedMatches: number;
 }
 
