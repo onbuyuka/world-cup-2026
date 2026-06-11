@@ -48,19 +48,25 @@ export const KnockoutBracket: React.FC = () => {
             const isFinal = col.short === 'Final';
             return (
               <div key={col.label} className="flex flex-col">
-                <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                  {col.label}
-                </h3>
+                {!isFinal && (
+                  <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    {col.label}
+                  </h3>
+                )}
                 {isFinal ? (
                   // Keep the final and the third-place play-off together so the
-                  // bronze match isn't stranded far below the bracket.
+                  // bronze match isn't stranded far below the bracket. Each gets
+                  // its own label directly above it (matching styles).
                   <div className="flex flex-1 flex-col items-center justify-center gap-6">
-                    {col.ids.map((id) => (
-                      <MatchCard key={id} matchId={id} />
-                    ))}
+                    <div className="flex flex-col items-center">
+                      <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-amber-300/90">
+                        🏆 Final
+                      </h3>
+                      <MatchCard matchId={104} />
+                    </div>
                     <div className="flex flex-col items-center">
                       <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-amber-300/70">
-                        🥉 Third-place play-off
+                        🥉 Third-place
                       </h3>
                       <MatchCard matchId={103} />
                     </div>
