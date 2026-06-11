@@ -1,0 +1,72 @@
+# World Cup 2026 — Bracket Predictor 🏆
+
+An interactive bracket predictor for the **2026 FIFA World Cup** (11 Jun – 19 Jul 2026,
+hosted by Canada, Mexico & the USA). Set each group's standings, advance the eight
+best third-placed teams under FIFA's real rules, and pick your way to a champion —
+with team kits, full squads, pre-tournament form, and fixtures shown in the time zone
+you choose (defaults to your own local time, with TRT and many others available).
+
+## Features
+
+- **Bracket predictor** — reorder all 12 groups, choose the 8 best third-placed
+  qualifiers, and click through Round of 32 → Final. Picks persist in your browser.
+- **Accurate knockout rules** — Round-of-32 pairings and the *allowed groups* for
+  each best-third-placed slot follow FIFA's published structure (Annex C).
+- **Hover cards** — hover any team for a quick summary: home/away kits, recent form
+  (most recent results first), and a link to its **live starting XI** on
+  [mylineups.app](https://mylineups.app/world-cup-2026/).
+- **Team pages** — full World Cup squad (with shirt numbers, clubs & captain),
+  head coach, kits, *form before the World Cup*, and group fixtures.
+- **Time-zone selector** — pick any zone from the header; the choice is remembered.
+  Defaults to your browser's local time, and Türkiye (TRT, UTC+3) is one click away.
+- **Calendar** — all 104 fixtures grouped by day, filterable by stage, with kickoff
+  times shown in your selected time zone.
+
+## Data & accuracy
+
+- **Groups, schedule, venues, knockout structure** are verified from the official
+  draw (5 Dec 2025) and FIFA's match schedule.
+- **Kits** are rendered as colour-accurate SVG jerseys (no copyrighted imagery), with
+  per-team colours and patterns in [`data/kits.ts`](data/kits.ts). **Flags** use
+  [flagcdn.com](https://flagcdn.com) with an emoji fallback.
+- **Squads** are complete for all 48 teams — 26 players each (shirt number, position,
+  club, captain) in [`data/squads.ts`](data/squads.ts), with headshots hot-linked from
+  mylineups.app and a number badge fallback. Every team also links to its always-current
+  starting XI there.
+- **Pre-tournament form** for all 48 teams lives in [`data/recentForm.ts`](data/recentForm.ts)
+  (last ~5 internationals each, scored from the team's perspective). See
+  [`docs/DATA_PIPELINE.md`](docs/DATA_PIPELINE.md) for how the squad and form data were
+  sourced and how to refresh it.
+- **Best-third-placed slotting is FIFA-exact.** All 495 combinations from the
+  FIFA regulations' Annex C are encoded in [`data/thirdPlaceTable.ts`](data/thirdPlaceTable.ts);
+  when 8 thirds are chosen the Round of 32 is filled straight from that table, so
+  the matchups are identical to FIFA's. A constraint solver in
+  [`utils/thirdPlace.ts`](utils/thirdPlace.ts) remains only as a safety fallback.
+  Run `npm run validate:table` to verify the table has all 495 unique
+  combinations with every per-slot constraint satisfied.
+
+## Develop
+
+```bash
+npm install
+npm run dev      # http://localhost:3000/world-cup-2026/
+npm run build    # production build to dist/
+npm run deploy   # build + publish dist/ to the gh-pages branch
+```
+
+Deployed as a GitHub Pages project site, so `vite.config.ts` sets
+`base: '/world-cup-2026/'` and the app uses a `HashRouter` (no server rewrites needed).
+
+## Project structure
+
+```
+data/      teams, groups, venues, 104-match schedule, Annex C third-place table,
+           kits, full 48-team squads, pre-tournament form
+utils/     time-zone formatting, third-place solver, bracket resolution
+components/ Jersey, Flag, hover card, group cards, knockout bracket, match cards
+pages/     Bracket, Teams, Team detail, Calendar
+scripts/   validateTable.mjs — checks the Annex C table (npm run validate:table)
+docs/      DATA_PIPELINE.md — how squad & form data is sourced and refreshed
+```
+
+An independent fan project — not affiliated with FIFA.
