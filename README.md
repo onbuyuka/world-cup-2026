@@ -48,8 +48,11 @@ you choose (defaults to your own local time, with TRT and many others available)
   writes a compact [`public/liveResults.json`](public/liveResults.json). A scheduled
   GitHub Action ([`.github/workflows/live-results.yml`](.github/workflows/live-results.yml))
   re-runs it and commits the updated JSON to `gh-pages`, so the static site shows fresh
-  scores with no server or secret. Live standings are computed only from **finished**
-  matches; in-progress scores are shown but never counted until full time.
+  scores with no server or secret. **For near-real-time updates**, an open tab also polls
+  TheSportsDB directly for *today's* matches every ~60s ([`utils/liveSource.ts`](utils/liveSource.ts))
+  and merges those scores over the committed baseline — falling back silently to the
+  snapshot if the request fails or is rate-limited. Live standings are computed only from
+  **finished** matches; in-progress scores are shown but never counted until full time.
 - **Best-third-placed slotting is FIFA-exact.** All 495 combinations from the
   FIFA regulations' Annex C are encoded in [`data/thirdPlaceTable.ts`](data/thirdPlaceTable.ts);
   when 8 thirds are chosen the Round of 32 is filled straight from that table, so

@@ -6,7 +6,7 @@ import { GroupCard } from '../components/GroupCard';
 import { KnockoutBracket } from '../components/KnockoutBracket';
 
 const LiveToggle: React.FC = () => {
-  const { liveMode, setLiveMode, hasResults, updated, loading } = useLive();
+  const { liveMode, setLiveMode, hasResults, updated, loading, livePolling } = useLive();
   return (
     <div className="flex items-center gap-2">
       <button
@@ -33,13 +33,15 @@ const LiveToggle: React.FC = () => {
         {liveMode ? 'Live results: ON' : 'Live results: OFF'}
       </button>
       {liveMode && (
-        <span className="text-[11px] text-slate-500">
+        <span className="text-[11px] text-slate-500" title={updated ? `Last updated ${new Date(updated).toLocaleString()}` : undefined}>
           {loading
             ? 'loading…'
             : hasResults
-              ? updated
-                ? `updated ${new Date(updated).toLocaleString()}`
-                : 'live'
+              ? livePolling
+                ? '🔴 live · auto-updating'
+                : updated
+                  ? `updated ${new Date(updated).toLocaleTimeString()}`
+                  : 'live'
               : 'no results yet'}
         </span>
       )}
