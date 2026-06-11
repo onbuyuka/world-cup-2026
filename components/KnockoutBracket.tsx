@@ -38,27 +38,38 @@ export const KnockoutBracket: React.FC = () => {
       {/* Bracket columns (scroll horizontally on small screens) */}
       <div className="overflow-x-auto pb-4">
         <div className="flex min-w-max gap-4">
-          {COLUMNS.map((col) => (
-            <div key={col.label} className="flex flex-col">
-              <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                {col.label}
-              </h3>
-              <div className="flex flex-1 flex-col justify-around gap-2">
-                {col.ids.map((id) => (
-                  <MatchCard key={id} matchId={id} />
-                ))}
+          {COLUMNS.map((col) => {
+            const isFinal = col.short === 'Final';
+            return (
+              <div key={col.label} className="flex flex-col">
+                <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  {col.label}
+                </h3>
+                {isFinal ? (
+                  // Keep the final and the third-place play-off together so the
+                  // bronze match isn't stranded far below the bracket.
+                  <div className="flex flex-1 flex-col items-center justify-center gap-6">
+                    {col.ids.map((id) => (
+                      <MatchCard key={id} matchId={id} />
+                    ))}
+                    <div className="flex flex-col items-center">
+                      <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-amber-300/70">
+                        🥉 Third-place play-off
+                      </h3>
+                      <MatchCard matchId={103} />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-1 flex-col justify-around gap-2">
+                    {col.ids.map((id) => (
+                      <MatchCard key={id} matchId={id} />
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-      </div>
-
-      {/* Third-place play-off */}
-      <div className="mt-6 flex flex-col items-center">
-        <h3 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-          Third-place play-off
-        </h3>
-        <MatchCard matchId={103} />
       </div>
     </div>
   );

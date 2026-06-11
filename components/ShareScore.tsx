@@ -44,15 +44,56 @@ const FLAG_H = 13;
 /** team id -> loaded flag image (for canvas drawing). */
 type FlagMap = Map<string, HTMLImageElement>;
 
+/**
+ * Session-wide cache of decoded flag images, keyed by URL. The CORS flag
+ * fetches the canvas needs are a *separate* cache entry from the DOM's
+ * (non-CORS) flag <img>s, so without this the first "Save image" re-downloads
+ * every flag — the slow part. We cache the in-flight promise so repeat saves
+ * (and the background warm-up) reuse one fetch per flag.
+ */
+const flagImgCache = new Map<string, Promise<HTMLImageElement | null>>();
+
 /** Load an image for canvas use; resolves null on error so it never rejects. */
 function loadImage(src: string): Promise<HTMLImageElement | null> {
-  return new Promise((resolve) => {
+  const cached = flagImgCache.get(src);
+  if (cached) return cached;
+  const p = new Promise<HTMLImageElement | null>((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => resolve(img);
     img.onerror = () => resolve(null);
     img.src = src;
   });
+  flagImgCache.set(src, p);
+  return p;
+}
+
+/** Every team currently placed somewhere in the knockout bracket. */
+function bracketTeamIds(resolved: ResolvedBracket): Set<string> {
+  const ids = new Set<string>();
+  for (const col of KO_COLUMNS) {
+    for (const id of col.ids) {
+      const rm = resolved.matches[id];
+      if (rm?.home) ids.add(rm.home);
+      if (rm?.away) ids.add(rm.away);
+    }
+  }
+  // Third-place play-off (drawn below the final).
+  const tp = resolved.matches[103];
+  if (tp?.home) ids.add(tp.home);
+  if (tp?.away) ids.add(tp.away);
+  return ids;
+}
+
+/**
+ * Kick off (and cache) the flag downloads for the current bracket in the
+ * background, so a later "Save image" finds them ready and feels instant.
+ */
+function warmFlagCache(resolved: ResolvedBracket) {
+  for (const tid of bracketTeamIds(resolved)) {
+    const url = flagPngUrl(tid);
+    if (url) void loadImage(url);
+  }
 }
 
 /** Draw a flag rect with a hairline border, returning its right edge. */
@@ -162,18 +203,11 @@ async function renderBracketImage(
     /* ignore */
   }
 
-  // Preload every flag in the bracket (deduped) so we can draw them on the
-  // canvas. flagcdn allows cross-origin canvas use, so the PNG stays untainted;
-  // any flag that fails to load is simply skipped (the code still renders).
+  // Preload every flag in the bracket (deduped, cached) so we can draw them on
+  // the canvas. flagcdn allows cross-origin canvas use, so the PNG stays
+  // untainted; any flag that fails to load is simply skipped (code still shows).
   const champId = championOf(resolved);
-  const teamIds = new Set<string>();
-  for (const col of KO_COLUMNS) {
-    for (const id of col.ids) {
-      const rm = resolved.matches[id];
-      if (rm?.home) teamIds.add(rm.home);
-      if (rm?.away) teamIds.add(rm.away);
-    }
-  }
+  const teamIds = bracketTeamIds(resolved);
   const flags: FlagMap = new Map();
   await Promise.all(
     [...teamIds].map(async (tid) => {
@@ -301,6 +335,17 @@ async function renderBracketImage(
     });
   });
 
+  // Third-place play-off, drawn just below the final so it isn't missed.
+  const finalColX = pad + 4 * (colW + colGap);
+  const finalYc = cellsTop + 0.5 * Math.pow(2, 4) * band;
+  const tpLabelY = finalYc + CELL_H / 2 + 26;
+  ctx.fillStyle = 'rgba(252,211,77,0.8)';
+  ctx.font = `700 11px ${FONT}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🥉 THIRD PLACE', finalColX + colW / 2, tpLabelY);
+  drawCell(ctx, finalColX, tpLabelY + 14, colW, 103, resolved, flags);
+
   // Footer
   ctx.fillStyle = '#64748b';
   ctx.font = `600 13px ${FONT}`;
@@ -316,6 +361,12 @@ function useShareActions() {
   const { buildShareUrl, score, resolved } = useBracket();
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  // Warm the flag cache in the background whenever the bracket changes, so a
+  // later "Save image" click finds every flag already downloaded.
+  useEffect(() => {
+    warmFlagCache(resolved);
+  }, [resolved]);
 
   const copyLink = useCallback(async () => {
     const url = buildShareUrl();
