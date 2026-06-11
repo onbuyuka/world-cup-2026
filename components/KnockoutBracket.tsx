@@ -4,6 +4,7 @@ import { getTeam } from '../data/teams';
 import { KO_MATCHES, championOf } from '../utils/bracket';
 import { useBracket } from './bracketStore';
 import { MatchCard } from './MatchCard';
+import { Flag } from './Flag';
 
 // --- bracket tree ordering --------------------------------------------------
 const feeders = (id: number): (number | null)[] => {
@@ -61,8 +62,9 @@ export const KnockoutBracket: React.FC = () => {
               <p className="text-[10px] font-bold uppercase tracking-widest text-amber-300/80">
                 Your predicted champion
               </p>
-              <p className="font-display text-xl font-extrabold text-white">
-                {champion.flag} {champion.name}
+              <p className="flex items-center gap-2 font-display text-xl font-extrabold text-white">
+                <Flag team={champion} size={22} />
+                {champion.name}
               </p>
             </div>
           </div>
