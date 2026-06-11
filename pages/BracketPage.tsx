@@ -4,7 +4,7 @@ import { BracketProvider, useBracket } from '../components/bracketStore';
 import { useLive } from '../components/liveStore';
 import { GroupCard } from '../components/GroupCard';
 import { KnockoutBracket } from '../components/KnockoutBracket';
-import { ShareBar, ScoreCard, WinnerCelebration } from '../components/ShareScore';
+import { ScoreCard, WinnerCelebration } from '../components/ShareScore';
 
 /** Banner shown when viewing a bracket opened from a shared link. */
 const SharedBanner: React.FC = () => {
@@ -139,19 +139,16 @@ export const BracketPage: React.FC = () => (
   <BracketProvider>
     <section className="animate-fade-in">
       <WinnerCelebration />
-      <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-            Build your World Cup 2026 bracket
-          </h1>
-          <p className="mt-1 max-w-3xl text-sm text-slate-400">
-            Set each group’s final standings, choose the eight best third-placed teams
-            that advance, then pick your way through the knockout rounds. Hover any
-            team for kits, recent form and a link to its live starting XI. Your picks
-            are saved in this browser.
-          </p>
-        </div>
-        <ShareBar />
+      <div className="mb-5">
+        <h1 className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+          Build your World Cup 2026 bracket
+        </h1>
+        <p className="mt-1 max-w-3xl text-sm text-slate-400">
+          Set each group’s final standings, choose the eight best third-placed teams
+          that advance, then pick your way through the knockout rounds. Hover any
+          team for kits, recent form and a link to its live starting XI. Your picks
+          are saved in this browser.
+        </p>
       </div>
 
       <SharedBanner />

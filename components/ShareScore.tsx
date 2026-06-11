@@ -405,31 +405,43 @@ function useShareActions() {
   return { copied, busy, copyLink, saveImage, tweet };
 }
 
-export const ShareBar: React.FC = () => {
+/**
+ * The three share actions (copy link / save image / share on X) as buttons.
+ * Reused by the winner popup and the "Your predicted champion" banner; the
+ * caller wraps them in its own flex container. `compact` shrinks them for the
+ * banner.
+ */
+export const ShareButtons: React.FC<{ compact?: boolean }> = ({ compact }) => {
   const { copied, busy, copyLink, saveImage, tweet } = useShareActions();
-
-  const btn =
-    'rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:bg-white/10 transition';
-
+  const base = `inline-flex items-center justify-center gap-1.5 rounded-lg font-bold transition ${
+    compact ? 'px-2.5 py-1.5 text-xs' : 'px-4 py-2 text-sm'
+  }`;
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="mr-1 text-xs font-bold uppercase tracking-wider text-slate-500">Share</span>
-      <button type="button" onClick={copyLink} className={btn}>
+    <>
+      <button
+        type="button"
+        onClick={copyLink}
+        className={`${base} border border-white/15 text-slate-200 hover:bg-white/10`}
+      >
         {copied ? '✓ Link copied' : '🔗 Copy link'}
       </button>
       <button
         type="button"
         onClick={saveImage}
         disabled={busy}
-        className={`inline-flex items-center gap-1.5 ${btn}`}
+        className={`${base} bg-emerald-500/90 text-white hover:bg-emerald-400 disabled:opacity-60`}
       >
         <DownloadIcon />
         {busy ? 'Saving…' : 'Save image'}
       </button>
-      <button type="button" onClick={tweet} className={btn}>
+      <button
+        type="button"
+        onClick={tweet}
+        className={`${base} border border-white/15 text-slate-200 hover:bg-white/10`}
+      >
         𝕏 Share on X
       </button>
-    </div>
+    </>
   );
 };
 
@@ -445,7 +457,6 @@ export const WinnerCelebration: React.FC = () => {
   const champ = getTeam(champId ?? undefined);
   const prev = useRef<string | null>(champId);
   const [show, setShow] = useState(false);
-  const { copied, busy, copyLink, saveImage, tweet } = useShareActions();
 
   useEffect(() => {
     if (sharedView) {
@@ -468,9 +479,6 @@ export const WinnerCelebration: React.FC = () => {
   }, [show]);
 
   if (!show || !champ) return null;
-
-  const action =
-    'inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold transition';
 
   return (
     <div
@@ -506,29 +514,7 @@ export const WinnerCelebration: React.FC = () => {
         </p>
 
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
-          <button
-            type="button"
-            onClick={copyLink}
-            className={`${action} border border-white/15 text-slate-200 hover:bg-white/10`}
-          >
-            {copied ? '✓ Link copied' : '🔗 Copy link'}
-          </button>
-          <button
-            type="button"
-            onClick={saveImage}
-            disabled={busy}
-            className={`${action} bg-emerald-500/90 text-white hover:bg-emerald-400 disabled:opacity-60`}
-          >
-            <DownloadIcon />
-            {busy ? 'Saving…' : 'Save image'}
-          </button>
-          <button
-            type="button"
-            onClick={tweet}
-            className={`${action} border border-white/15 text-slate-200 hover:bg-white/10`}
-          >
-            𝕏 Share on X
-          </button>
+          <ShareButtons />
         </div>
 
         <button
