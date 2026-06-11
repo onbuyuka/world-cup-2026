@@ -3,9 +3,12 @@ import type { Match, SlotRef } from '../types';
 import { MATCHES_BY_ID } from '../data/schedule';
 import { getTeam } from '../data/teams';
 import { useBracket } from './bracketStore';
+import { useLive } from './liveStore';
 import { useClock } from './settingsStore';
 import { TeamHover } from './TeamHoverCard';
 import { Flag } from './Flag';
+import { KNOCKOUT_START_DATE } from '../utils/bracket';
+import { resultForPair, scoreText } from '../utils/liveTable';
 
 /** Human label for an unresolved slot, e.g. "Winner E", "3rd C/E/F/H/I". */
 export function slotLabel(ref: SlotRef): string {
@@ -31,7 +34,8 @@ const Slot: React.FC<{
   fallback: string;
   isWinner: boolean;
   canPick: boolean;
-}> = ({ matchId, teamId, fallback, isWinner, canPick }) => {
+  goals?: number | null;
+}> = ({ matchId, teamId, fallback, isWinner, canPick, goals }) => {
   const { pickWinner } = useBracket();
   const team = getTeam(teamId ?? undefined);
 
@@ -66,6 +70,15 @@ const Slot: React.FC<{
           {team.name}
         </span>
       </TeamHover>
+      {goals != null && (
+        <span
+          className={`ml-auto text-xs font-bold tabular-nums ${
+            isWinner ? 'text-white' : 'text-slate-300'
+          }`}
+        >
+          {goals}
+        </span>
+      )}
     </button>
   );
 };
@@ -74,7 +87,8 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
   matchId,
   compact,
 }) => {
-  const { resolved } = useBracket();
+  const { resolved, liveActive } = useBracket();
+  const { matches: liveMatches } = useLive();
   const clock = useClock();
   const match: Match = MATCHES_BY_ID[matchId];
   const rm = resolved.matches[matchId];
@@ -82,14 +96,31 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
   const away = rm?.away ?? null;
   const bothKnown = Boolean(home && away);
 
+  // In Live mode, surface the real scoreline for a played knockout fixture.
+  const live =
+    liveActive && home && away
+      ? resultForPair(liveMatches, home, away, KNOCKOUT_START_DATE)
+      : undefined;
+  const played = live && live.status !== 'scheduled';
+  const homeGoals =
+    played && live ? (live.homeId === home ? live.hs : live.as) : null;
+  const awayGoals =
+    played && live ? (live.homeId === home ? live.as : live.hs) : null;
+
   return (
     <div className="w-44 overflow-hidden rounded-lg border border-white/10 bg-ink-850 shadow-sm">
       {!compact && (
         <div className="flex items-center justify-between bg-white/[0.04] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-slate-500">
           <span>M{match.id}</span>
-          <span>
-            {clock.date(match.kickoff)} · {clock.time(match.kickoff)}
-          </span>
+          {played ? (
+            <span className="font-bold text-rose-300">
+              {live?.status === 'live' ? live.rawStatus || 'LIVE' : 'FT'}
+            </span>
+          ) : (
+            <span>
+              {clock.date(match.kickoff)} · {clock.time(match.kickoff)}
+            </span>
+          )}
         </div>
       )}
       <div className="divide-y divide-white/5">
@@ -99,6 +130,7 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
           fallback={slotLabel(match.home)}
           isWinner={rm?.winner === home && home !== null}
           canPick={bothKnown}
+          goals={homeGoals}
         />
         <Slot
           matchId={matchId}
@@ -106,6 +138,7 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
           fallback={slotLabel(match.away)}
           isWinner={rm?.winner === away && away !== null}
           canPick={bothKnown}
+          goals={awayGoals}
         />
       </div>
     </div>

@@ -118,13 +118,24 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   }, []);
 
-  const pickWinner = useCallback((matchId: number, teamId: string) => {
-    setState((prev) => {
-      // Picking a new winner clears downstream picks that depended on the old one.
-      const winners = { ...prev.winners, [matchId]: teamId };
-      return { ...prev, winners };
-    });
-  }, []);
+  const pickWinner = useCallback(
+    (matchId: number, teamId: string) => {
+      setState((prev) => {
+        if (liveActive) {
+          // Live "what-if": toggle an override on the live knockout. Clicking
+          // the current pick again reverts to the real (auto-advanced) result.
+          const cur = prev.liveWinners?.[matchId];
+          const next = { ...prev.liveWinners };
+          if (cur === teamId) delete next[matchId];
+          else next[matchId] = teamId;
+          return { ...prev, liveWinners: next };
+        }
+        // Predict mode: a new winner clears downstream picks via re-resolution.
+        return { ...prev, winners: { ...prev.winners, [matchId]: teamId } };
+      });
+    },
+    [liveActive],
+  );
 
   const resetLiveGroup = useCallback((group: GroupId) => {
     setState((prev) => {
@@ -155,18 +166,23 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return out;
   }, [state.groups, state.liveOverrides, matches, liveActive]);
 
-  // The state used to resolve the knockout bracket: effective group orders in
-  // live mode (results + any what-if overrides), raw predictions otherwise.
+  // The state used to resolve the knockout bracket: effective group orders +
+  // live "what-if" knockout picks in live mode, raw predictions otherwise.
   const effectiveState = useMemo<BracketState>(() => {
     if (!liveActive) return state;
     const groups = {} as Record<GroupId, GroupStanding>;
     (Object.keys(groupViews) as GroupId[]).forEach((g) => {
       groups[g] = groupViews[g].order;
     });
-    return { ...state, groups };
+    return { ...state, groups, winners: state.liveWinners ?? {} };
   }, [state, groupViews, liveActive]);
 
-  const resolved = useMemo(() => resolveBracket(effectiveState), [effectiveState]);
+  // In live mode, real decisive knockout results auto-advance (cascading);
+  // `liveWinners` overrides them for hypotheticals. Predict mode ignores results.
+  const resolved = useMemo(
+    () => resolveBracket(effectiveState, liveActive ? matches : undefined),
+    [effectiveState, liveActive, matches],
+  );
 
   const groupView = useCallback((group: GroupId) => groupViews[group], [groupViews]);
 

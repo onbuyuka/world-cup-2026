@@ -71,10 +71,12 @@ export function resultForPair(
   matches: LiveMatch[],
   aId: string,
   bId: string,
+  minDate?: string,
 ): LiveMatch | undefined {
   const cands = matches.filter(
     (m) =>
-      (m.homeId === aId && m.awayId === bId) || (m.homeId === bId && m.awayId === aId),
+      ((m.homeId === aId && m.awayId === bId) || (m.homeId === bId && m.awayId === aId)) &&
+      (!minDate || m.date >= minDate),
   );
   if (cands.length === 0) return undefined;
   const rank = (m: LiveMatch) => (m.status === 'finished' ? 0 : m.status === 'live' ? 1 : 2);

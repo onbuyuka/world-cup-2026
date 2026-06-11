@@ -61,7 +61,7 @@ const Toolbar: React.FC = () => {
       </div>
       <p className="text-xs text-slate-400">
         {liveActive
-          ? 'Live mode: groups are ordered by real points (0 until games are played). Drag ▲▼ for “what-if” scenarios — your saved prediction is kept separately. Knockout picks are still yours.'
+          ? 'Live mode follows real results as matches are played — group order and knockout winners update automatically. Reorder groups or pick winners for “what-if” scenarios; your saved prediction stays separate.'
           : complete
             ? 'All eight third-placed qualifiers chosen — the Round of 32 is set.'
             : 'Tap “3rd +” on third-placed teams until you have eight; they slot into the Round of 32 per FIFA’s rules.'}

@@ -157,4 +157,10 @@ export interface BracketState {
    * predictions in `groups`.
    */
   liveOverrides?: Partial<Record<GroupId, GroupStanding>>;
+  /**
+   * Live-mode "what-if" knockout picks. Real finished results auto-advance in
+   * live mode; an entry here overrides one for hypotheticals. Kept separate
+   * from `winners` so the pre-tournament prediction is never disturbed.
+   */
+  liveWinners?: Record<number, string>;
 }
