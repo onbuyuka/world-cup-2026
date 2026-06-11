@@ -4,7 +4,6 @@ import { GROUPS } from '../data/groups';
 import { getTeam } from '../data/teams';
 import { Jersey } from '../components/Jersey';
 import { Flag } from '../components/Flag';
-import { FormPips } from '../components/RecentForm';
 
 export const TeamsPage: React.FC = () => {
   const [q, setQ] = useState('');
@@ -60,9 +59,6 @@ export const TeamsPage: React.FC = () => {
                         </span>
                       </div>
                       <p className="text-[11px] text-slate-500">FIFA #{t.fifaRank}</p>
-                      <div className="mt-1">
-                        <FormPips form={t.recentForm} max={5} />
-                      </div>
                     </div>
                   </Link>
                 ))}
