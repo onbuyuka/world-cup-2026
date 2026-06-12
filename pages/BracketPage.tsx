@@ -39,7 +39,7 @@ const SharedBanner: React.FC = () => {
 const LiveToggle: React.FC = () => {
   const { liveMode, setLiveMode, hasResults, updated, loading, livePolling } = useLive();
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1">
       <button
         type="button"
         role="switch"
@@ -111,7 +111,7 @@ const Toolbar: React.FC = () => {
       <p className="min-w-0 flex-1 truncate text-xs text-slate-400" title={hint}>
         {hint}
       </p>
-      <div className="ml-auto flex shrink-0 items-center gap-3">
+      <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
         {liveActive && liveThirdsCustomized && (
           <button
             type="button"
@@ -126,7 +126,7 @@ const Toolbar: React.FC = () => {
         <button
           type="button"
           onClick={resetAll}
-          className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5"
+          className="whitespace-nowrap rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5"
         >
           Reset bracket
         </button>

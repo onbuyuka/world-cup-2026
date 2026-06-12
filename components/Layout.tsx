@@ -9,18 +9,22 @@ const NAV = [
   { to: '/calendar', label: 'Calendar' },
 ];
 
-const TimezonePicker: React.FC = () => {
+const TimezonePicker: React.FC<{ className?: string }> = ({ className }) => {
   const { timeZone, setTimeZone } = useSettings();
   const detected = localTz();
 
   return (
-    <label className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-ink-850 px-2 py-1">
+    <label
+      className={`flex min-w-0 items-center gap-1.5 rounded-lg border border-white/10 bg-ink-850 px-2 py-1 ${
+        className ?? ''
+      }`}
+    >
       <span aria-hidden className="text-xs text-slate-400">🕑</span>
       <span className="sr-only">Time zone</span>
       <select
         value={timeZone}
         onChange={(e) => setTimeZone(e.target.value)}
-        className="max-w-[9.5rem] bg-transparent text-xs font-semibold text-slate-100 outline-none"
+        className="min-w-0 max-w-[8rem] bg-transparent text-xs font-semibold text-slate-100 outline-none sm:max-w-[9.5rem]"
         title="Show all kickoff times in this time zone"
       >
         {/* The visitor's own zone is the default. */}
@@ -47,8 +51,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   return (
     <div className="min-h-screen bg-ink-900">
       <header className="sticky top-0 z-40 border-b border-white/10 bg-ink-900/85 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3">
-          <Link to="/" className="flex items-center gap-2">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
+          <Link to="/" className="order-1 flex items-center gap-2">
             <span className="text-2xl">🏆</span>
             <span className="font-display text-lg font-extrabold tracking-tight text-white">
               WC<span className="text-pitch-500">26</span>
@@ -57,7 +61,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </span>
             </span>
           </Link>
-          <nav className="ml-auto flex items-center gap-1">
+          <nav className="order-3 flex w-full items-center justify-center gap-1 sm:order-2 sm:ml-auto sm:w-auto sm:justify-end">
             {NAV.map((n) => (
               <NavLink
                 key={n.to}
@@ -75,7 +79,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </NavLink>
             ))}
           </nav>
-          <TimezonePicker />
+          <TimezonePicker className="order-2 ml-auto sm:order-3 sm:ml-0" />
         </div>
       </header>
 
