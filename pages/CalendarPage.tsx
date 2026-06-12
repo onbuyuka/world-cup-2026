@@ -7,6 +7,8 @@ import { getTeam } from '../data/teams';
 import { Flag } from '../components/Flag';
 import { slotLabel } from '../components/MatchCard';
 import { useClock } from '../components/settingsStore';
+import { useLive } from '../components/liveStore';
+import { resultForPair, type LiveMatch } from '../utils/liveTable';
 import { dayKeyOf, dayHeadingOf } from '../utils/time';
 
 const STAGES: (Stage | 'All')[] = [
@@ -20,15 +22,26 @@ const STAGES: (Stage | 'All')[] = [
   'Final',
 ];
 
-const Side: React.FC<{ refSlot: SlotRef; align: 'left' | 'right' }> = ({ refSlot, align }) => {
+const Side: React.FC<{ refSlot: SlotRef; align: 'left' | 'right'; outcome?: 'W' | 'D' | 'L' | null }> = ({
+  refSlot,
+  align,
+  outcome,
+}) => {
   const team = refSlot.kind === 'team' ? getTeam(refSlot.teamId) : undefined;
   const justify = align === 'right' ? 'justify-end text-right' : '';
   if (team) {
+    const nameClass = `truncate ${
+      outcome === 'W'
+        ? 'font-extrabold text-white'
+        : outcome === 'L'
+          ? 'font-semibold text-slate-400'
+          : 'font-semibold text-slate-100'
+    }`;
     return (
       <Link to={`/team/${team.id}`} className={`flex items-center gap-2 ${justify} hover:text-pitch-300`}>
-        {align === 'right' && <span className="truncate font-semibold text-slate-100">{team.name}</span>}
+        {align === 'right' && <span className={nameClass}>{team.name}</span>}
         <Flag team={team} size={18} />
-        {align === 'left' && <span className="truncate font-semibold text-slate-100">{team.name}</span>}
+        {align === 'left' && <span className={nameClass}>{team.name}</span>}
       </Link>
     );
   }
@@ -39,9 +52,27 @@ const Side: React.FC<{ refSlot: SlotRef; align: 'left' | 'right' }> = ({ refSlot
   );
 };
 
+/**
+ * Final score for a calendar match, oriented to its home/away, or null.
+ * Only group-stage fixtures (both sides resolved to real teams) can be matched
+ * to live data; we show finished scores only (no in-progress games here).
+ */
+function finishedScore(m: Match, matches: LiveMatch[]): { home: number; away: number } | null {
+  if (m.home.kind !== 'team' || m.away.kind !== 'team') return null;
+  const homeId = m.home.teamId;
+  const awayId = m.away.teamId;
+  const lm = resultForPair(matches, homeId, awayId);
+  if (!lm || lm.status !== 'finished' || lm.hs == null || lm.as == null) return null;
+  // The live match's home may be our away team — orient the goals accordingly.
+  const home = lm.homeId === homeId ? lm.hs : lm.as;
+  const away = lm.homeId === homeId ? lm.as : lm.hs;
+  return { home, away };
+}
+
 export const CalendarPage: React.FC = () => {
   const [stage, setStage] = useState<Stage | 'All'>('All');
   const clock = useClock();
+  const { matches: liveMatches } = useLive();
 
   const days = useMemo(() => {
     const filtered = MATCHES.filter((m) => stage === 'All' || m.stage === stage);
@@ -99,6 +130,9 @@ export const CalendarPage: React.FC = () => {
             <div className="space-y-2">
               {day.matches.map((m) => {
                 const v = VENUES[m.venueId];
+                const fs = finishedScore(m, liveMatches);
+                const homeOutcome = fs ? (fs.home > fs.away ? 'W' : fs.home < fs.away ? 'L' : 'D') : null;
+                const awayOutcome = fs ? (fs.home > fs.away ? 'L' : fs.home < fs.away ? 'W' : 'D') : null;
                 return (
                   <div
                     key={m.id}
@@ -113,11 +147,22 @@ export const CalendarPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="grid flex-1 grid-cols-[1fr_auto_1fr] items-center gap-2">
-                      <Side refSlot={m.home} align="right" />
-                      <span className="rounded bg-white/5 px-1.5 py-0.5 text-[10px] font-bold text-slate-400">
-                        {m.group ? `Grp ${m.group}` : 'v'}
-                      </span>
-                      <Side refSlot={m.away} align="left" />
+                      <Side refSlot={m.home} align="right" outcome={homeOutcome} />
+                      {fs ? (
+                        <div className="flex flex-col items-center leading-none">
+                          <span className="font-display text-base font-extrabold tabular-nums text-white">
+                            {fs.home}–{fs.away}
+                          </span>
+                          <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-400">
+                            FT
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="rounded bg-white/5 px-1.5 py-0.5 text-[10px] font-bold text-slate-400">
+                          {m.group ? `Grp ${m.group}` : 'v'}
+                        </span>
+                      )}
+                      <Side refSlot={m.away} align="left" outcome={awayOutcome} />
                     </div>
                     <div className="hidden w-40 shrink-0 text-right text-[11px] text-slate-500 sm:block">
                       <div className="font-semibold text-slate-400">{m.stage} · M{m.id}</div>

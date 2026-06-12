@@ -30,7 +30,8 @@ you choose (defaults to your own local time, with TRT and many others available)
 - **Time-zone selector** — pick any zone from the header; the choice is remembered.
   Defaults to your browser's local time, and Türkiye (TRT, UTC+3) is one click away.
 - **Calendar** — all 104 fixtures grouped by day, filterable by stage, with kickoff
-  times shown in your selected time zone.
+  times shown in your selected time zone and **final scores** on completed group
+  matches (the winner highlighted).
 - **Live results mode** — flip the **Live results** switch on the bracket to order
   every group by real World Cup points (your prediction breaks ties for undecided
   spots, so the knockout stays yours to pick). In Live mode the hover cards show a
