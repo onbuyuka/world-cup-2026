@@ -8,8 +8,9 @@ you choose (defaults to your own local time, with TRT and many others available)
 
 ## Features
 
-- **Bracket predictor** — reorder all 12 groups, choose the 8 best third-placed
-  qualifiers, and click through Round of 32 → Final. Picks persist in your browser.
+- **Bracket predictor** — drag to reorder all 12 groups (mouse, touch or
+  keyboard), choose the 8 best third-placed qualifiers, and click through
+  Round of 32 → Final. Picks persist in your browser.
 - **Share & score** — once you crown a champion, share buttons appear on the
   *predicted champion* banner (and in a one-time celebration pop-up): copy a link,
   post to X, or **save your bracket as an image**. The link encodes your whole

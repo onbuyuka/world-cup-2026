@@ -48,7 +48,11 @@ interface Store {
   liveThirdsCustomized: boolean;
   /** Per-group effective order + live table. */
   groupView: (group: GroupId) => GroupView;
-  moveTeam: (group: GroupId, teamId: string, dir: -1 | 1) => void;
+  /**
+   * Move a team within its group by drag-and-drop: `activeId` is dropped onto
+   * `overId`'s position. In Live mode this edits the what-if order only.
+   */
+  reorderGroup: (group: GroupId, activeId: string, overId: string) => void;
   toggleThird: (group: GroupId) => void;
   pickWinner: (matchId: number, teamId: string) => void;
   /** Discard a group's live what-if order, snapping back to real results. */
@@ -126,34 +130,35 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // from it without being recreated on every standings change.
   const autoThirdsRef = useRef<GroupId[]>([]);
 
-  const moveTeam = useCallback(
-    (group: GroupId, teamId: string, dir: -1 | 1) => {
+  const reorderGroup = useCallback(
+    (group: GroupId, activeId: string, overId: string) => {
+      if (activeId === overId) return;
+      // Move activeId to overId's slot, shifting the rest (drag-and-drop).
+      const apply = (order: GroupStanding): GroupStanding => {
+        const from = order.indexOf(activeId);
+        const to = order.indexOf(overId);
+        if (from < 0 || to < 0) return order;
+        const next = [...order];
+        next.splice(to, 0, next.splice(from, 1)[0]);
+        return next as GroupStanding;
+      };
       if (liveActive) {
         // Reorder the live "what-if" order; never touch the prediction.
         setState((prev) => {
           const current =
             prev.liveOverrides?.[group] ??
             (orderGroupByLive(prev.groups[group], matches).order as GroupStanding);
-          const order = [...current];
-          const i = order.indexOf(teamId);
-          const j = i + dir;
-          if (i < 0 || j < 0 || j > 3) return prev;
-          [order[i], order[j]] = [order[j], order[i]];
           return {
             ...prev,
-            liveOverrides: { ...prev.liveOverrides, [group]: order as GroupStanding },
+            liveOverrides: { ...prev.liveOverrides, [group]: apply(current) },
           };
         });
         return;
       }
-      setState((prev) => {
-        const order = [...prev.groups[group]];
-        const i = order.indexOf(teamId);
-        const j = i + dir;
-        if (i < 0 || j < 0 || j > 3) return prev;
-        [order[i], order[j]] = [order[j], order[i]];
-        return { ...prev, groups: { ...prev.groups, [group]: order as GroupStanding } };
-      });
+      setState((prev) => ({
+        ...prev,
+        groups: { ...prev.groups, [group]: apply(prev.groups[group]) },
+      }));
     },
     [liveActive, matches],
   );
@@ -345,7 +350,7 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
       groupStageComplete,
       liveThirdsCustomized: liveActive && state.liveThirds !== undefined,
       groupView,
-      moveTeam,
+      reorderGroup,
       toggleThird,
       pickWinner,
       resetLiveGroup,
@@ -364,7 +369,7 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
       liveActive,
       groupStageComplete,
       groupView,
-      moveTeam,
+      reorderGroup,
       toggleThird,
       pickWinner,
       resetLiveGroup,
