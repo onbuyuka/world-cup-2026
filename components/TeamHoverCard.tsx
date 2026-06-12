@@ -6,20 +6,14 @@ import { Jersey } from './Jersey';
 import { Flag } from './Flag';
 import { RecentForm, ResultBadge } from './RecentForm';
 import { useLive } from './liveStore';
+import { useT } from './settingsStore';
 import { matchesForTeam, resultFor, scoreText, liveStatusLabel } from '../utils/liveTable';
-
-const CONF_LABEL: Record<string, string> = {
-  UEFA: 'UEFA (Europe)',
-  CONMEBOL: 'CONMEBOL (S. America)',
-  CONCACAF: 'CONCACAF (N. America)',
-  CAF: 'CAF (Africa)',
-  AFC: 'AFC (Asia)',
-  OFC: 'OFC (Oceania)',
-};
+import { teamName, kitColor, type StrKey } from '../utils/i18n';
 
 /** Compact list of a team's World Cup matches (played show scores). */
 const LiveMatchList: React.FC<{ teamId: string; max?: number }> = ({ teamId, max = 3 }) => {
   const { matches } = useLive();
+  const { t, lang } = useT();
   const all = matchesForTeam(matches, teamId);
   const played = all.filter((m) => m.status !== 'scheduled');
   const upcoming = all.filter((m) => m.status === 'scheduled');
@@ -27,7 +21,7 @@ const LiveMatchList: React.FC<{ teamId: string; max?: number }> = ({ teamId, max
   const shown = [...played.slice(-max)];
   if (shown.length < max && upcoming.length) shown.push(upcoming[0]);
   if (shown.length === 0) {
-    return <p className="text-xs text-slate-400">No World Cup matches yet.</p>;
+    return <p className="text-xs text-slate-400">{t('team.noWcMatches')}</p>;
   }
   return (
     <ul className="space-y-1.5">
@@ -51,10 +45,10 @@ const LiveMatchList: React.FC<{ teamId: string; max?: number }> = ({ teamId, max
             </span>
             <span className="text-slate-500">{isHome ? 'vs' : '@'}</span>
             {opp && <Flag team={opp} size={14} />}
-            <span className="truncate text-slate-200">{opp?.name ?? oppRaw}</span>
+            <span className="truncate text-slate-200">{opp ? teamName(opp.id, opp.name, lang) : oppRaw}</span>
             <span className="ml-auto whitespace-nowrap text-[11px] text-slate-500">
               {m.status === 'live' ? (
-                <span className="font-bold text-rose-400">{liveStatusLabel(m)}</span>
+                <span className="font-bold text-rose-400">{liveStatusLabel(m, lang)}</span>
               ) : (
                 m.date?.slice(5)
               )}
@@ -69,6 +63,7 @@ const LiveMatchList: React.FC<{ teamId: string; max?: number }> = ({ teamId, max
 /** The popover content shown on hover — a quick decision-making summary. */
 export const TeamHoverContent: React.FC<{ team: Team }> = ({ team }) => {
   const { liveMode, hasResults } = useLive();
+  const { t, lang } = useT();
   const live = liveMode && hasResults;
   return (
     <div className="w-[320px] overflow-hidden rounded-xl border border-white/10 bg-ink-850 shadow-2xl shadow-black/60 animate-pop-in">
@@ -76,17 +71,17 @@ export const TeamHoverContent: React.FC<{ team: Team }> = ({ team }) => {
         <Flag team={team} size={30} />
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-display text-base font-extrabold text-white">{team.name}</h3>
+            <h3 className="font-display text-base font-extrabold text-white">{teamName(team.id, team.name, lang)}</h3>
             <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-bold text-slate-200">
               FIFA #{team.fifaRank}
             </span>
           </div>
           <p className="text-[11px] text-slate-400">
-            Group {team.group} · {CONF_LABEL[team.confederation] ?? team.confederation}
+            {t('group.label', { id: team.group })} · {team.confederation} ({t(`region.${team.confederation}` as StrKey)})
           </p>
           {team.coach && (
             <p className="text-[11px] text-slate-400">
-              Coach: <span className="text-slate-200">{team.coach}</span>
+              {t('team.coachShort')} <span className="text-slate-200">{team.coach}</span>
             </p>
           )}
         </div>
@@ -96,18 +91,18 @@ export const TeamHoverContent: React.FC<{ team: Team }> = ({ team }) => {
       <div className="flex items-center justify-around gap-2 border-b border-white/10 p-3">
         {team.kits ? (
           <>
-            <KitView label="Home" body={team.kits.home} />
-            <KitView label="Away" body={team.kits.away} />
+            <KitView label={t('team.home')} body={team.kits.home} colorLabel={kitColor(team.kits.home.label, lang)} />
+            <KitView label={t('team.away')} body={team.kits.away} colorLabel={kitColor(team.kits.away.label, lang)} />
           </>
         ) : (
-          <p className="py-3 text-xs text-slate-500">Kit colours coming soon</p>
+          <p className="py-3 text-xs text-slate-500">{t('team.kitsSoon')}</p>
         )}
       </div>
 
       {/* Form / live World Cup matches */}
       <div className="border-b border-white/10 p-3">
         <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-          {live ? 'World Cup matches' : 'Form before world cup'}
+          {live ? t('team.wcMatches') : t('team.formBefore')}
         </p>
         {live ? (
           <LiveMatchList teamId={team.id} max={3} />
@@ -122,7 +117,7 @@ export const TeamHoverContent: React.FC<{ team: Team }> = ({ team }) => {
           to={`/team/${team.id}`}
           className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-pitch-100 hover:bg-white/5"
         >
-          Full profile →
+          {t('team.fullProfile')}
         </Link>
         <a
           href={mylineupsUrl(team)}
@@ -130,23 +125,24 @@ export const TeamHoverContent: React.FC<{ team: Team }> = ({ team }) => {
           rel="noopener noreferrer"
           className="rounded-lg bg-pitch-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-pitch-500"
         >
-          Live starting XI ↗
+          {t('team.liveXI')}
         </a>
       </div>
     </div>
   );
 };
 
-const KitView: React.FC<{ label: string; body: React.ComponentProps<typeof Jersey>['kit'] }> = ({
+const KitView: React.FC<{ label: string; body: React.ComponentProps<typeof Jersey>['kit']; colorLabel?: string }> = ({
   label,
   body,
+  colorLabel,
 }) => (
   <div className="flex flex-col items-center gap-1">
     <Jersey kit={body} size={64} />
     <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
       {label}
     </span>
-    <span className="text-[10px] text-slate-500">{body.label}</span>
+    <span className="text-[10px] text-slate-500">{colorLabel ?? body.label}</span>
   </div>
 );
 

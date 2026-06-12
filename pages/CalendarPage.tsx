@@ -6,10 +6,11 @@ import { VENUES } from '../data/venues';
 import { getTeam } from '../data/teams';
 import { Flag } from '../components/Flag';
 import { slotLabel } from '../components/MatchCard';
-import { useClock } from '../components/settingsStore';
+import { useClock, useT } from '../components/settingsStore';
 import { useLive } from '../components/liveStore';
 import { resultForPair, type LiveMatch } from '../utils/liveTable';
 import { dayKeyOf, dayHeadingOf } from '../utils/time';
+import { teamName, type StrKey } from '../utils/i18n';
 
 const STAGES: (Stage | 'All')[] = [
   'All',
@@ -27,6 +28,7 @@ const Side: React.FC<{ refSlot: SlotRef; align: 'left' | 'right'; outcome?: 'W' 
   align,
   outcome,
 }) => {
+  const { lang } = useT();
   const team = refSlot.kind === 'team' ? getTeam(refSlot.teamId) : undefined;
   const justify = align === 'right' ? 'justify-end text-right' : '';
   if (team) {
@@ -39,15 +41,15 @@ const Side: React.FC<{ refSlot: SlotRef; align: 'left' | 'right'; outcome?: 'W' 
     }`;
     return (
       <Link to={`/team/${team.id}`} className={`flex items-center gap-2 ${justify} hover:text-pitch-300`}>
-        {align === 'right' && <span className={nameClass}>{team.name}</span>}
+        {align === 'right' && <span className={nameClass}>{teamName(team.id, team.name, lang)}</span>}
         <Flag team={team} size={18} />
-        {align === 'left' && <span className={nameClass}>{team.name}</span>}
+        {align === 'left' && <span className={nameClass}>{teamName(team.id, team.name, lang)}</span>}
       </Link>
     );
   }
   return (
     <span className={`flex items-center text-sm italic text-slate-500 ${justify}`}>
-      {slotLabel(refSlot)}
+      {slotLabel(refSlot, lang)}
     </span>
   );
 };
@@ -73,6 +75,7 @@ export const CalendarPage: React.FC = () => {
   const [stage, setStage] = useState<Stage | 'All'>('All');
   const clock = useClock();
   const { matches: liveMatches } = useLive();
+  const { t } = useT();
 
   const days = useMemo(() => {
     const filtered = MATCHES.filter((m) => stage === 'All' || m.stage === stage);
@@ -94,12 +97,12 @@ export const CalendarPage: React.FC = () => {
     <section className="animate-fade-in">
       <div className="mb-2">
         <h1 className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-          Match calendar
+          {t('cal.title')}
         </h1>
         <p className="mt-1 text-sm text-slate-400">
-          All 104 fixtures — kickoff times shown in your selected zone{' '}
-          <span className="font-semibold text-pitch-300">({clock.short})</span>. Change it
-          from the menu in the top bar.
+          {t('cal.descPre')}
+          <span className="font-semibold text-pitch-300">({clock.short})</span>
+          {t('cal.descPost')}
         </p>
       </div>
 
@@ -116,7 +119,7 @@ export const CalendarPage: React.FC = () => {
                 : 'border border-white/10 text-slate-300 hover:bg-white/5'
             }`}
           >
-            {s}
+            {t(`stage.${s}` as StrKey)}
           </button>
         ))}
       </div>
@@ -154,18 +157,18 @@ export const CalendarPage: React.FC = () => {
                             {fs.home}–{fs.away}
                           </span>
                           <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-400">
-                            FT
+                            {t('cal.ft')}
                           </span>
                         </div>
                       ) : (
                         <span className="rounded bg-white/5 px-1.5 py-0.5 text-[10px] font-bold text-slate-400">
-                          {m.group ? `Grp ${m.group}` : 'v'}
+                          {m.group ? t('cal.grp', { g: m.group }) : 'v'}
                         </span>
                       )}
                       <Side refSlot={m.away} align="left" outcome={awayOutcome} />
                     </div>
                     <div className="hidden w-40 shrink-0 text-right text-[11px] text-slate-500 sm:block">
-                      <div className="font-semibold text-slate-400">{m.stage} · M{m.id}</div>
+                      <div className="font-semibold text-slate-400">{t(`stage.${m.stage}` as StrKey)} · M{m.id}</div>
                       <div className="truncate">
                         {v?.stadium}, {v?.city}
                       </div>

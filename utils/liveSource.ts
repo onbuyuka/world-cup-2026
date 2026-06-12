@@ -54,7 +54,12 @@ const norm = (s: string): string =>
     .toLowerCase()
     .replace(/[^a-z0-9]/g, '');
 
-function toTeamId(name: string): string | null {
+/**
+ * Map a TheSportsDB team name to our internal team id. Operates only on the
+ * raw API name (always English) — independent of any display translation.
+ * Exported for tests.
+ */
+export function toTeamId(name: string): string | null {
   const n = norm(name);
   if (ALIASES[n]) return ALIASES[n];
   if (TEAM_IDS.has(n)) return n;

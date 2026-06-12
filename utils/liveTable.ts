@@ -6,6 +6,8 @@
 // from FINISHED matches; in-progress scores are shown but never awarded points
 // until full time, so the table stays stable.
 
+import { translate, type Lang } from './i18n';
+
 export type LiveStatus = 'scheduled' | 'live' | 'finished';
 
 export interface LiveMatch {
@@ -182,30 +184,31 @@ export function scoreText(m: LiveMatch | undefined): string {
  * TheSportsDB's terse codes (1H, HT, 2H, ET, PEN…) to friendly text; a bare
  * minute like "67" becomes "67'". Falls back to a sensible default.
  */
-export function liveStatusLabel(m: LiveMatch | undefined): string {
+export function liveStatusLabel(m: LiveMatch | undefined, lang: Lang = 'en'): string {
   if (!m) return '';
+  const T = (k: Parameters<typeof translate>[1]) => translate(lang, k);
   const raw = (m.rawStatus || '').trim();
   if (m.status === 'finished') {
-    if (/^(AET)$/i.test(raw)) return 'After extra time';
-    if (/^(PEN|AP)$/i.test(raw)) return 'On penalties';
-    return 'Full time';
+    if (/^(AET)$/i.test(raw)) return T('status.aet');
+    if (/^(PEN|AP)$/i.test(raw)) return T('status.onPens');
+    return T('status.ft');
   }
   if (m.status === 'live') {
     if (/^\d+\+?'?$/.test(raw)) return raw.replace(/'?$/, "'"); // "67" -> "67'"
     const up = raw.toUpperCase();
-    const map: Record<string, string> = {
-      '1H': '1st half',
-      '2H': '2nd half',
-      HT: 'Half-time',
-      ET: 'Extra time',
-      BT: 'Break',
-      BREAK: 'Break',
-      P: 'Penalties',
-      PEN: 'Penalties',
-      LIVE: 'Live',
-      'IN PROGRESS': 'Live',
+    const map: Record<string, Parameters<typeof translate>[1]> = {
+      '1H': 'status.1h',
+      '2H': 'status.2h',
+      HT: 'status.ht',
+      ET: 'status.et',
+      BT: 'status.break',
+      BREAK: 'status.break',
+      P: 'status.pens',
+      PEN: 'status.pens',
+      LIVE: 'status.live',
+      'IN PROGRESS': 'status.live',
     };
-    return map[up] || 'Live';
+    return map[up] ? T(map[up]) : T('status.live');
   }
   return '';
 }

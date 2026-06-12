@@ -1,5 +1,6 @@
 import React from 'react';
 import type { FormMatch, MatchResult } from '../types';
+import { useT } from './settingsStore';
 
 const RESULT_STYLES: Record<MatchResult, string> = {
   W: 'bg-emerald-500 text-emerald-950',
@@ -42,10 +43,11 @@ export const RecentForm: React.FC<{ form?: FormMatch[]; max?: number }> = ({
   form,
   max = 2,
 }) => {
+  const { t, lang } = useT();
   if (!form || form.length === 0) {
     return (
       <p className="text-xs text-slate-400">
-        Recent results unavailable — check the live source.
+        {t('form.unavailable')}
       </p>
     );
   }
@@ -62,7 +64,7 @@ export const RecentForm: React.FC<{ form?: FormMatch[]; max?: number }> = ({
           </span>
           <span className="ml-auto whitespace-nowrap text-[11px] text-slate-500">
             {m.competition ? `${m.competition} · ` : ''}
-            {formatShortDate(m.date)}
+            {formatShortDate(m.date, lang)}
           </span>
         </li>
       ))}
@@ -70,10 +72,10 @@ export const RecentForm: React.FC<{ form?: FormMatch[]; max?: number }> = ({
   );
 };
 
-function formatShortDate(iso: string): string {
+function formatShortDate(iso: string, lang = 'en'): string {
   const d = new Date(`${iso}T12:00:00Z`);
   if (Number.isNaN(d.getTime())) return iso;
-  return new Intl.DateTimeFormat('en-GB', {
+  return new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-GB', {
     day: '2-digit',
     month: 'short',
     timeZone: 'UTC',

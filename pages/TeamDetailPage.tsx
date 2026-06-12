@@ -8,32 +8,19 @@ import { Jersey } from '../components/Jersey';
 import { Flag } from '../components/Flag';
 import { PlayerAvatar } from '../components/PlayerAvatar';
 import { RecentForm, ResultBadge } from '../components/RecentForm';
-import { useClock } from '../components/settingsStore';
+import { useClock, useT } from '../components/settingsStore';
 import { useLive } from '../components/liveStore';
 import { resultForPair, resultFor, scoreText, liveStatusLabel } from '../utils/liveTable';
+import { teamName, kitColor, type StrKey } from '../utils/i18n';
 
 const POSITION_ORDER: PlayerPosition[] = ['GK', 'DF', 'MF', 'FW'];
-const POSITION_LABEL: Record<PlayerPosition, string> = {
-  GK: 'Goalkeepers',
-  DF: 'Defenders',
-  MF: 'Midfielders',
-  FW: 'Forwards',
-};
-
-const CONF_LABEL: Record<string, string> = {
-  UEFA: 'UEFA · Europe',
-  CONMEBOL: 'CONMEBOL · South America',
-  CONCACAF: 'CONCACAF · North America',
-  CAF: 'CAF · Africa',
-  AFC: 'AFC · Asia',
-  OFC: 'OFC · Oceania',
-};
 
 export const TeamDetailPage: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const clock = useClock();
+  const { t, lang } = useT();
   const { matches: liveMatches } = useLive();
   const team = getTeam(id);
 
@@ -47,9 +34,9 @@ export const TeamDetailPage: React.FC = () => {
   if (!team) {
     return (
       <div className="py-20 text-center">
-        <p className="text-lg text-slate-300">Team not found.</p>
+        <p className="text-lg text-slate-300">{t('team.notFound')}</p>
         <Link to="/teams" className="mt-3 inline-block text-pitch-400 hover:underline">
-          ← Back to all teams
+          {t('team.backAll')}
         </Link>
       </div>
     );
@@ -69,7 +56,7 @@ export const TeamDetailPage: React.FC = () => {
         onClick={goBack}
         className="mb-4 inline-block text-sm text-slate-400 hover:text-white"
       >
-        ← Back
+        {t('team.back')}
       </button>
 
       {/* Header */}
@@ -77,14 +64,14 @@ export const TeamDetailPage: React.FC = () => {
         <Flag team={team} size={46} />
         <div className="flex-1">
           <h1 className="font-display text-3xl font-extrabold tracking-tight text-white">
-            {team.name}
+            {teamName(team.id, team.name, lang)}
           </h1>
           <p className="text-sm text-slate-400">
-            Group {team.group} · {CONF_LABEL[team.confederation]} · FIFA #{team.fifaRank}
+            {t('group.label', { id: team.group })} · {team.confederation} · {t(`region.${team.confederation}` as StrKey)} · FIFA #{team.fifaRank}
           </p>
           {team.coach && (
             <p className="mt-1 text-sm text-slate-300">
-              <span className="text-slate-500">Head coach:</span> {team.coach}
+              <span className="text-slate-500">{t('team.headCoach')}</span> {team.coach}
             </p>
           )}
           {team.note && (
@@ -99,7 +86,7 @@ export const TeamDetailPage: React.FC = () => {
           rel="noopener noreferrer"
           className="rounded-lg bg-pitch-600 px-4 py-2 text-sm font-semibold text-white hover:bg-pitch-500"
         >
-          Live starting XI ↗
+          {t('team.liveXI')}
         </a>
       </div>
 
@@ -110,14 +97,16 @@ export const TeamDetailPage: React.FC = () => {
           {team.kits && (
             <div className="rounded-xl border border-white/10 bg-ink-850/70 p-4">
               <h2 className="mb-3 font-display text-sm font-bold uppercase tracking-wider text-slate-400">
-                Kits
+                {t('team.kits')}
               </h2>
               <div className="flex items-start justify-around">
                 {(['home', 'away'] as const).map((k) => (
                   <div key={k} className="flex flex-col items-center gap-1">
                     <Jersey kit={team.kits![k]} size={92} />
-                    <span className="text-xs font-semibold capitalize text-slate-300">{k}</span>
-                    <span className="text-[11px] text-slate-500">{team.kits![k].label}</span>
+                    <span className="text-xs font-semibold text-slate-300">
+                      {k === 'home' ? t('team.home') : t('team.away')}
+                    </span>
+                    <span className="text-[11px] text-slate-500">{kitColor(team.kits![k].label, lang)}</span>
                   </div>
                 ))}
               </div>
@@ -127,7 +116,7 @@ export const TeamDetailPage: React.FC = () => {
           {/* Recent form */}
           <div className="rounded-xl border border-white/10 bg-ink-850/70 p-4">
             <h2 className="mb-3 font-display text-sm font-bold uppercase tracking-wider text-slate-400">
-              Form before world cup
+              {t('team.formBefore')}
             </h2>
             <RecentForm form={team.recentForm} max={6} />
           </div>
@@ -135,7 +124,7 @@ export const TeamDetailPage: React.FC = () => {
           {/* Group fixtures */}
           <div className="rounded-xl border border-white/10 bg-ink-850/70 p-4">
             <h2 className="mb-3 font-display text-sm font-bold uppercase tracking-wider text-slate-400">
-              Group fixtures ({clock.short})
+              {t('team.groupFixtures', { short: clock.short })}
             </h2>
             <ul className="space-y-2">
               {fixtures.map((m) => {
@@ -156,13 +145,13 @@ export const TeamDetailPage: React.FC = () => {
                         to={`/team/${opp?.id}`}
                         className="font-semibold text-slate-100 hover:text-pitch-300"
                       >
-                        {opp?.name}
+                        {opp ? teamName(opp.id, opp.name, lang) : opp?.name}
                       </Link>
                       {played && (
                         <span className="ml-auto flex items-center gap-1.5">
                           {live?.status === 'live' && (
                             <span className="text-[10px] font-bold uppercase text-rose-400">
-                              {liveStatusLabel(live)}
+                              {liveStatusLabel(live, lang)}
                             </span>
                           )}
                           <span className="font-bold tabular-nums text-white">
@@ -186,7 +175,7 @@ export const TeamDetailPage: React.FC = () => {
         <div className="lg:col-span-2">
           <div className="rounded-xl border border-white/10 bg-ink-850/70 p-4">
             <h2 className="mb-3 font-display text-sm font-bold uppercase tracking-wider text-slate-400">
-              World Cup squad
+              {t('team.squad')}
             </h2>
             {team.squad && team.squad.length > 0 ? (
               <div className="space-y-5">
@@ -196,7 +185,7 @@ export const TeamDetailPage: React.FC = () => {
                   return (
                     <div key={pos}>
                       <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-pitch-400">
-                        {POSITION_LABEL[pos]}
+                        {t(`pos.${pos}` as StrKey)}
                       </h3>
                       <ul className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
                         {players.map((p) => (
@@ -229,7 +218,7 @@ export const TeamDetailPage: React.FC = () => {
             ) : (
               <div className="rounded-lg border border-dashed border-white/15 p-6 text-center">
                 <p className="text-sm text-slate-300">
-                  Full 26-player squad list is being verified for this team.
+                  {t('team.squadPending')}
                 </p>
                 <a
                   href={mylineupsUrl(team)}
@@ -237,7 +226,7 @@ export const TeamDetailPage: React.FC = () => {
                   rel="noopener noreferrer"
                   className="mt-2 inline-block text-sm font-semibold text-pitch-400 hover:underline"
                 >
-                  See the latest starting XI on mylineups.app ↗
+                  {t('team.seeLatestXI')}
                 </a>
               </div>
             )}

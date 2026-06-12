@@ -4,27 +4,30 @@ import { MATCHES_BY_ID } from '../data/schedule';
 import { getTeam } from '../data/teams';
 import { useBracket } from './bracketStore';
 import { useLive } from './liveStore';
-import { useClock } from './settingsStore';
+import { useClock, useT } from './settingsStore';
 import { TeamHover } from './TeamHoverCard';
 import { Flag } from './Flag';
 import { KNOCKOUT_START_DATE } from '../utils/bracket';
 import { resultForPair, scoreText, liveStatusLabel } from '../utils/liveTable';
+import { translate, teamName, type Lang } from '../utils/i18n';
 
 /** Human label for an unresolved slot, e.g. "Winner E", "3rd C/E/F/H/I". */
-export function slotLabel(ref: SlotRef): string {
+export function slotLabel(ref: SlotRef, lang: Lang = 'en'): string {
   switch (ref.kind) {
-    case 'team':
-      return getTeam(ref.teamId)?.name ?? '—';
+    case 'team': {
+      const team = getTeam(ref.teamId);
+      return team ? teamName(team.id, team.name, lang) : '—';
+    }
     case 'winner':
-      return `Winner ${ref.group}`;
+      return translate(lang, 'slot.winner', { group: ref.group });
     case 'runnerUp':
-      return `2nd ${ref.group}`;
+      return translate(lang, 'slot.runnerUp', { group: ref.group });
     case 'third':
-      return `3rd ${ref.groups.join('/')}`;
+      return translate(lang, 'slot.third', { groups: ref.groups.join('/') });
     case 'matchWinner':
-      return `Winner M${ref.match}`;
+      return translate(lang, 'slot.matchWinner', { n: ref.match });
     case 'matchLoser':
-      return `Loser M${ref.match}`;
+      return translate(lang, 'slot.matchLoser', { n: ref.match });
   }
 }
 
@@ -37,6 +40,7 @@ const Slot: React.FC<{
   goals?: number | null;
 }> = ({ matchId, teamId, fallback, isWinner, canPick, goals }) => {
   const { pickWinner } = useBracket();
+  const { lang } = useT();
   const team = getTeam(teamId ?? undefined);
 
   if (!team) {
@@ -67,7 +71,7 @@ const Slot: React.FC<{
             isWinner ? 'text-white' : 'text-slate-100'
           }`}
         >
-          {team.name}
+          {teamName(team.id, team.name, lang)}
         </span>
       </TeamHover>
       {goals != null && (
@@ -90,6 +94,7 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
   const { resolved, liveActive } = useBracket();
   const { matches: liveMatches } = useLive();
   const clock = useClock();
+  const { lang } = useT();
   const match: Match = MATCHES_BY_ID[matchId];
   const rm = resolved.matches[matchId];
   const home = rm?.home ?? null;
@@ -113,7 +118,7 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
         <div className="flex items-center justify-between bg-white/[0.04] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-slate-500">
           <span>M{match.id}</span>
           {played ? (
-            <span className="font-bold text-rose-300">{liveStatusLabel(live)}</span>
+            <span className="font-bold text-rose-300">{liveStatusLabel(live, lang)}</span>
           ) : (
             <span>
               {clock.date(match.kickoff)} · {clock.time(match.kickoff)}
@@ -125,7 +130,7 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
         <Slot
           matchId={matchId}
           teamId={home}
-          fallback={slotLabel(match.home)}
+          fallback={slotLabel(match.home, lang)}
           isWinner={rm?.winner === home && home !== null}
           canPick={bothKnown}
           goals={homeGoals}
@@ -133,7 +138,7 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
         <Slot
           matchId={matchId}
           teamId={away}
-          fallback={slotLabel(match.away)}
+          fallback={slotLabel(match.away, lang)}
           isWinner={rm?.winner === away && away !== null}
           canPick={bothKnown}
           goals={awayGoals}

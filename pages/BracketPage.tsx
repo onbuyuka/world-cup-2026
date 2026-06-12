@@ -2,6 +2,7 @@ import React from 'react';
 import { GROUP_IDS } from '../data/groups';
 import { BracketProvider, useBracket } from '../components/bracketStore';
 import { useLive } from '../components/liveStore';
+import { useT } from '../components/settingsStore';
 import { GroupCard } from '../components/GroupCard';
 import { KnockoutBracket } from '../components/KnockoutBracket';
 import { ScoreCard, WinnerCelebration } from '../components/ShareScore';
@@ -38,6 +39,7 @@ const SharedBanner: React.FC = () => {
 
 const LiveToggle: React.FC = () => {
   const { liveMode, setLiveMode, hasResults, updated, loading, livePolling } = useLive();
+  const { t } = useT();
   return (
     <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1">
       <button
@@ -45,11 +47,7 @@ const LiveToggle: React.FC = () => {
         role="switch"
         aria-checked={liveMode}
         onClick={() => setLiveMode(!liveMode)}
-        title={
-          hasResults
-            ? 'Order groups by real World Cup points'
-            : 'Switch to the live points view (everyone on 0 until games are played)'
-        }
+        title={hasResults ? t('live.titleOn') : t('live.titleOff')}
         className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-bold transition ${
           liveMode
             ? 'bg-rose-500/20 text-rose-300 ring-1 ring-rose-400/40'
@@ -61,19 +59,19 @@ const LiveToggle: React.FC = () => {
             liveMode ? 'animate-pulse bg-rose-400' : 'bg-slate-500'
           }`}
         />
-        {liveMode ? 'Live results: ON' : 'Live results: OFF'}
+        {liveMode ? t('live.on') : t('live.off')}
       </button>
       {liveMode && (
-        <span className="whitespace-nowrap text-[11px] text-slate-500" title={updated ? `Last updated ${new Date(updated).toLocaleString()}` : undefined}>
+        <span className="whitespace-nowrap text-[11px] text-slate-500" title={updated ? `${new Date(updated).toLocaleString()}` : undefined}>
           {loading
-            ? 'loading…'
+            ? t('live.loading')
             : hasResults
               ? livePolling
-                ? '🔴 live · auto-updating'
+                ? t('live.autoUpdating')
                 : updated
-                  ? `updated ${new Date(updated).toLocaleTimeString()}`
-                  : 'live'
-              : 'no results yet'}
+                  ? t('live.updated', { time: new Date(updated).toLocaleTimeString() })
+                  : t('live.live')
+              : t('live.noResults')}
         </span>
       )}
     </div>
@@ -89,16 +87,17 @@ const Toolbar: React.FC = () => {
     liveThirdsCustomized,
     resetLiveThirds,
   } = useBracket();
+  const { t } = useT();
   const complete = thirdCount === 8;
   const hint = liveActive
     ? groupStageComplete
       ? liveThirdsCustomized
-        ? 'Live: you’ve hand-picked which 3rd-placed teams advance. Reset to snap back to the real best 8.'
-        : 'Live: the 8 best 3rd-placed teams are auto-selected from real results. Tap “3rd ✓/＋” for “what-if” changes — your prediction stays separate.'
-      : 'Live mode tracks real results automatically. You can still tweak for “what-if” scenarios.'
+        ? t('hint.liveCustom')
+        : t('hint.liveAuto')
+      : t('hint.liveGroups')
     : complete
-      ? 'All eight third-placed qualifiers chosen — the Round of 32 is set.'
-      : 'Tap “3rd +” on third-placed teams until you have eight; they slot into the Round of 32 per FIFA’s rules.';
+      ? t('hint.complete')
+      : t('hint.pick');
   return (
     <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-ink-850/70 p-3">
       <div
@@ -106,7 +105,7 @@ const Toolbar: React.FC = () => {
           complete ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-400/15 text-amber-300'
         }`}
       >
-        Best third-placed teams: {thirdCount}/8
+        {t('toolbar.thirds', { n: thirdCount })}
       </div>
       <p className="min-w-0 flex-1 truncate text-xs text-slate-400" title={hint}>
         {hint}
@@ -116,10 +115,10 @@ const Toolbar: React.FC = () => {
           <button
             type="button"
             onClick={resetLiveThirds}
-            title="Discard your what-if 3rd-placed picks and snap back to the real best 8"
+            title={t('toolbar.reset3rdsTitle')}
             className="whitespace-nowrap rounded-lg bg-sky-500/15 px-3 py-1.5 text-xs font-semibold text-sky-300 hover:bg-sky-500/25"
           >
-            Reset 3rds ↺
+            {t('toolbar.reset3rds')}
           </button>
         )}
         <LiveToggle />
@@ -128,26 +127,25 @@ const Toolbar: React.FC = () => {
           onClick={resetAll}
           className="whitespace-nowrap rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5"
         >
-          Reset bracket
+          {t('toolbar.resetBracket')}
         </button>
       </div>
     </div>
   );
 };
 
-export const BracketPage: React.FC = () => (
+export const BracketPage: React.FC = () => {
+  const { t } = useT();
+  return (
   <BracketProvider>
     <section className="animate-fade-in">
       <WinnerCelebration />
       <div className="mb-5">
         <h1 className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-          Build your World Cup 2026 bracket
+          {t('bracket.title')}
         </h1>
         <p className="mt-1 max-w-3xl text-sm text-slate-400">
-          Set each group’s final standings, choose the eight best third-placed teams
-          that advance, then pick your way through the knockout rounds. Hover any
-          team for kits, recent form and a link to its live starting XI. Your picks
-          are saved in this browser.
+          {t('bracket.desc')}
         </p>
       </div>
 
@@ -156,7 +154,7 @@ export const BracketPage: React.FC = () => (
       <Toolbar />
 
       {/* Group stage */}
-      <h2 className="mb-3 font-display text-lg font-bold text-white">Group stage</h2>
+      <h2 className="mb-3 font-display text-lg font-bold text-white">{t('bracket.groupStage')}</h2>
       <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {GROUP_IDS.map((g) => (
           <GroupCard key={g} group={g} />
@@ -164,10 +162,11 @@ export const BracketPage: React.FC = () => (
       </div>
 
       {/* Knockout */}
-      <h2 className="mb-3 font-display text-lg font-bold text-white">Knockout stage</h2>
+      <h2 className="mb-3 font-display text-lg font-bold text-white">{t('bracket.knockoutStage')}</h2>
       <div className="rounded-2xl border border-white/10 bg-ink-850/40 p-4">
         <KnockoutBracket />
       </div>
     </section>
   </BracketProvider>
-);
+  );
+};

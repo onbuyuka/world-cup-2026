@@ -37,8 +37,8 @@ export const TIME_ZONES: TimeZoneOption[] = [
   { tz: 'America/Bogota', label: 'Colombia / Peru' },
 ];
 
-const partsOf = (iso: string, tz: string): Record<string, string> => {
-  const fmt = new Intl.DateTimeFormat('en-GB', {
+const partsOf = (iso: string, tz: string, locale = 'en-GB'): Record<string, string> => {
+  const fmt = new Intl.DateTimeFormat(locale, {
     timeZone: tz,
     weekday: 'short',
     day: '2-digit',
@@ -59,15 +59,15 @@ export const timeOf = (iso: string, tz: string): string => {
   return `${p.hour}:${p.minute}`;
 };
 
-/** "Thu, 11 Jun" in the given zone. */
-export const dateOf = (iso: string, tz: string): string => {
-  const p = partsOf(iso, tz);
+/** "Thu, 11 Jun" in the given zone (localised). */
+export const dateOf = (iso: string, tz: string, locale = 'en-GB'): string => {
+  const p = partsOf(iso, tz, locale);
   return `${p.weekday}, ${p.day} ${p.month}`;
 };
 
-/** "Thu, 11 Jun 2026 · 22:00" in the given zone. */
-export const fullOf = (iso: string, tz: string): string => {
-  const p = partsOf(iso, tz);
+/** "Thu, 11 Jun 2026 · 22:00" in the given zone (localised). */
+export const fullOf = (iso: string, tz: string, locale = 'en-GB'): string => {
+  const p = partsOf(iso, tz, locale);
   return `${p.weekday}, ${p.day} ${p.month} ${p.year} · ${p.hour}:${p.minute}`;
 };
 
@@ -82,9 +82,9 @@ export const dayKeyOf = (iso: string, tz: string): string => {
   return fmt.format(new Date(iso)); // en-CA → yyyy-mm-dd
 };
 
-/** Long heading, e.g. "Thursday, 11 June 2026" in the given zone. */
-export const dayHeadingOf = (iso: string, tz: string): string =>
-  new Intl.DateTimeFormat('en-GB', {
+/** Long heading, e.g. "Thursday, 11 June 2026" in the given zone (localised). */
+export const dayHeadingOf = (iso: string, tz: string, locale = 'en-GB'): string =>
+  new Intl.DateTimeFormat(locale, {
     timeZone: tz,
     weekday: 'long',
     day: 'numeric',

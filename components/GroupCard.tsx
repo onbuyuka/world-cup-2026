@@ -19,10 +19,12 @@ import { CSS } from '@dnd-kit/utilities';
 import type { GroupId, Team } from '../types';
 import { getTeam } from '../data/teams';
 import { useBracket } from './bracketStore';
+import { useT } from './settingsStore';
 import { TeamHover } from './TeamHoverCard';
 import { Flag } from './Flag';
 import { FormPips } from './RecentForm';
 import type { TeamStat } from '../utils/liveTable';
+import { teamName } from '../utils/i18n';
 
 const POS_STYLE = [
   'border-l-emerald-500',
@@ -55,6 +57,7 @@ const SortableRow: React.FC<{
   thirdDisabled: boolean;
   onToggleThird: () => void;
 }> = ({ group, team, idx, stat, liveActive, isThird, thirdSelected, thirdDisabled, onToggleThird }) => {
+  const { t, lang } = useT();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
     useSortable({ id: team.id });
   const style: React.CSSProperties = {
@@ -75,8 +78,8 @@ const SortableRow: React.FC<{
         ref={setActivatorNodeRef}
         {...attributes}
         {...listeners}
-        aria-label={`Drag ${team.name} to reorder`}
-        title="Drag to reorder"
+        aria-label={t('group.dragRowAria', { team: teamName(team.id, team.name, lang) })}
+        title={t('group.dragTitle')}
         className="-my-1 -ml-1 cursor-grab touch-none rounded px-1 py-2 text-slate-500 hover:text-slate-200 active:cursor-grabbing"
       >
         <GripIcon />
@@ -84,7 +87,7 @@ const SortableRow: React.FC<{
       <span className="w-4 text-center text-xs font-bold text-slate-400">{idx + 1}</span>
       <TeamHover team={team} className="flex min-w-0 flex-1 items-center gap-1.5">
         <Flag team={team} size={16} />
-        <span className="truncate text-sm font-semibold text-slate-100">{team.name}</span>
+        <span className="truncate text-sm font-semibold text-slate-100">{teamName(team.id, team.name, lang)}</span>
       </TeamHover>
 
       {isThird && (
@@ -92,11 +95,7 @@ const SortableRow: React.FC<{
           type="button"
           onClick={onToggleThird}
           disabled={thirdDisabled}
-          title={
-            thirdDisabled
-              ? 'You already chose 8 best third-placed teams'
-              : 'Advance this third-placed team to the Round of 32'
-          }
+          title={thirdDisabled ? t('group.thirdFull') : t('group.thirdTitle')}
           className={`mr-1 rounded px-1.5 py-0.5 text-[10px] font-bold transition ${
             thirdSelected
               ? 'bg-amber-400 text-amber-950'
@@ -105,7 +104,7 @@ const SortableRow: React.FC<{
                 : 'bg-white/10 text-amber-300 hover:bg-amber-400/20'
           }`}
         >
-          {thirdSelected ? '3rd ✓' : '3rd +'}
+          {thirdSelected ? t('group.thirdSel') : t('group.third')}
         </button>
       )}
 
@@ -114,16 +113,21 @@ const SortableRow: React.FC<{
           className="w-14 text-right text-[11px] tabular-nums text-slate-400"
           title={
             stat?.inPlay
-              ? `Provisional — ${stat.inPlay} match in progress · Played ${stat.pld} · GD ${
-                  stat.gd > 0 ? '+' : ''
-                }${stat.gd}`
-              : `Played ${stat?.pld ?? 0} · GD ${stat ? (stat.gd > 0 ? '+' : '') + stat.gd : 0}`
+              ? t('group.provTooltip', {
+                  n: stat.inPlay,
+                  pld: stat.pld,
+                  gd: `${stat.gd > 0 ? '+' : ''}${stat.gd}`,
+                })
+              : t('group.playedTooltip', {
+                  pld: stat?.pld ?? 0,
+                  gd: stat ? `${stat.gd > 0 ? '+' : ''}${stat.gd}` : 0,
+                })
           }
         >
           <span className={`font-bold ${stat?.inPlay ? 'text-rose-300' : 'text-white'}`}>
             {stat?.pts ?? 0}
           </span>
-          {stat?.inPlay ? '*' : ''} pts
+          {stat?.inPlay ? '*' : ''} {t('group.ptsUnit')}
         </span>
       ) : (
         <span className="hidden w-16 justify-end sm:flex">
@@ -137,6 +141,7 @@ const SortableRow: React.FC<{
 export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
   const { thirdCount, reorderGroup, toggleThird, groupView, liveActive, resetLiveGroup, effectiveThirds } =
     useBracket();
+  const { t, lang } = useT();
   const view = groupView(group);
   const order = view.order;
   const thirdTeamId = order[2];
@@ -160,26 +165,26 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
     <div className="rounded-xl border border-white/10 bg-ink-850/70 p-3">
       <div className="mb-2 flex items-center justify-between">
         <h3 className="font-display text-sm font-extrabold tracking-wide text-white">
-          Group {group}
+          {t('group.label', { id: group })}
         </h3>
         {liveActive ? (
           view.manual ? (
             <button
               type="button"
               onClick={() => resetLiveGroup(group)}
-              title="Discard your what-if order and snap back to live results"
+              title={t('group.customResetTitle')}
               className="rounded bg-sky-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-300 hover:bg-sky-500/25"
             >
-              ✎ custom · reset ↺
+              {t('group.customReset')}
             </button>
           ) : (
             <span className="rounded bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-300">
-              ● Live · drag for what-if
+              {t('group.liveDrag')}
             </span>
           )
         ) : (
           <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-            drag to reorder
+            {t('group.dragReorder')}
           </span>
         )}
       </div>
@@ -211,8 +216,8 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
 
       {thirdTeamId && (
         <p className="mt-2 text-[10px] text-slate-500">
-          3rd place: <span className="text-amber-300">{getTeam(thirdTeamId)?.name}</span>
-          {thirdSelected ? ' — advancing' : ''}
+          {t('group.thirdPlaceLabel')}<span className="text-amber-300">{teamName(thirdTeamId, getTeam(thirdTeamId)?.name ?? '', lang)}</span>
+          {thirdSelected ? t('group.advancing') : ''}
         </p>
       )}
     </div>

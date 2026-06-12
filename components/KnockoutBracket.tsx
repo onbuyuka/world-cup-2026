@@ -2,14 +2,26 @@ import React from 'react';
 import { getTeam } from '../data/teams';
 import { championOf, KO_COLUMNS } from '../utils/bracket';
 import { useBracket } from './bracketStore';
+import { useT } from './settingsStore';
 import { MatchCard } from './MatchCard';
 import { Flag } from './Flag';
 import { ShareButtons } from './ShareScore';
+import { teamName, type StrKey } from '../utils/i18n';
 
 const COLUMNS = KO_COLUMNS;
 
+/** KO column short code -> translation key for its label. */
+const COL_KEY: Record<string, StrKey> = {
+  R32: 'ko.r32',
+  R16: 'ko.r16',
+  QF: 'ko.qf',
+  SF: 'ko.sf',
+  Final: 'ko.final',
+};
+
 export const KnockoutBracket: React.FC = () => {
   const { resolved } = useBracket();
+  const { t, lang } = useT();
   const champion = getTeam(championOf(resolved) ?? undefined);
 
   return (
@@ -22,11 +34,11 @@ export const KnockoutBracket: React.FC = () => {
               <span className="text-3xl">🏆</span>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-amber-300/80">
-                  Your predicted champion
+                  {t('champ.predicted')}
                 </p>
                 <p className="flex items-center gap-2 font-display text-xl font-extrabold text-white">
                   <Flag team={champion} size={22} />
-                  {champion.name}
+                  {teamName(champion.id, champion.name, lang)}
                 </p>
               </div>
             </div>
@@ -36,7 +48,7 @@ export const KnockoutBracket: React.FC = () => {
           </div>
         ) : (
           <p className="text-sm text-slate-500">
-            Pick winners through the bracket to crown your champion 🏆
+            {t('champ.prompt')}
           </p>
         )}
       </div>
@@ -50,7 +62,7 @@ export const KnockoutBracket: React.FC = () => {
               <div key={col.label} className="flex flex-col">
                 {!isFinal && (
                   <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    {col.label}
+                    {t(COL_KEY[col.short] ?? 'ko.final')}
                   </h3>
                 )}
                 {isFinal ? (
@@ -60,13 +72,13 @@ export const KnockoutBracket: React.FC = () => {
                   <div className="flex flex-1 flex-col items-center justify-center gap-6">
                     <div className="flex flex-col items-center">
                       <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-amber-300/90">
-                        🏆 Final
+                        🏆 {t('ko.final')}
                       </h3>
                       <MatchCard matchId={104} />
                     </div>
                     <div className="flex flex-col items-center">
                       <h3 className="mb-2 text-center text-[11px] font-bold uppercase tracking-wider text-amber-300/70">
-                        🥉 Third-place
+                        🥉 {t('ko.thirdPlace')}
                       </h3>
                       <MatchCard matchId={103} />
                     </div>

@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useBracket } from './bracketStore';
+import { useT } from './settingsStore';
 import { getTeam } from '../data/teams';
 import { championOf, KO_COLUMNS, type ResolvedBracket } from '../utils/bracket';
 import { POINTS } from '../utils/score';
 import { MATCHES_BY_ID } from '../data/schedule';
 import { slotLabel } from './MatchCard';
 import { Flag, flagPngUrl } from './Flag';
-
-const TWEET_TEXT = 'My 2026 World Cup bracket 🏆 — think you can beat it?';
+import { teamName, type StrKey } from '../utils/i18n';
 
 const DownloadIcon: React.FC = () => (
   <svg
@@ -360,6 +360,7 @@ async function renderBracketImage(
 /** Shared copy/save/tweet actions, reused by the bar and the winner popup. */
 function useShareActions() {
   const { buildShareUrl, score, resolved } = useBracket();
+  const { t } = useT();
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -376,9 +377,9 @@ function useShareActions() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      window.prompt('Copy your bracket link:', url);
+      window.prompt(t('share.copyPrompt'), url);
     }
-  }, [buildShareUrl]);
+  }, [buildShareUrl, t]);
 
   const saveImage = useCallback(async () => {
     setBusy(true);
@@ -398,10 +399,10 @@ function useShareActions() {
   const tweet = useCallback(() => {
     const url = buildShareUrl();
     const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      TWEET_TEXT,
+      t('tweet.text'),
     )}&url=${encodeURIComponent(url)}`;
     window.open(intent, '_blank', 'noopener,noreferrer');
-  }, [buildShareUrl]);
+  }, [buildShareUrl, t]);
 
   return { copied, busy, copyLink, saveImage, tweet };
 }
@@ -414,6 +415,7 @@ function useShareActions() {
  */
 export const ShareButtons: React.FC<{ compact?: boolean }> = ({ compact }) => {
   const { copied, busy, copyLink, saveImage, tweet } = useShareActions();
+  const { t } = useT();
   const base = `inline-flex items-center justify-center gap-1.5 rounded-lg font-bold transition ${
     compact ? 'px-2.5 py-1.5 text-xs' : 'px-4 py-2 text-sm'
   }`;
@@ -424,7 +426,7 @@ export const ShareButtons: React.FC<{ compact?: boolean }> = ({ compact }) => {
         onClick={copyLink}
         className={`${base} border border-white/15 text-slate-200 hover:bg-white/10`}
       >
-        {copied ? '✓ Link copied' : '🔗 Copy link'}
+        {copied ? t('share.copied') : t('share.copy')}
       </button>
       <button
         type="button"
@@ -433,14 +435,14 @@ export const ShareButtons: React.FC<{ compact?: boolean }> = ({ compact }) => {
         className={`${base} bg-emerald-500/90 text-white hover:bg-emerald-400 disabled:opacity-60`}
       >
         <DownloadIcon />
-        {busy ? 'Saving…' : 'Save image'}
+        {busy ? t('share.saving') : t('share.saveImage')}
       </button>
       <button
         type="button"
         onClick={tweet}
         className={`${base} border border-white/15 text-slate-200 hover:bg-white/10`}
       >
-        𝕏 Share on X
+        {t('share.tweet')}
       </button>
     </>
   );
@@ -454,6 +456,7 @@ export const ShareButtons: React.FC<{ compact?: boolean }> = ({ compact }) => {
  */
 export const WinnerCelebration: React.FC = () => {
   const { resolved, sharedView } = useBracket();
+  const { t, lang } = useT();
   const champId = championOf(resolved);
   const champ = getTeam(champId ?? undefined);
   const prev = useRef<string | null>(champId);
@@ -485,7 +488,7 @@ export const WinnerCelebration: React.FC = () => {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Bracket complete"
+      aria-label={t('winner.dialogLabel')}
       onClick={() => setShow(false)}
       className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-fade-in"
     >
@@ -496,7 +499,7 @@ export const WinnerCelebration: React.FC = () => {
         <button
           type="button"
           onClick={() => setShow(false)}
-          aria-label="Close"
+          aria-label={t('winner.close')}
           className="absolute right-3 top-3 rounded-lg p-1 text-lg leading-none text-slate-500 transition hover:bg-white/10 hover:text-white"
         >
           ✕
@@ -504,14 +507,14 @@ export const WinnerCelebration: React.FC = () => {
 
         <div className="text-5xl">🏆</div>
         <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.25em] text-amber-300/80">
-          Your champion
+          {t('winner.your')}
         </p>
         <div className="mt-3 flex items-center justify-center gap-3">
           <Flag team={champ} size={34} />
-          <span className="font-display text-3xl font-extrabold text-white">{champ.name}</span>
+          <span className="font-display text-3xl font-extrabold text-white">{teamName(champ.id, champ.name, lang)}</span>
         </div>
         <p className="mx-auto mt-3 max-w-xs text-sm text-slate-400">
-          Your bracket is complete — share it and challenge your friends to beat it.
+          {t('winner.complete')}
         </p>
 
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
@@ -523,7 +526,7 @@ export const WinnerCelebration: React.FC = () => {
           onClick={() => setShow(false)}
           className="mt-4 text-xs font-semibold text-slate-500 transition hover:text-slate-300"
         >
-          Keep editing
+          {t('winner.keepEditing')}
         </button>
       </div>
     </div>
@@ -551,45 +554,39 @@ const InfoIcon: React.FC = () => (
 );
 
 // Sourced from POINTS so the help can never drift from the real scoring.
-const SCORING_ROWS: { label: string; pts: number }[] = [
-  { label: 'Correct group winner', pts: POINTS.groupWinner },
-  { label: 'Correct group runner-up', pts: POINTS.groupRunnerUp },
-  { label: 'Best third-placed team that advances', pts: POINTS.thirdAdvances },
-  { label: 'Round of 32 — team advances', pts: POINTS.r32 },
-  { label: 'Round of 16 — team advances', pts: POINTS.r16 },
-  { label: 'Quarter-final — team advances', pts: POINTS.qf },
-  { label: 'Semi-final — team advances', pts: POINTS.sf },
-  { label: 'Third-place play-off winner', pts: POINTS.thirdPlaceMatch },
-  { label: 'Champion (wins the final)', pts: POINTS.champion },
+const SCORING_ROWS: { key: StrKey; pts: number }[] = [
+  { key: 'scoreRow.groupWinner', pts: POINTS.groupWinner },
+  { key: 'scoreRow.groupRunnerUp', pts: POINTS.groupRunnerUp },
+  { key: 'scoreRow.thirdAdvances', pts: POINTS.thirdAdvances },
+  { key: 'scoreRow.r32', pts: POINTS.r32 },
+  { key: 'scoreRow.r16', pts: POINTS.r16 },
+  { key: 'scoreRow.qf', pts: POINTS.qf },
+  { key: 'scoreRow.sf', pts: POINTS.sf },
+  { key: 'scoreRow.thirdPlace', pts: POINTS.thirdPlaceMatch },
+  { key: 'scoreRow.champion', pts: POINTS.champion },
 ];
 
 /** Explanation of how a bracket is graded; toggled by the ⓘ button. */
-const ScoringHelp: React.FC = () => (
-  <div className="mt-3 border-t border-emerald-400/20 pt-3 animate-fade-in">
-    <p className="mb-2 text-xs text-slate-400">
-      Your prediction is graded against real results. Points are awarded only for
-      outcomes that have actually been decided, so your score climbs as the
-      tournament unfolds. The “/ N so far” figure is the most you could have earned
-      from decided matches — so any two brackets stay directly comparable.
-    </p>
-    <ul className="grid grid-cols-1 gap-x-6 sm:grid-cols-2">
-      {SCORING_ROWS.map((r) => (
-        <li
-          key={r.label}
-          className="flex items-center justify-between gap-3 border-b border-white/5 py-1 text-xs text-slate-300"
-        >
-          <span>{r.label}</span>
-          <span className="shrink-0 font-bold tabular-nums text-emerald-300">+{r.pts}</span>
-        </li>
-      ))}
-    </ul>
-    <p className="mt-2 text-[11px] text-slate-500">
-      Knockout points are awarded per round for each team you correctly predicted to
-      reach the next stage — deeper rounds are worth more, and naming the champion is
-      the biggest prize.
-    </p>
-  </div>
-);
+const ScoringHelp: React.FC = () => {
+  const { t } = useT();
+  return (
+    <div className="mt-3 border-t border-emerald-400/20 pt-3 animate-fade-in">
+      <p className="mb-2 text-xs text-slate-400">{t('score.helpIntro')}</p>
+      <ul className="grid grid-cols-1 gap-x-6 sm:grid-cols-2">
+        {SCORING_ROWS.map((r) => (
+          <li
+            key={r.key}
+            className="flex items-center justify-between gap-3 border-b border-white/5 py-1 text-xs text-slate-300"
+          >
+            <span>{t(r.key)}</span>
+            <span className="shrink-0 font-bold tabular-nums text-emerald-300">+{r.pts}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-2 text-[11px] text-slate-500">{t('score.helpFootnote')}</p>
+    </div>
+  );
+};
 
 /**
  * Live scorecard, behind a "Score my bracket" toggle so it doesn't clutter the
@@ -598,6 +595,7 @@ const ScoringHelp: React.FC = () => (
  */
 export const ScoreCard: React.FC = () => {
   const { score } = useBracket();
+  const { t } = useT();
   const [open, setOpen] = useState<boolean>(() => {
     try {
       return localStorage.getItem(SCORE_OPEN_KEY) === '1';
@@ -636,7 +634,7 @@ export const ScoreCard: React.FC = () => {
         className="inline-flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-500/[0.08] px-3 py-1.5 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500/15"
       >
         <span>📊</span>
-        {open ? 'Hide score' : 'Score my bracket'}
+        {open ? t('score.toggleClose') : t('score.toggleOpen')}
         <span className="text-[10px] text-slate-500">{open ? '▲' : '▼'}</span>
       </button>
 
@@ -647,13 +645,13 @@ export const ScoreCard: React.FC = () => {
               <span className="text-xl">📊</span>
               <div>
                 <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-emerald-300/80">
-                  Your bracket score
+                  {t('score.title')}
                   <button
                     type="button"
                     onClick={() => setShowHelp((v) => !v)}
                     aria-expanded={showHelp}
-                    aria-label="How scoring works"
-                    title="How scoring works"
+                    aria-label={t('score.help')}
+                    title={t('score.help')}
                     className={`inline-flex items-center justify-center rounded-full p-0.5 transition hover:bg-emerald-400/20 hover:text-emerald-200 ${
                       showHelp ? 'text-emerald-200' : 'text-emerald-300/70'
                     }`}
@@ -664,16 +662,16 @@ export const ScoreCard: React.FC = () => {
                 <p className="font-display text-2xl font-extrabold text-emerald-300">
                   {score.total}
                   <span className="ml-1 text-sm font-semibold text-slate-500">
-                    {nothingToScore ? 'pts — no results yet' : `/ ${score.possible} so far`}
+                    {nothingToScore ? t('score.noResults') : t('score.soFar', { n: score.possible })}
                   </span>
                 </p>
               </div>
             </div>
             <div className="ml-auto flex items-center gap-5">
-              <Stat label="Groups" value={score.groupPoints} />
-              <Stat label="3rds" value={score.thirdsPoints} />
-              <Stat label="Knockout" value={score.knockoutPoints} />
-              <Stat label="Correct" value={score.correct} />
+              <Stat label={t('score.groups')} value={score.groupPoints} />
+              <Stat label={t('score.thirds')} value={score.thirdsPoints} />
+              <Stat label={t('score.knockout')} value={score.knockoutPoints} />
+              <Stat label={t('score.correct')} value={score.correct} />
             </div>
           </div>
           {showHelp && <ScoringHelp />}

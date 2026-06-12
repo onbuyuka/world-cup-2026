@@ -1,16 +1,18 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { TIME_ZONES, localTz, tzShort } from '../utils/time';
-import { useSettings } from './settingsStore';
+import { useSettings, useT } from './settingsStore';
+import { LANGS, type StrKey } from '../utils/i18n';
 
-const NAV = [
-  { to: '/', label: 'Bracket', end: true },
-  { to: '/teams', label: 'Teams' },
-  { to: '/calendar', label: 'Calendar' },
+const NAV: { to: string; key: StrKey; end?: boolean }[] = [
+  { to: '/', key: 'nav.bracket', end: true },
+  { to: '/teams', key: 'nav.teams' },
+  { to: '/calendar', key: 'nav.calendar' },
 ];
 
 const TimezonePicker: React.FC<{ className?: string }> = ({ className }) => {
   const { timeZone, setTimeZone } = useSettings();
+  const { t } = useT();
   const detected = localTz();
 
   return (
@@ -29,7 +31,7 @@ const TimezonePicker: React.FC<{ className?: string }> = ({ className }) => {
       >
         {/* The visitor's own zone is the default. */}
         <option value={detected} className="bg-ink-900">
-          Your time ({tzShort(detected)})
+          {t('tz.yourTime')} ({tzShort(detected)})
         </option>
         {TIME_ZONES.filter((z) => z.tz !== detected).map((z) => (
           <option key={z.tz} value={z.tz} className="bg-ink-900">
@@ -42,11 +44,12 @@ const TimezonePicker: React.FC<{ className?: string }> = ({ className }) => {
 };
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { timeZone } = useSettings();
+  const { timeZone, lang, setLang } = useSettings();
+  const { t } = useT();
   const detected = localTz();
   const selected = TIME_ZONES.find((z) => z.tz === timeZone);
   const zoneLabel =
-    timeZone === detected ? 'your local time' : selected ? selected.label : 'your time';
+    timeZone === detected ? t('footer.localTime') : selected ? selected.label : t('footer.localTime');
 
   return (
     <div className="min-h-screen bg-ink-900">
@@ -57,7 +60,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <span className="font-display text-lg font-extrabold tracking-tight text-white">
               WC<span className="text-pitch-500">26</span>
               <span className="ml-1.5 hidden text-sm font-semibold text-slate-400 lg:inline">
-                Bracket Predictor
+                {t('brand.subtitle')}
               </span>
             </span>
           </Link>
@@ -75,7 +78,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   }`
                 }
               >
-                {n.label}
+                {t(n.key)}
               </NavLink>
             ))}
           </nav>
@@ -86,12 +89,29 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
 
       <footer className="mt-12 border-t border-white/10 px-4 py-6 text-center text-xs text-slate-500">
-        <p>
-          FIFA World Cup 2026 · 11 Jun – 19 Jul 2026 · Kickoff times shown in{' '}
-          {zoneLabel} ({tzShort(timeZone)}).
-        </p>
+        {/* Language selector */}
+        <div className="mb-4 flex items-center justify-center gap-2">
+          <div className="inline-flex overflow-hidden rounded-lg border border-white/10">
+            {LANGS.map((l) => (
+              <button
+                key={l.code}
+                type="button"
+                onClick={() => setLang(l.code)}
+                aria-pressed={lang === l.code}
+                className={`px-3 py-1 text-xs font-bold transition ${
+                  lang === l.code
+                    ? 'bg-pitch-600 text-white'
+                    : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p>{t('footer.line1', { zone: zoneLabel, short: tzShort(timeZone) })}</p>
         <p className="mt-1">
-          Live starting XIs &amp; player photos via{' '}
+          {t('footer.line2pre')}
           <a
             href="https://mylineups.app/world-cup-2026/"
             target="_blank"
@@ -100,7 +120,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           >
             mylineups.app
           </a>
-          . An independent fan project — not affiliated with FIFA.
+          {t('footer.line2post')}
         </p>
       </footer>
     </div>
