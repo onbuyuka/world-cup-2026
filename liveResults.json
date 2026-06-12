@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T19:30:00.322Z",
+  "updated": "2026-06-12T21:15:33.852Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -41,10 +41,10 @@
       "awayId": "bosnia-and-herzegovina",
       "home": "Canada",
       "away": "Bosnia-Herzegovina",
-      "hs": 0,
+      "hs": 1,
       "as": 1,
-      "status": "live",
-      "rawStatus": "1H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-12T19:00:00"
     },
     {
