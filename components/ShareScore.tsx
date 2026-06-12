@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useBracket } from './bracketStore';
 import { getTeam } from '../data/teams';
 import { championOf, KO_COLUMNS, type ResolvedBracket } from '../utils/bracket';
+import { POINTS } from '../utils/score';
 import { MATCHES_BY_ID } from '../data/schedule';
 import { slotLabel } from './MatchCard';
 import { Flag, flagPngUrl } from './Flag';
@@ -531,6 +532,65 @@ export const WinnerCelebration: React.FC = () => {
 
 const SCORE_OPEN_KEY = 'wc2026-score-open';
 
+const InfoIcon: React.FC = () => (
+  <svg
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden
+  >
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5" />
+    <path d="M12 7.6h.01" />
+  </svg>
+);
+
+// Sourced from POINTS so the help can never drift from the real scoring.
+const SCORING_ROWS: { label: string; pts: number }[] = [
+  { label: 'Correct group winner', pts: POINTS.groupWinner },
+  { label: 'Correct group runner-up', pts: POINTS.groupRunnerUp },
+  { label: 'Best third-placed team that advances', pts: POINTS.thirdAdvances },
+  { label: 'Round of 32 — team advances', pts: POINTS.r32 },
+  { label: 'Round of 16 — team advances', pts: POINTS.r16 },
+  { label: 'Quarter-final — team advances', pts: POINTS.qf },
+  { label: 'Semi-final — team advances', pts: POINTS.sf },
+  { label: 'Third-place play-off winner', pts: POINTS.thirdPlaceMatch },
+  { label: 'Champion (wins the final)', pts: POINTS.champion },
+];
+
+/** Explanation of how a bracket is graded; toggled by the ⓘ button. */
+const ScoringHelp: React.FC = () => (
+  <div className="mt-3 border-t border-emerald-400/20 pt-3 animate-fade-in">
+    <p className="mb-2 text-xs text-slate-400">
+      Your prediction is graded against real results. Points are awarded only for
+      outcomes that have actually been decided, so your score climbs as the
+      tournament unfolds. The “/ N so far” figure is the most you could have earned
+      from decided matches — so any two brackets stay directly comparable.
+    </p>
+    <ul className="grid grid-cols-1 gap-x-6 sm:grid-cols-2">
+      {SCORING_ROWS.map((r) => (
+        <li
+          key={r.label}
+          className="flex items-center justify-between gap-3 border-b border-white/5 py-1 text-xs text-slate-300"
+        >
+          <span>{r.label}</span>
+          <span className="shrink-0 font-bold tabular-nums text-emerald-300">+{r.pts}</span>
+        </li>
+      ))}
+    </ul>
+    <p className="mt-2 text-[11px] text-slate-500">
+      Knockout points are awarded per round for each team you correctly predicted to
+      reach the next stage — deeper rounds are worth more, and naming the champion is
+      the biggest prize.
+    </p>
+  </div>
+);
+
 /**
  * Live scorecard, behind a "Score my bracket" toggle so it doesn't clutter the
  * page. The toggle is always available; before any results exist it simply
@@ -545,6 +605,7 @@ export const ScoreCard: React.FC = () => {
       return false;
     }
   });
+  const [showHelp, setShowHelp] = useState(false);
   const toggle = useCallback(() => {
     setOpen((v) => {
       const next = !v;
@@ -580,27 +641,42 @@ export const ScoreCard: React.FC = () => {
       </button>
 
       {open && (
-        <div className="mt-2 flex flex-wrap items-center gap-4 rounded-xl border border-emerald-400/30 bg-emerald-500/[0.06] p-3 animate-fade-in">
-          <div className="flex items-center gap-3">
-            <span className="text-xl">📊</span>
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-300/80">
-                Your bracket score
-              </p>
-              <p className="font-display text-2xl font-extrabold text-emerald-300">
-                {score.total}
-                <span className="ml-1 text-sm font-semibold text-slate-500">
-                  {nothingToScore ? 'pts — no results yet' : `/ ${score.possible} so far`}
-                </span>
-              </p>
+        <div className="mt-2 rounded-xl border border-emerald-400/30 bg-emerald-500/[0.06] p-3 animate-fade-in">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">📊</span>
+              <div>
+                <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-emerald-300/80">
+                  Your bracket score
+                  <button
+                    type="button"
+                    onClick={() => setShowHelp((v) => !v)}
+                    aria-expanded={showHelp}
+                    aria-label="How scoring works"
+                    title="How scoring works"
+                    className={`inline-flex items-center justify-center rounded-full p-0.5 transition hover:bg-emerald-400/20 hover:text-emerald-200 ${
+                      showHelp ? 'text-emerald-200' : 'text-emerald-300/70'
+                    }`}
+                  >
+                    <InfoIcon />
+                  </button>
+                </p>
+                <p className="font-display text-2xl font-extrabold text-emerald-300">
+                  {score.total}
+                  <span className="ml-1 text-sm font-semibold text-slate-500">
+                    {nothingToScore ? 'pts — no results yet' : `/ ${score.possible} so far`}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div className="ml-auto flex items-center gap-5">
+              <Stat label="Groups" value={score.groupPoints} />
+              <Stat label="3rds" value={score.thirdsPoints} />
+              <Stat label="Knockout" value={score.knockoutPoints} />
+              <Stat label="Correct" value={score.correct} />
             </div>
           </div>
-          <div className="ml-auto flex items-center gap-5">
-            <Stat label="Groups" value={score.groupPoints} />
-            <Stat label="3rds" value={score.thirdsPoints} />
-            <Stat label="Knockout" value={score.knockoutPoints} />
-            <Stat label="Correct" value={score.correct} />
-          </div>
+          {showHelp && <ScoringHelp />}
         </div>
       )}
     </div>
