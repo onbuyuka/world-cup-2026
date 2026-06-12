@@ -95,7 +95,7 @@ const Toolbar: React.FC = () => {
       ? liveThirdsCustomized
         ? 'Live: you’ve hand-picked which 3rd-placed teams advance. Reset to snap back to the real best 8.'
         : 'Live: the 8 best 3rd-placed teams are auto-selected from real results. Tap “3rd ✓/＋” for “what-if” changes — your prediction stays separate.'
-      : 'Live mode tracks real results automatically. Best 3rd-placed teams lock in once the group stage finishes; you can still tweak for “what-if” scenarios.'
+      : 'Live mode tracks real results automatically. You can still tweak for “what-if” scenarios.'
     : complete
       ? 'All eight third-placed qualifiers chosen — the Round of 32 is set.'
       : 'Tap “3rd +” on third-placed teams until you have eight; they slot into the Round of 32 per FIFA’s rules.';
