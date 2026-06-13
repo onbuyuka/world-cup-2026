@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T21:15:33.852Z",
+  "updated": "2026-06-13T05:00:16.622Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -55,10 +55,10 @@
       "awayId": "paraguay",
       "home": "USA",
       "away": "Paraguay",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 4,
+      "as": 1,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-13T01:00:00"
     },
     {
