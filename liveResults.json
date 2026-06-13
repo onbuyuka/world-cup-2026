@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-13T05:00:16.622Z",
+  "updated": "2026-06-13T19:18:52.660Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -83,10 +83,10 @@
       "awayId": "switzerland",
       "home": "Qatar",
       "away": "Switzerland",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-13T19:00:00"
     },
     {
