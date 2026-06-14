@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-14T07:15:28.698Z",
+  "updated": "2026-06-14T17:56:55.153Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -111,10 +111,10 @@
       "awayId": "curacao",
       "home": "Germany",
       "away": "Curaçao",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 3,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-06-14T17:00:00"
     },
     {
