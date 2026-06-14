@@ -11,6 +11,9 @@ import type { LiveMatch, LiveStatus } from './liveTable';
 const LEAGUE_ID = 4429; // TheSportsDB "FIFA World Cup" (Soccer)
 const KEY = '123'; // public free key
 const BASE = `https://www.thesportsdb.com/api/v1/json/${KEY}`;
+const SEASON = '2026';
+/** Group-stage matchdays. Each round returns all 24 fixtures (complete). */
+const GROUP_ROUNDS = ['1', '2', '3'];
 
 // TheSportsDB country spelling (normalized) -> our team id. Mirrors the script.
 const ALIASES: Record<string, string> = {
@@ -101,12 +104,31 @@ async function fetchDay(date: string): Promise<LiveMatch[]> {
   const res = await fetch(`${BASE}/eventsday.php?d=${date}&l=${LEAGUE_ID}`, { cache: 'no-store' });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const json = (await res.json()) as { events?: SportsDbEvent[] };
-  const events = json?.events ?? [];
+  return normalizeEvents(json?.events ?? [], date);
+}
+
+/**
+ * Fetch one competition "round". For the group stage, rounds 1/2/3 are the
+ * three matchdays and each returns ALL 24 fixtures — unlike eventsday.php,
+ * whose free-tier index is incomplete (it silently omits some games, e.g.
+ * Australia vs Turkey). Round data is therefore the authoritative source for
+ * the group stage.
+ */
+async function fetchRound(round: string): Promise<LiveMatch[]> {
+  const res = await fetch(`${BASE}/eventsround.php?id=${LEAGUE_ID}&r=${round}&s=${SEASON}`, {
+    cache: 'no-store',
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const json = (await res.json()) as { events?: SportsDbEvent[] };
+  return normalizeEvents(json?.events ?? [], '');
+}
+
+function normalizeEvents(events: SportsDbEvent[], fallbackDate: string): LiveMatch[] {
   const out: LiveMatch[] = [];
   for (const e of events) {
     out.push({
       id: e.idEvent ?? null,
-      date: e.dateEvent ?? date,
+      date: e.dateEvent ?? fallbackDate,
       round: e.intRound ?? null,
       homeId: toTeamId(e.strHomeTeam ?? ''),
       awayId: toTeamId(e.strAwayTeam ?? ''),
@@ -123,16 +145,25 @@ async function fetchDay(date: string): Promise<LiveMatch[]> {
 }
 
 /**
- * Fetch today's (and yesterday's, for late kickoffs) World Cup matches live.
- * Returns [] on any failure so callers can fall back to the baseline snapshot.
+ * Fetch the matches needed for near-real-time updates: the three group-stage
+ * rounds (complete, so finished/in-play group games are never missed) plus
+ * today's and yesterday's fixtures by date (which also covers the knockout
+ * stage, whose round numbers TheSportsDB assigns only once it begins).
+ * Returns [] on total failure so callers fall back to the baseline snapshot.
  */
 export async function fetchTodayLive(): Promise<LiveMatch[]> {
   try {
-    const days = recentDays();
-    const results = await Promise.all(
-      days.map((d) => fetchDay(d).catch(() => [] as LiveMatch[])),
-    );
-    return results.flat();
+    const sources: Promise<LiveMatch[]>[] = [
+      ...GROUP_ROUNDS.map((r) => fetchRound(r).catch(() => [] as LiveMatch[])),
+      ...recentDays().map((d) => fetchDay(d).catch(() => [] as LiveMatch[])),
+    ];
+    const results = await Promise.all(sources);
+    // Dedupe by event id; later sources (today's day fetch) win for freshness.
+    const byId = new Map<string, LiveMatch>();
+    for (const m of results.flat()) {
+      byId.set(m.id ?? `${m.date}:${m.home}:${m.away}`, m);
+    }
+    return [...byId.values()];
   } catch {
     return [];
   }

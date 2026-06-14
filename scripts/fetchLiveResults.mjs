@@ -19,8 +19,13 @@ const LEAGUE_ID = 4429; // TheSportsDB "FIFA World Cup" (Soccer)
 const SEASON = '2026';
 const KEY = '123';
 const BASE = `https://www.thesportsdb.com/api/v1/json/${KEY}`;
-const FIRST_DAY = '2026-06-11';
+const FIRST_DAY = '2026-06-11'; // tournament opener (kept for reference)
 const LAST_DAY = '2026-07-19';
+// The group stage is fetched by ROUND (each returns all 24 fixtures, unlike the
+// incomplete eventsday index). Days are only swept for the knockout stage,
+// whose TheSportsDB round numbers don't exist until it begins.
+const KO_FIRST_DAY = '2026-06-28';
+const GROUP_ROUNDS = ['1', '2', '3'];
 const GAP_MS = 2600; // ~23 req/min, under TheSportsDB's 30/min free limit
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -119,14 +124,31 @@ function* eachDay(first, last) {
   }
 }
 
+async function getRound(round) {
+  const url = `${BASE}/eventsround.php?id=${LEAGUE_ID}&r=${round}&s=${SEASON}`;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const res = await fetch(url, { headers: { 'User-Agent': 'wc2026-bracket/1.0' } });
+      if (res.status === 429) {
+        await sleep(GAP_MS * attempt * 2);
+        continue;
+      }
+      if (!res.ok) return [];
+      const json = await res.json();
+      return json?.events || [];
+    } catch {
+      await sleep(GAP_MS * attempt);
+    }
+  }
+  return [];
+}
+
 async function main() {
-  const matches = [];
+  const byId = new Map();
   const unmapped = new Set();
   let scanned = 0;
 
-  for (const day of eachDay(FIRST_DAY, LAST_DAY)) {
-    const events = await getDay(day);
-    scanned++;
+  const ingest = (events, fallbackDate) => {
     for (const e of events) {
       const homeId = toTeamId(e.strHomeTeam);
       const awayId = toTeamId(e.strAwayTeam);
@@ -134,9 +156,9 @@ async function main() {
       if (!awayId) unmapped.add(e.strAwayTeam);
       const hs = e.intHomeScore == null || e.intHomeScore === '' ? null : Number(e.intHomeScore);
       const as = e.intAwayScore == null || e.intAwayScore === '' ? null : Number(e.intAwayScore);
-      matches.push({
+      const m = {
         id: e.idEvent || null,
-        date: e.dateEvent || day,
+        date: e.dateEvent || fallbackDate,
         round: e.intRound || null,
         homeId,
         awayId,
@@ -147,10 +169,28 @@ async function main() {
         status: normStatus(e.strStatus),
         rawStatus: e.strStatus || null,
         ts: e.strTimestamp || null,
-      });
+      };
+      // Key by event id (fallback to a pair key) so the same match fetched via
+      // both a round and a day collapses to one entry.
+      byId.set(m.id || `${m.date}:${m.home}:${m.away}`, m);
     }
+  };
+
+  // Group stage: fetch each matchday round (complete, 24 fixtures each).
+  for (const round of GROUP_ROUNDS) {
+    ingest(await getRound(round), '');
+    scanned++;
     await sleep(GAP_MS);
   }
+
+  // Knockout stage: sweep by day (round numbers aren't assigned until it begins).
+  for (const day of eachDay(KO_FIRST_DAY, LAST_DAY)) {
+    ingest(await getDay(day), day);
+    scanned++;
+    await sleep(GAP_MS);
+  }
+
+  const matches = [...byId.values()];
 
   // Stable ordering (date, then numeric event id) so identical data always
   // serializes identically — that keeps the no-change check below reliable and
