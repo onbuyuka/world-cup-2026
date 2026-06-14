@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-14T01:43:54.331Z",
+  "updated": "2026-06-14T06:31:59.965Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -99,8 +99,8 @@
       "away": "Scotland",
       "hs": 0,
       "as": 1,
-      "status": "live",
-      "rawStatus": "1H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-14T01:00:00"
     },
     {
