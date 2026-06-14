@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-14T22:05:47.738Z",
+  "updated": "2026-06-14T23:45:48.129Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -125,10 +125,10 @@
       "awayId": "ecuador",
       "home": "Ivory Coast",
       "away": "Ecuador",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-14T23:00:00"
     },
     {
@@ -141,8 +141,8 @@
       "away": "Japan",
       "hs": 2,
       "as": 2,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-14T20:00:00"
     },
     {
