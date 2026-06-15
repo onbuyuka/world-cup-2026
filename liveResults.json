@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-15T09:58:02.006Z",
+  "updated": "2026-06-15T19:43:14.214Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -167,10 +167,10 @@
       "awayId": "egypt",
       "home": "Belgium",
       "away": "Egypt",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-15T19:00:00"
     },
     {
@@ -195,10 +195,10 @@
       "awayId": "cape-verde",
       "home": "Spain",
       "away": "Cape Verde",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-15T16:00:00"
     },
     {
