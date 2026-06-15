@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-15T19:43:14.214Z",
+  "updated": "2026-06-15T22:14:52.917Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -167,10 +167,10 @@
       "awayId": "egypt",
       "home": "Belgium",
       "away": "Egypt",
-      "hs": 0,
+      "hs": 1,
       "as": 1,
-      "status": "live",
-      "rawStatus": "1H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-15T19:00:00"
     },
     {
@@ -181,10 +181,10 @@
       "awayId": "uruguay",
       "home": "Saudi Arabia",
       "away": "Uruguay",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-15T22:00:00"
     },
     {
