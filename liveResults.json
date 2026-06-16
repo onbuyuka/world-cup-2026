@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-15T22:14:52.917Z",
+  "updated": "2026-06-16T00:10:04.058Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -181,10 +181,10 @@
       "awayId": "uruguay",
       "home": "Saudi Arabia",
       "away": "Uruguay",
-      "hs": 0,
-      "as": 0,
+      "hs": 1,
+      "as": 1,
       "status": "live",
-      "rawStatus": "1H",
+      "rawStatus": "2H",
       "ts": "2026-06-15T22:00:00"
     },
     {
