@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-16T00:10:04.058Z",
+  "updated": "2026-06-16T05:44:36.911Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -183,8 +183,8 @@
       "away": "Uruguay",
       "hs": 1,
       "as": 1,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-15T22:00:00"
     },
     {
@@ -223,10 +223,10 @@
       "awayId": "new-zealand",
       "home": "Iran",
       "away": "New Zealand",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 2,
+      "as": 2,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-16T01:00:00"
     },
     {
