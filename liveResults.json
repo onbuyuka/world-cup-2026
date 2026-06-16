@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-16T22:08:22.083Z",
+  "updated": "2026-06-16T23:55:26.475Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -251,10 +251,10 @@
       "awayId": "norway",
       "home": "Iraq",
       "away": "Norway",
-      "hs": 0,
-      "as": 0,
+      "hs": 1,
+      "as": 3,
       "status": "live",
-      "rawStatus": "1H",
+      "rawStatus": "2H",
       "ts": "2026-06-16T22:00:00"
     },
     {
