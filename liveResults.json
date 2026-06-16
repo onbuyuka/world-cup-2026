@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-16T05:44:36.911Z",
+  "updated": "2026-06-16T19:55:41.974Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -237,10 +237,10 @@
       "awayId": "senegal",
       "home": "France",
       "away": "Senegal",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-16T19:00:00"
     },
     {
