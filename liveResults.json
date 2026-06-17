@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-17T21:28:47.584Z",
+  "updated": "2026-06-17T22:59:23.088Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -293,10 +293,10 @@
       "awayId": "croatia",
       "home": "England",
       "away": "Croatia",
-      "hs": 3,
+      "hs": 4,
       "as": 2,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-17T20:00:00"
     },
     {
