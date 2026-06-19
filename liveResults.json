@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-19T19:42:48.755Z",
+  "updated": "2026-06-19T21:05:57.374Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -419,10 +419,10 @@
       "awayId": "australia",
       "home": "USA",
       "away": "Australia",
-      "hs": 1,
+      "hs": 2,
       "as": 0,
       "status": "live",
-      "rawStatus": "1H",
+      "rawStatus": "2H",
       "ts": "2026-06-19T19:00:00"
     },
     {
