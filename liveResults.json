@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-19T02:15:29.505Z",
+  "updated": "2026-06-19T07:37:59.952Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -393,8 +393,8 @@
       "away": "South Korea",
       "hs": 1,
       "as": 0,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-19T01:00:00"
     },
     {
