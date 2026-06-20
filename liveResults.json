@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-20T02:50:21.968Z",
+  "updated": "2026-06-20T06:58:53.620Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -461,10 +461,10 @@
       "awayId": "paraguay",
       "home": "Turkey",
       "away": "Paraguay",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 1,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-20T03:00:00"
     },
     {
