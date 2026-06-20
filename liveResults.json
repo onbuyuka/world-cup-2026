@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-20T22:03:24.230Z",
+  "updated": "2026-06-20T23:44:23.332Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -449,8 +449,8 @@
       "away": "Ivory Coast",
       "hs": 2,
       "as": 1,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-20T20:00:00"
     },
     {
