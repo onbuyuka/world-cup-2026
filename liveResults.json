@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-20T19:17:44.126Z",
+  "updated": "2026-06-20T20:49:52.304Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -447,10 +447,10 @@
       "awayId": "ivory-coast",
       "home": "Germany",
       "away": "Ivory Coast",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-20T20:00:00"
     },
     {
