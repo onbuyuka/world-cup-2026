@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-20T06:58:53.620Z",
+  "updated": "2026-06-20T17:54:19.560Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -475,10 +475,10 @@
       "awayId": "sweden",
       "home": "Netherlands",
       "away": "Sweden",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 2,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-06-20T17:00:00"
     },
     {
