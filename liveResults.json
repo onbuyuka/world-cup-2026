@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-21T18:59:08.456Z",
+  "updated": "2026-06-21T20:27:08.871Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -517,10 +517,10 @@
       "awayId": "iran",
       "home": "Belgium",
       "away": "Iran",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "2H",
       "ts": "2026-06-21T19:00:00"
     },
     {
