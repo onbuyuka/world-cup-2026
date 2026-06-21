@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-21T21:54:06.565Z",
+  "updated": "2026-06-21T23:07:17.559Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -545,10 +545,10 @@
       "awayId": "cape-verde",
       "home": "Uruguay",
       "away": "Cape Verde",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 2,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-06-21T22:00:00"
     },
     {
