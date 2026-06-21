@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-21T08:25:31.005Z",
+  "updated": "2026-06-21T17:02:32.889Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -531,10 +531,10 @@
       "awayId": "saudi-arabia",
       "home": "Spain",
       "away": "Saudi Arabia",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 3,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-06-21T16:00:00"
     },
     {
