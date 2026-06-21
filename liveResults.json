@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-21T03:33:30.234Z",
+  "updated": "2026-06-21T08:25:31.005Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -503,10 +503,10 @@
       "awayId": "japan",
       "home": "Tunisia",
       "away": "Japan",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 4,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-21T04:00:00"
     },
     {
