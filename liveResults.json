@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-20T23:44:23.332Z",
+  "updated": "2026-06-21T03:33:30.234Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -489,10 +489,10 @@
       "awayId": "curacao",
       "home": "Ecuador",
       "away": "Curaçao",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-21T00:00:00"
     },
     {
