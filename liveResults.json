@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-21T20:27:08.871Z",
+  "updated": "2026-06-21T21:54:06.565Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -519,8 +519,8 @@
       "away": "Iran",
       "hs": 0,
       "as": 0,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-21T19:00:00"
     },
     {
