@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-22T02:01:10.515Z",
+  "updated": "2026-06-22T07:35:28.263Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -560,9 +560,9 @@
       "home": "New Zealand",
       "away": "Egypt",
       "hs": 1,
-      "as": 0,
-      "status": "live",
-      "rawStatus": "HT",
+      "as": 3,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-22T01:00:00"
     },
     {
