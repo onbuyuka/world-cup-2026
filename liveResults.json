@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-23T00:16:49.791Z",
+  "updated": "2026-06-23T04:40:02.525Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -587,10 +587,10 @@
       "awayId": "iraq",
       "home": "France",
       "away": "Iraq",
-      "hs": 2,
+      "hs": 3,
       "as": 0,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-22T21:00:00"
     },
     {
@@ -601,10 +601,10 @@
       "awayId": "algeria",
       "home": "Jordan",
       "away": "Algeria",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 1,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "2H",
       "ts": "2026-06-23T03:00:00"
     },
     {
@@ -615,10 +615,10 @@
       "awayId": "senegal",
       "home": "Norway",
       "away": "Senegal",
-      "hs": 0,
-      "as": 0,
-      "status": "live",
-      "rawStatus": "1H",
+      "hs": 3,
+      "as": 2,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-23T00:00:00"
     },
     {
