@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-23T22:46:14.154Z",
+  "updated": "2026-06-23T23:53:10.327Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -643,10 +643,10 @@
       "awayId": "croatia",
       "home": "Panama",
       "away": "Croatia",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-06-23T23:00:00"
     },
     {
