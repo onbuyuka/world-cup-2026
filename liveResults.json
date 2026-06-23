@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-23T04:40:02.525Z",
+  "updated": "2026-06-23T08:27:23.627Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -602,9 +602,9 @@
       "home": "Jordan",
       "away": "Algeria",
       "hs": 1,
-      "as": 1,
-      "status": "live",
-      "rawStatus": "2H",
+      "as": 2,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-23T03:00:00"
     },
     {
