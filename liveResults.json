@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-23T17:14:18.252Z",
+  "updated": "2026-06-23T19:25:38.762Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -657,10 +657,10 @@
       "awayId": "uzbekistan",
       "home": "Portugal",
       "away": "Uzbekistan",
-      "hs": 1,
+      "hs": 5,
       "as": 0,
-      "status": "live",
-      "rawStatus": "1H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-23T17:00:00"
     },
     {
