@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-23T19:25:38.762Z",
+  "updated": "2026-06-23T21:17:03.600Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -629,10 +629,10 @@
       "awayId": "ghana",
       "home": "England",
       "away": "Ghana",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "2H",
       "ts": "2026-06-23T20:00:00"
     },
     {
