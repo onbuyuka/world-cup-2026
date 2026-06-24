@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-24T21:20:00.863Z",
+  "updated": "2026-06-24T22:46:27.044Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -671,10 +671,10 @@
       "awayId": "haiti",
       "home": "Morocco",
       "away": "Haiti",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 1,
+      "as": 2,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-24T22:00:00"
     },
     {
@@ -685,10 +685,10 @@
       "awayId": "brazil",
       "home": "Scotland",
       "away": "Brazil",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-24T22:00:00"
     },
     {
