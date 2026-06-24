@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-23T23:53:10.327Z",
+  "updated": "2026-06-24T02:44:37.982Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -644,9 +644,9 @@
       "home": "Panama",
       "away": "Croatia",
       "hs": 0,
-      "as": 0,
-      "status": "live",
-      "rawStatus": "HT",
+      "as": 1,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-23T23:00:00"
     },
     {
@@ -713,10 +713,10 @@
       "awayId": "dr-congo",
       "home": "Colombia",
       "away": "DR Congo",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-24T02:00:00"
     },
     {
