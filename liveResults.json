@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-24T06:43:01.087Z",
+  "updated": "2026-06-24T19:39:50.502Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -699,10 +699,10 @@
       "awayId": "canada",
       "home": "Switzerland",
       "away": "Canada",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-24T19:00:00"
     },
     {
@@ -727,10 +727,10 @@
       "awayId": "qatar",
       "home": "Bosnia-Herzegovina",
       "away": "Qatar",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 2,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-24T19:00:00"
     },
     {
