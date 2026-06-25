@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-25T22:18:39.227Z",
+  "updated": "2026-06-25T23:51:51.060Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -783,10 +783,10 @@
       "awayId": "netherlands",
       "home": "Tunisia",
       "away": "Netherlands",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 2,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-06-25T23:00:00"
     },
     {
@@ -811,10 +811,10 @@
       "awayId": "sweden",
       "home": "Japan",
       "away": "Sweden",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-25T23:00:00"
     },
     {
