@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-25T11:14:04.047Z",
+  "updated": "2026-06-25T20:53:45.953Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -755,10 +755,10 @@
       "awayId": "ivory-coast",
       "home": "Curaçao",
       "away": "Ivory Coast",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-06-25T20:00:00"
     },
     {
@@ -769,10 +769,10 @@
       "awayId": "germany",
       "home": "Ecuador",
       "away": "Germany",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 1,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-06-25T20:00:00"
     },
     {
