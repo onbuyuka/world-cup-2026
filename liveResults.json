@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-25T00:05:15.652Z",
+  "updated": "2026-06-25T04:43:28.153Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -673,8 +673,8 @@
       "away": "Haiti",
       "hs": 4,
       "as": 2,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-24T22:00:00"
     },
     {
@@ -687,8 +687,8 @@
       "away": "Brazil",
       "hs": 0,
       "as": 3,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-24T22:00:00"
     },
     {
@@ -741,10 +741,10 @@
       "awayId": "south-korea",
       "home": "South Africa",
       "away": "South Korea",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 1,
+      "as": 0,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-25T01:00:00"
     },
     {
@@ -797,10 +797,10 @@
       "awayId": "mexico",
       "home": "Czech Republic",
       "away": "Mexico",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 3,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-25T01:00:00"
     },
     {
