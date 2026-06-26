@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-26T21:05:32.259Z",
+  "updated": "2026-06-26T22:43:55.467Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -841,8 +841,8 @@
       "away": "France",
       "hs": 1,
       "as": 4,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-26T19:00:00"
     },
     {
@@ -869,8 +869,8 @@
       "away": "Iraq",
       "hs": 5,
       "as": 0,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-26T19:00:00"
     },
     {
