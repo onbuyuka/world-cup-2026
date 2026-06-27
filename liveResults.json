@@ -1,9 +1,9 @@
 {
-  "updated": "2026-06-27T04:33:03.008Z",
+  "updated": "2026-06-27T07:45:53.822Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 77,
+  "matchCount": 81,
   "matches": [
     {
       "id": "2391728",
@@ -897,8 +897,8 @@
       "away": "Iran",
       "hs": 1,
       "as": 1,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-27T03:00:00"
     },
     {
@@ -909,10 +909,10 @@
       "awayId": "belgium",
       "home": "New Zealand",
       "away": "Belgium",
-      "hs": 0,
-      "as": 3,
-      "status": "live",
-      "rawStatus": "2H",
+      "hs": 1,
+      "as": 5,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-27T03:00:00"
     },
     {
@@ -1042,6 +1042,20 @@
       "ts": "2026-06-29T17:00:00"
     },
     {
+      "id": "2502846",
+      "date": "2026-06-29",
+      "round": "32",
+      "homeId": "germany",
+      "awayId": "paraguay",
+      "home": "Germany",
+      "away": "Paraguay",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": null,
+      "ts": "2026-06-29T20:30:00"
+    },
+    {
       "id": "2499836",
       "date": "2026-06-30",
       "round": "32",
@@ -1066,8 +1080,22 @@
       "hs": null,
       "as": null,
       "status": "scheduled",
-      "rawStatus": null,
+      "rawStatus": "NS",
       "ts": "2026-06-30T17:00:00"
+    },
+    {
+      "id": "2502847",
+      "date": "2026-06-30",
+      "round": "32",
+      "homeId": "france",
+      "awayId": "sweden",
+      "home": "France",
+      "away": "Sweden",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": null,
+      "ts": "2026-06-30T21:00:00"
     },
     {
       "id": "2499837",
@@ -1082,6 +1110,34 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-02T00:00:00"
+    },
+    {
+      "id": "2502848",
+      "date": "2026-07-03",
+      "round": "32",
+      "homeId": "australia",
+      "awayId": "egypt",
+      "home": "Australia",
+      "away": "Egypt",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": null,
+      "ts": "2026-07-03T18:00:00"
+    },
+    {
+      "id": "2502849",
+      "date": "2026-07-03",
+      "round": "32",
+      "homeId": "argentina",
+      "awayId": "cape-verde",
+      "home": "Argentina",
+      "away": "Cape Verde",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": null,
+      "ts": "2026-07-03T22:00:00"
     }
   ]
 }
