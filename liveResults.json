@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-27T07:45:53.822Z",
+  "updated": "2026-06-27T10:00:54.421Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1052,7 +1052,7 @@
       "hs": null,
       "as": null,
       "status": "scheduled",
-      "rawStatus": null,
+      "rawStatus": "NS",
       "ts": "2026-06-29T20:30:00"
     },
     {
@@ -1094,7 +1094,7 @@
       "hs": null,
       "as": null,
       "status": "scheduled",
-      "rawStatus": null,
+      "rawStatus": "NS",
       "ts": "2026-06-30T21:00:00"
     },
     {
@@ -1122,7 +1122,7 @@
       "hs": null,
       "as": null,
       "status": "scheduled",
-      "rawStatus": null,
+      "rawStatus": "NS",
       "ts": "2026-07-03T18:00:00"
     },
     {
@@ -1136,7 +1136,7 @@
       "hs": null,
       "as": null,
       "status": "scheduled",
-      "rawStatus": null,
+      "rawStatus": "NS",
       "ts": "2026-07-03T22:00:00"
     }
   ]
