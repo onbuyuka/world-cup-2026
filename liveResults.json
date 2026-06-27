@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-27T21:59:54.420Z",
+  "updated": "2026-06-27T23:08:14.856Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -951,10 +951,10 @@
       "awayId": "ghana",
       "home": "Croatia",
       "away": "Ghana",
-      "hs": 1,
-      "as": 0,
-      "status": "live",
-      "rawStatus": "HT",
+      "hs": 2,
+      "as": 1,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-27T21:00:00"
     },
     {
@@ -966,9 +966,9 @@
       "home": "Panama",
       "away": "England",
       "hs": 0,
-      "as": 0,
-      "status": "live",
-      "rawStatus": "HT",
+      "as": 2,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-06-27T21:00:00"
     },
     {
