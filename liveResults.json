@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-27T23:08:14.856Z",
+  "updated": "2026-06-28T01:33:21.270Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -937,10 +937,10 @@
       "awayId": "portugal",
       "home": "Colombia",
       "away": "Portugal",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "2H",
       "ts": "2026-06-27T23:30:00"
     },
     {
@@ -979,10 +979,10 @@
       "awayId": "uzbekistan",
       "home": "DR Congo",
       "away": "Uzbekistan",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 3,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "2H",
       "ts": "2026-06-27T23:30:00"
     },
     {
