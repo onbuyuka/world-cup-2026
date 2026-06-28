@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-28T09:41:02.645Z",
+  "updated": "2026-06-28T19:53:35.377Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1021,10 +1021,10 @@
       "awayId": "canada",
       "home": "South Africa",
       "away": "Canada",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-06-28T19:00:00"
     },
     {
