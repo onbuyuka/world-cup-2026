@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-28T22:01:12.446Z",
+  "updated": "2026-06-29T18:06:44.226Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1035,10 +1035,10 @@
       "awayId": "japan",
       "home": "Brazil",
       "away": "Japan",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-06-29T17:00:00"
     },
     {
