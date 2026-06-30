@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-29T23:59:35.657Z",
+  "updated": "2026-06-30T03:59:04.088Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1063,10 +1063,10 @@
       "awayId": "morocco",
       "home": "Netherlands",
       "away": "Morocco",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 1,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "ET",
       "ts": "2026-06-30T01:00:00"
     },
     {
