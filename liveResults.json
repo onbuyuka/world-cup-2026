@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-30T07:56:31.453Z",
+  "updated": "2026-06-30T10:54:14.517Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1052,7 +1052,7 @@
       "hs": 1,
       "as": 1,
       "status": "finished",
-      "rawStatus": "PEN",
+      "rawStatus": "AP",
       "ts": "2026-06-29T20:30:00"
     },
     {
@@ -1066,7 +1066,7 @@
       "hs": 1,
       "as": 1,
       "status": "finished",
-      "rawStatus": "PEN",
+      "rawStatus": "AP",
       "ts": "2026-06-30T01:00:00"
     },
     {
