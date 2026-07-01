@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-01T18:24:04.829Z",
+  "updated": "2026-07-01T20:22:53.354Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1121,8 +1121,8 @@
       "away": "DR Congo",
       "hs": 2,
       "as": 1,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-01T16:00:00"
     },
     {
