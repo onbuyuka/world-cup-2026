@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-01T20:22:53.354Z",
+  "updated": "2026-07-01T21:59:15.086Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1133,10 +1133,10 @@
       "awayId": "senegal",
       "home": "Belgium",
       "away": "Senegal",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-07-01T20:00:00"
     },
     {
