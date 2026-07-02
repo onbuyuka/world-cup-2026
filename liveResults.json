@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-02T08:48:35.240Z",
+  "updated": "2026-07-02T20:41:16.882Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1175,10 +1175,10 @@
       "awayId": "austria",
       "home": "Spain",
       "away": "Austria",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 1,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-07-02T19:00:00"
     },
     {
