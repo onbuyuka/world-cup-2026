@@ -1,9 +1,9 @@
 {
-  "updated": "2026-07-02T05:55:05.624Z",
+  "updated": "2026-07-02T08:48:35.240Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 91,
+  "matchCount": 93,
   "matches": [
     {
       "id": "2391728",
@@ -1278,6 +1278,34 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-05T20:00:00"
+    },
+    {
+      "id": "2507706",
+      "date": "2026-07-06",
+      "round": "16",
+      "homeId": "mexico",
+      "awayId": "england",
+      "home": "Mexico",
+      "away": "England",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": "NS",
+      "ts": "2026-07-06T00:00:00"
+    },
+    {
+      "id": "2507707",
+      "date": "2026-07-07",
+      "round": "16",
+      "homeId": "usa",
+      "awayId": "belgium",
+      "home": "USA",
+      "away": "Belgium",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": "NS",
+      "ts": "2026-07-07T00:00:00"
     }
   ]
 }
