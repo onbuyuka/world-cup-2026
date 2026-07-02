@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-02T01:31:29.983Z",
+  "updated": "2026-07-02T05:55:05.624Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1147,10 +1147,10 @@
       "awayId": "bosnia-and-herzegovina",
       "home": "USA",
       "away": "Bosnia-Herzegovina",
-      "hs": 1,
+      "hs": 2,
       "as": 0,
-      "status": "live",
-      "rawStatus": "1H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-02T00:00:00"
     },
     {
