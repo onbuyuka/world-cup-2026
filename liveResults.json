@@ -1,9 +1,9 @@
 {
-  "updated": "2026-07-03T06:09:13.620Z",
+  "updated": "2026-07-03T09:42:04.922Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 93,
+  "matchCount": 94,
   "matches": [
     {
       "id": "2391728",
@@ -1292,6 +1292,20 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-06T00:00:00"
+    },
+    {
+      "id": "2511721",
+      "date": "2026-07-06",
+      "round": "16",
+      "homeId": "portugal",
+      "awayId": "spain",
+      "home": "Portugal",
+      "away": "Spain",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": "NS",
+      "ts": "2026-07-06T19:00:00"
     },
     {
       "id": "2507707",
