@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-02T22:03:30.455Z",
+  "updated": "2026-07-03T02:27:00.506Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1161,10 +1161,10 @@
       "awayId": "croatia",
       "home": "Portugal",
       "away": "Croatia",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 2,
+      "as": 1,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-02T23:00:00"
     },
     {
