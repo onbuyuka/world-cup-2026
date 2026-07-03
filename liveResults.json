@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-03T02:27:00.506Z",
+  "updated": "2026-07-03T06:09:13.620Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1217,10 +1217,10 @@
       "awayId": "algeria",
       "home": "Switzerland",
       "away": "Algeria",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 2,
+      "as": 0,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-03T03:00:00"
     },
     {
