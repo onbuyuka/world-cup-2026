@@ -1,9 +1,9 @@
 {
-  "updated": "2026-07-04T05:59:18.704Z",
+  "updated": "2026-07-04T10:51:56.533Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 94,
+  "matchCount": 96,
   "matches": [
     {
       "id": "2391728",
@@ -1320,6 +1320,34 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-07T00:00:00"
+    },
+    {
+      "id": "2513670",
+      "date": "2026-07-07",
+      "round": "16",
+      "homeId": "argentina",
+      "awayId": "egypt",
+      "home": "Argentina",
+      "away": "Egypt",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": "NS",
+      "ts": "2026-07-07T16:00:00"
+    },
+    {
+      "id": "2513671",
+      "date": "2026-07-07",
+      "round": "16",
+      "homeId": "switzerland",
+      "awayId": "colombia",
+      "home": "Switzerland",
+      "away": "Colombia",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": "NS",
+      "ts": "2026-07-07T20:00:00"
     }
   ]
 }
