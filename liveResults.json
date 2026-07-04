@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-04T18:05:30.288Z",
+  "updated": "2026-07-04T19:44:24.154Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1246,9 +1246,9 @@
       "home": "Canada",
       "away": "Morocco",
       "hs": 0,
-      "as": 0,
-      "status": "live",
-      "rawStatus": "1H",
+      "as": 3,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-04T17:00:00"
     },
     {
