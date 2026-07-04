@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-04T22:53:47.098Z",
+  "updated": "2026-07-04T23:57:52.371Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1260,9 +1260,9 @@
       "home": "Paraguay",
       "away": "France",
       "hs": 0,
-      "as": 0,
-      "status": "live",
-      "rawStatus": "2H",
+      "as": 1,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-04T21:00:00"
     },
     {
