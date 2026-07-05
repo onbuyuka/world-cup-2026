@@ -1,9 +1,9 @@
 {
-  "updated": "2026-07-04T23:57:52.371Z",
+  "updated": "2026-07-05T09:39:46.451Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 96,
+  "matchCount": 97,
   "matches": [
     {
       "id": "2391728",
@@ -1348,6 +1348,20 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-07T20:00:00"
+    },
+    {
+      "id": "2515305",
+      "date": "2026-07-09",
+      "round": "125",
+      "homeId": "france",
+      "awayId": "morocco",
+      "home": "France",
+      "away": "Morocco",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": "NS",
+      "ts": "2026-07-09T20:00:00"
     }
   ]
 }
