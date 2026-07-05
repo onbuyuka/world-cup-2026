@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-05T21:34:01.776Z",
+  "updated": "2026-07-05T22:58:11.393Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1273,10 +1273,10 @@
       "awayId": "norway",
       "home": "Brazil",
       "away": "Norway",
-      "hs": 0,
-      "as": 0,
-      "status": "live",
-      "rawStatus": "2H",
+      "hs": 1,
+      "as": 2,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-05T20:00:00"
     },
     {
