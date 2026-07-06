@@ -2,7 +2,7 @@ import type { BracketState, GroupId, GroupStanding, SlotRef } from '../types';
 import { GROUPS } from '../data/groups';
 import { MATCHES, MATCHES_BY_ID } from '../data/schedule';
 import { assignThirdPlaces } from './thirdPlace';
-import { resultForPair, type LiveMatch } from './liveTable';
+import { resultForPair, orderGroupByLive, type LiveMatch } from './liveTable';
 
 /** All knockout matches (Round of 32 → Final). */
 export const KO_MATCHES = MATCHES.filter((m) => m.stage !== 'Group');
@@ -164,6 +164,31 @@ export function resolveBracket(
 /** The predicted champion (winner of the Final), or null. */
 export const championOf = (b: ResolvedBracket): string | null =>
   b.matches[104]?.winner ?? null;
+
+/**
+ * Resolve the knockout bracket purely from real live results, ignoring any user
+ * prediction or "what-if" state: group orders come from the live table and the
+ * eight best third-placed teams from the completed group stage, then knockout
+ * winners auto-advance from actual results (penalties included). Used by the
+ * calendar to fill real knockout matchups instead of "Winner E" placeholders.
+ */
+export function resolveLiveBracket(liveMatches: LiveMatch[]): ResolvedBracket {
+  const state = createInitialState();
+  const views = GROUPS.map((g) => ({ id: g.id, view: orderGroupByLive(g.teamIds, liveMatches) }));
+  for (const { id, view } of views) state.groups[id] = view.order as GroupStanding;
+
+  // resolveBracket only assigns third-placed teams when exactly eight are set;
+  // rank them by the live table, but only once every group has finished all six
+  // matches so the "best 8" is real rather than provisional.
+  if (views.every(({ view }) => view.playedMatches >= 6)) {
+    state.thirdPlaceQualifiers = views
+      .map(({ id, view }) => ({ id, s: view.table[view.order[2]] }))
+      .sort((a, b) => b.s.pts - a.s.pts || b.s.gd - a.s.gd || b.s.gf - a.s.gf || (a.id < b.id ? -1 : 1))
+      .slice(0, 8)
+      .map((e) => e.id);
+  }
+  return resolveBracket(state, liveMatches);
+}
 
 // --- Persistence ------------------------------------------------------------
 

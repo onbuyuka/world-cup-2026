@@ -9,6 +9,7 @@ import { slotLabel } from '../components/MatchCard';
 import { useClock, useT } from '../components/settingsStore';
 import { useLive } from '../components/liveStore';
 import { resultForPair, type LiveMatch } from '../utils/liveTable';
+import { resolveLiveBracket, KNOCKOUT_START_DATE, type ResolvedBracket } from '../utils/bracket';
 import { dayKeyOf, dayHeadingOf } from '../utils/time';
 import { teamName, type StrKey } from '../utils/i18n';
 
@@ -55,20 +56,58 @@ const Side: React.FC<{ refSlot: SlotRef; align: 'left' | 'right'; outcome?: 'W' 
 };
 
 /**
- * Final score for a calendar match, oriented to its home/away, or null.
- * Only group-stage fixtures (both sides resolved to real teams) can be matched
- * to live data; we show finished scores only (no in-progress games here).
+ * The real team on one side of a match. Group fixtures already carry teams;
+ * knockout fixtures use slot refs ("Winner E") that we replace with the team the
+ * live results have actually put there, so the calendar shows real matchups.
  */
-function finishedScore(m: Match, matches: LiveMatch[]): { home: number; away: number } | null {
-  if (m.home.kind !== 'team' || m.away.kind !== 'team') return null;
-  const homeId = m.home.teamId;
-  const awayId = m.away.teamId;
-  const lm = resultForPair(matches, homeId, awayId);
+function sideRef(m: Match, side: 'home' | 'away', bracket: ResolvedBracket): SlotRef {
+  const raw = side === 'home' ? m.home : m.away;
+  if (raw.kind === 'team') return raw;
+  const rm = bracket.matches[m.id];
+  const teamId = side === 'home' ? rm?.home : rm?.away;
+  return teamId ? { kind: 'team', teamId } : raw;
+}
+
+interface CalScore {
+  home: number;
+  away: number;
+  /** Penalty-shootout score (knockout ties only), oriented like home/away. */
+  pens?: { home: number; away: number };
+}
+
+/**
+ * Final score for a calendar match, oriented to `homeRef`/`awayRef`, or null.
+ * Needs both sides resolved to real teams; shows finished games only (no
+ * in-progress). Knockout ties carry the penalty-shootout score when present.
+ */
+function finishedScore(
+  homeRef: SlotRef,
+  awayRef: SlotRef,
+  stage: Stage,
+  matches: LiveMatch[],
+): CalScore | null {
+  if (homeRef.kind !== 'team' || awayRef.kind !== 'team') return null;
+  const homeId = homeRef.teamId;
+  const awayId = awayRef.teamId;
+  // Knockout fixtures must ignore any earlier group meeting of the same pair.
+  const lm = resultForPair(matches, homeId, awayId, stage === 'Group' ? undefined : KNOCKOUT_START_DATE);
   if (!lm || lm.status !== 'finished' || lm.hs == null || lm.as == null) return null;
   // The live match's home may be our away team — orient the goals accordingly.
-  const home = lm.homeId === homeId ? lm.hs : lm.as;
-  const away = lm.homeId === homeId ? lm.as : lm.hs;
+  const flip = lm.homeId !== homeId;
+  const home = flip ? lm.as : lm.hs;
+  const away = flip ? lm.hs : lm.as;
+  if (lm.hp != null && lm.ap != null) {
+    return { home, away, pens: { home: flip ? lm.ap : lm.hp, away: flip ? lm.hp : lm.ap } };
+  }
   return { home, away };
+}
+
+/** W/D/L for one side, using penalties to break a level knockout score. */
+function sideOutcome(mine: number, theirs: number, minePen?: number, theirsPen?: number): 'W' | 'D' | 'L' {
+  if (mine > theirs) return 'W';
+  if (mine < theirs) return 'L';
+  if (minePen != null && theirsPen != null && minePen !== theirsPen) return minePen > theirsPen ? 'W' : 'L';
+  return 'D';
 }
 
 export const CalendarPage: React.FC = () => {
@@ -76,6 +115,8 @@ export const CalendarPage: React.FC = () => {
   const clock = useClock();
   const { matches: liveMatches } = useLive();
   const { t } = useT();
+  // Fill knockout matchups (teams + scores) from real results, not predictions.
+  const liveBracket = useMemo(() => resolveLiveBracket(liveMatches), [liveMatches]);
 
   const days = useMemo(() => {
     const filtered = MATCHES.filter((m) => stage === 'All' || m.stage === stage);
@@ -133,9 +174,11 @@ export const CalendarPage: React.FC = () => {
             <div className="space-y-2">
               {day.matches.map((m) => {
                 const v = VENUES[m.venueId];
-                const fs = finishedScore(m, liveMatches);
-                const homeOutcome = fs ? (fs.home > fs.away ? 'W' : fs.home < fs.away ? 'L' : 'D') : null;
-                const awayOutcome = fs ? (fs.home > fs.away ? 'L' : fs.home < fs.away ? 'W' : 'D') : null;
+                const homeRef = sideRef(m, 'home', liveBracket);
+                const awayRef = sideRef(m, 'away', liveBracket);
+                const fs = finishedScore(homeRef, awayRef, m.stage, liveMatches);
+                const homeOutcome = fs ? sideOutcome(fs.home, fs.away, fs.pens?.home, fs.pens?.away) : null;
+                const awayOutcome = fs ? sideOutcome(fs.away, fs.home, fs.pens?.away, fs.pens?.home) : null;
                 return (
                   <div
                     key={m.id}
@@ -150,14 +193,14 @@ export const CalendarPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="grid flex-1 grid-cols-[1fr_auto_1fr] items-center gap-2">
-                      <Side refSlot={m.home} align="right" outcome={homeOutcome} />
+                      <Side refSlot={homeRef} align="right" outcome={homeOutcome} />
                       {fs ? (
                         <div className="flex flex-col items-center leading-none">
                           <span className="font-display text-base font-extrabold tabular-nums text-white">
                             {fs.home}–{fs.away}
                           </span>
                           <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-400">
-                            {t('cal.ft')}
+                            {fs.pens ? t('cal.pens', { h: fs.pens.home, a: fs.pens.away }) : t('cal.ft')}
                           </span>
                         </div>
                       ) : (
@@ -165,7 +208,7 @@ export const CalendarPage: React.FC = () => {
                           {m.group ? t('cal.grp', { g: m.group }) : 'v'}
                         </span>
                       )}
-                      <Side refSlot={m.away} align="left" outcome={awayOutcome} />
+                      <Side refSlot={awayRef} align="left" outcome={awayOutcome} />
                     </div>
                     <div className="hidden w-40 shrink-0 text-right text-[11px] text-slate-500 sm:block">
                       <div className="font-semibold text-slate-400">{t(`stage.${m.stage}` as StrKey)} · M{m.id}</div>

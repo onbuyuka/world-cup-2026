@@ -237,6 +237,7 @@ const S = {
   'stage.Final': { en: 'Final', tr: 'Final' },
   'cal.grp': { en: 'Grp {g}', tr: '{g} Grubu' },
   'cal.ft': { en: 'FT', tr: 'MS' },
+  'cal.pens': { en: '{h}–{a} pens', tr: '{h}–{a} pen.' },
 
   // Teams list
   'teams.count': { en: '48 teams', tr: '48 takım' },

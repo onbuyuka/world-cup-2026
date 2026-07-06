@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   createInitialState,
   resolveBracket,
+  resolveLiveBracket,
   KO_COLUMNS,
   KO_MATCHES,
 } from '../utils/bracket';
@@ -80,5 +81,35 @@ describe('resolveBracket: penalty-shootout winner advances', () => {
     const noPens: LiveMatch = { ...penMatch(home, away, 2, 4), hp: null, ap: null };
     const resolved = resolveBracket(seededState(), [noPens]);
     expect(resolved.matches[id].winner).toBeNull();
+  });
+});
+
+describe('resolveLiveBracket: real knockout matchups from live results', () => {
+  it('resolves a Round-of-32 fixture and its winner from live data alone', () => {
+    // With no group matches, each group's order falls back to draw order, so
+    // match 73 (runner-up A vs runner-up B) is South Africa vs Bosnia.
+    const ko: LiveMatch = {
+      id: 'ko73',
+      date: '2026-06-28',
+      round: '32',
+      homeId: 'south-africa',
+      awayId: 'bosnia-and-herzegovina',
+      home: 'South Africa',
+      away: 'Bosnia and Herzegovina',
+      hs: 2,
+      as: 1,
+      status: 'finished',
+      rawStatus: 'FT',
+    };
+    const b = resolveLiveBracket([ko]);
+    expect(b.matches[73].home).toBe('south-africa');
+    expect(b.matches[73].away).toBe('bosnia-and-herzegovina');
+    expect(b.matches[73].winner).toBe('south-africa');
+  });
+
+  it('does not throw and leaves the Final undecided with no results', () => {
+    const b = resolveLiveBracket([]);
+    expect(b.matches[104]).toBeDefined();
+    expect(b.matches[104].winner).toBeNull();
   });
 });
