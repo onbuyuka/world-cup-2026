@@ -1,9 +1,9 @@
 {
-  "updated": "2026-07-06T04:50:16.783Z",
+  "updated": "2026-07-06T07:10:34.306Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 97,
+  "matchCount": 98,
   "matches": [
     {
       "id": "2391728",
@@ -1051,6 +1051,8 @@
       "away": "Paraguay",
       "hs": 1,
       "as": 1,
+      "hp": 3,
+      "ap": 4,
       "status": "finished",
       "rawStatus": "AP",
       "ts": "2026-06-29T20:30:00"
@@ -1065,6 +1067,8 @@
       "away": "Morocco",
       "hs": 1,
       "as": 1,
+      "hp": 2,
+      "ap": 3,
       "status": "finished",
       "rawStatus": "AP",
       "ts": "2026-06-30T01:00:00"
@@ -1191,6 +1195,8 @@
       "away": "Egypt",
       "hs": 1,
       "as": 1,
+      "hp": 2,
+      "ap": 4,
       "status": "finished",
       "rawStatus": "AP",
       "ts": "2026-07-03T18:00:00"
@@ -1291,7 +1297,7 @@
       "as": 3,
       "status": "finished",
       "rawStatus": "FT",
-      "ts": "2026-07-06T00:00:00"
+      "ts": "2026-07-06T01:00:00"
     },
     {
       "id": "2511721",
@@ -1362,6 +1368,20 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-09T20:00:00"
+    },
+    {
+      "id": "2517651",
+      "date": "2026-07-11",
+      "round": "0",
+      "homeId": "norway",
+      "awayId": "england",
+      "home": "Norway",
+      "away": "England",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": null,
+      "ts": "2026-07-11T21:00:00"
     }
   ]
 }
