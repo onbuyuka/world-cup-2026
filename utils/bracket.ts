@@ -87,9 +87,9 @@ export interface ResolvedBracket {
  * When `liveMatches` is supplied (Live mode), a knockout match with a decisive
  * real result auto-advances the actual winner — unless the user has set a
  * "what-if" pick in `state.winners`, which always takes precedence. Results
- * cascade automatically because resolution is recursive. Knockouts decided on
- * penalties (a draw after extra time) can't be inferred from the score alone,
- * so those stay undecided/pickable.
+ * cascade automatically because resolution is recursive. Knockouts level after
+ * extra time are decided by the penalty-shootout score when the live data
+ * carries it (see `liveWinner`).
  */
 export function resolveBracket(
   state: BracketState,
@@ -103,17 +103,23 @@ export function resolveBracket(
   const cache: Record<number, ResolvedMatch> = {};
 
   // Actual winner of a played knockout fixture between `home` and `away`, or
-  // null if not played, drawn (penalties), or no live data.
+  // null if not played or no live data. A fixture level on goals is decided by
+  // the penalty-shootout score (hp/ap) when the live data carries it.
   const liveWinner = (home: string | null, away: string | null): string | null => {
     if (!liveMatches || !home || !away) return null;
     const m = resultForPair(liveMatches, home, away, KNOCKOUT_START_DATE);
-    if (!m || m.status !== 'finished' || m.hs == null || m.as == null || m.hs === m.as) {
-      return null;
-    }
+    if (!m || m.status !== 'finished' || m.hs == null || m.as == null) return null;
     const homeIsHome = m.homeId === home;
     const homeGoals = homeIsHome ? m.hs : m.as;
     const awayGoals = homeIsHome ? m.as : m.hs;
-    return homeGoals > awayGoals ? home : away;
+    if (homeGoals !== awayGoals) return homeGoals > awayGoals ? home : away;
+    // Level after normal/extra time -> decided on penalties, if we have them.
+    if (m.hp != null && m.ap != null && m.hp !== m.ap) {
+      const homePens = homeIsHome ? m.hp : m.ap;
+      const awayPens = homeIsHome ? m.ap : m.hp;
+      return homePens > awayPens ? home : away;
+    }
+    return null;
   };
 
   const resolveRef = (ref: SlotRef, matchId: number): string | null => {

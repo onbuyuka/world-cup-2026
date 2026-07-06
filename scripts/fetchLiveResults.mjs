@@ -156,6 +156,9 @@ async function main() {
       if (!awayId) unmapped.add(e.strAwayTeam);
       const hs = e.intHomeScore == null || e.intHomeScore === '' ? null : Number(e.intHomeScore);
       const as = e.intAwayScore == null || e.intAwayScore === '' ? null : Number(e.intAwayScore);
+      // Penalty-shootout scores (knockout only); absent for group matches.
+      const hp = e.intHomeScoreExtra == null || e.intHomeScoreExtra === '' ? null : Number(e.intHomeScoreExtra);
+      const ap = e.intAwayScoreExtra == null || e.intAwayScoreExtra === '' ? null : Number(e.intAwayScoreExtra);
       const m = {
         id: e.idEvent || null,
         date: e.dateEvent || fallbackDate,
@@ -166,6 +169,8 @@ async function main() {
         away: e.strAwayTeam || null,
         hs,
         as,
+        ...(hp != null ? { hp } : {}),
+        ...(ap != null ? { ap } : {}),
         status: normStatus(e.strStatus),
         rawStatus: e.strStatus || null,
         ts: e.strTimestamp || null,

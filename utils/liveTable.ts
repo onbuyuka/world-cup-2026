@@ -25,6 +25,9 @@ export interface LiveMatch {
   /** Scores from each side's perspective (null until known). */
   hs: number | null;
   as: number | null;
+  /** Penalty-shootout scores, home/away (knockout only; null if no shootout). */
+  hp?: number | null;
+  ap?: number | null;
   status: LiveStatus;
   rawStatus?: string | null;
   ts?: string | null;
@@ -173,10 +176,11 @@ export function orderGroupByLive(predicted: string[], matches: LiveMatch[]): Liv
   return { order, table, playedMatches };
 }
 
-/** "2–1", or "—" if not yet played. */
+/** "2–1" (adding "(4–3 p)" for a shootout), or "—" if not yet played. */
 export function scoreText(m: LiveMatch | undefined): string {
   if (!m || m.hs == null || m.as == null) return '—';
-  return `${m.hs}–${m.as}`;
+  const base = `${m.hs}–${m.as}`;
+  return m.hp != null && m.ap != null ? `${base} (${m.hp}–${m.ap} p)` : base;
 }
 
 /**
@@ -221,5 +225,11 @@ export function resultFor(m: LiveMatch | undefined, teamId: string): 'W' | 'D' |
   const theirs = isHome ? m.as : m.hs;
   if (mine > theirs) return 'W';
   if (mine < theirs) return 'L';
+  // Level after normal/extra time: a knockout shootout decides the winner.
+  if (m.hp != null && m.ap != null && m.hp !== m.ap) {
+    const minePens = isHome ? m.hp : m.ap;
+    const theirsPens = isHome ? m.ap : m.hp;
+    return minePens > theirsPens ? 'W' : 'L';
+  }
   return 'D';
 }

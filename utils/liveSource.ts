@@ -96,6 +96,8 @@ interface SportsDbEvent {
   strAwayTeam?: string;
   intHomeScore?: string | number | null;
   intAwayScore?: string | number | null;
+  intHomeScoreExtra?: string | number | null;
+  intAwayScoreExtra?: string | number | null;
   strStatus?: string;
   strTimestamp?: string;
 }
@@ -136,6 +138,8 @@ function normalizeEvents(events: SportsDbEvent[], fallbackDate: string): LiveMat
       away: e.strAwayTeam ?? null,
       hs: num(e.intHomeScore),
       as: num(e.intAwayScore),
+      hp: num(e.intHomeScoreExtra),
+      ap: num(e.intAwayScoreExtra),
       status: normStatus(e.strStatus ?? ''),
       rawStatus: e.strStatus ?? null,
       ts: e.strTimestamp ?? null,
