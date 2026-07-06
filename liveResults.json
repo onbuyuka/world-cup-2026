@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-06T08:58:12.764Z",
+  "updated": "2026-07-06T20:22:38.530Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1307,10 +1307,10 @@
       "awayId": "spain",
       "home": "Portugal",
       "away": "Spain",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-07-06T19:00:00"
     },
     {
