@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-06T00:06:11.958Z",
+  "updated": "2026-07-06T04:50:16.783Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1287,11 +1287,11 @@
       "awayId": "england",
       "home": "Mexico",
       "away": "England",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
-      "ts": "2026-07-06T01:00:00"
+      "hs": 2,
+      "as": 3,
+      "status": "finished",
+      "rawStatus": "FT",
+      "ts": "2026-07-06T00:00:00"
     },
     {
       "id": "2511721",
