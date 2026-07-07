@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-07T22:36:40.511Z",
+  "updated": "2026-07-07T23:54:36.733Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1351,8 +1351,10 @@
       "away": "Colombia",
       "hs": 0,
       "as": 0,
-      "status": "live",
-      "rawStatus": "ET",
+      "hp": 4,
+      "ap": 3,
+      "status": "finished",
+      "rawStatus": "AP",
       "ts": "2026-07-07T20:00:00"
     },
     {
