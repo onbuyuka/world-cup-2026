@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-07T19:47:55.335Z",
+  "updated": "2026-07-07T21:19:31.044Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1349,10 +1349,10 @@
       "awayId": "colombia",
       "home": "Switzerland",
       "away": "Colombia",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "HT",
       "ts": "2026-07-07T20:00:00"
     },
     {
