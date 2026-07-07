@@ -1,9 +1,9 @@
 {
-  "updated": "2026-07-07T01:15:49.907Z",
+  "updated": "2026-07-07T05:31:59.360Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 98,
+  "matchCount": 99,
   "matches": [
     {
       "id": "2391728",
@@ -1322,9 +1322,9 @@
       "home": "USA",
       "away": "Belgium",
       "hs": 1,
-      "as": 2,
-      "status": "live",
-      "rawStatus": "HT",
+      "as": 4,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-07T00:00:00"
     },
     {
@@ -1368,6 +1368,20 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-09T20:00:00"
+    },
+    {
+      "id": "2519345",
+      "date": "2026-07-10",
+      "round": "0",
+      "homeId": "spain",
+      "awayId": "belgium",
+      "home": "Spain",
+      "away": "Belgium",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": "NS",
+      "ts": "2026-07-10T19:00:00"
     },
     {
       "id": "2517651",
