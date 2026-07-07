@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-07T17:32:18.303Z",
+  "updated": "2026-07-07T19:47:55.335Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1335,10 +1335,10 @@
       "awayId": "egypt",
       "home": "Argentina",
       "away": "Egypt",
-      "hs": 0,
-      "as": 1,
-      "status": "live",
-      "rawStatus": "HT",
+      "hs": 3,
+      "as": 2,
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-07T16:00:00"
     },
     {
