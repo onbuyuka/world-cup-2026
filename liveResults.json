@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-08T02:08:38.686Z",
+  "updated": "2026-07-08T08:17:22.363Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1354,7 +1354,7 @@
       "hp": 4,
       "ap": 3,
       "status": "finished",
-      "rawStatus": "FT",
+      "rawStatus": "AP",
       "ts": "2026-07-07T20:00:00"
     },
     {
@@ -1402,7 +1402,7 @@
     {
       "id": "2520608",
       "date": "2026-07-12",
-      "round": "0",
+      "round": "125",
       "homeId": "argentina",
       "awayId": "switzerland",
       "home": "Argentina",
