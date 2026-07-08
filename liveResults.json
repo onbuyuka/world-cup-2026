@@ -1,9 +1,9 @@
 {
-  "updated": "2026-07-07T23:54:36.733Z",
+  "updated": "2026-07-08T02:08:38.686Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 99,
+  "matchCount": 100,
   "matches": [
     {
       "id": "2391728",
@@ -1354,7 +1354,7 @@
       "hp": 4,
       "ap": 3,
       "status": "finished",
-      "rawStatus": "AP",
+      "rawStatus": "FT",
       "ts": "2026-07-07T20:00:00"
     },
     {
@@ -1398,6 +1398,20 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-11T21:00:00"
+    },
+    {
+      "id": "2520608",
+      "date": "2026-07-12",
+      "round": "0",
+      "homeId": "argentina",
+      "awayId": "switzerland",
+      "home": "Argentina",
+      "away": "Switzerland",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": null,
+      "ts": "2026-07-12T01:00:00"
     }
   ]
 }
