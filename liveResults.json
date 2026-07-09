@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-09T20:44:02.106Z",
+  "updated": "2026-07-09T22:17:43.856Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1368,7 +1368,7 @@
       "hs": 0,
       "as": 0,
       "status": "live",
-      "rawStatus": "1H",
+      "rawStatus": "2H",
       "ts": "2026-07-09T20:00:00"
     },
     {
