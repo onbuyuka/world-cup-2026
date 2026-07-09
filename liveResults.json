@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-09T22:17:43.856Z",
+  "updated": "2026-07-09T23:45:16.782Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1365,10 +1365,10 @@
       "awayId": "morocco",
       "home": "France",
       "away": "Morocco",
-      "hs": 0,
+      "hs": 2,
       "as": 0,
-      "status": "live",
-      "rawStatus": "2H",
+      "status": "finished",
+      "rawStatus": "FT",
       "ts": "2026-07-09T20:00:00"
     },
     {
