@@ -1,9 +1,9 @@
 {
-  "updated": "2026-07-10T22:56:43.260Z",
+  "updated": "2026-07-10T23:55:44.991Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 100,
+  "matchCount": 101,
   "matches": [
     {
       "id": "2391728",
@@ -1412,6 +1412,20 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-12T01:00:00"
+    },
+    {
+      "id": "2528031",
+      "date": "2026-07-14",
+      "round": "0",
+      "homeId": "france",
+      "awayId": "spain",
+      "home": "France",
+      "away": "Spain",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": null,
+      "ts": "2026-07-14T19:00:00"
     }
   ]
 }
