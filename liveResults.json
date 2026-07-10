@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-09T23:45:16.782Z",
+  "updated": "2026-07-10T20:22:48.938Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1379,10 +1379,10 @@
       "awayId": "belgium",
       "home": "Spain",
       "away": "Belgium",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 1,
+      "as": 1,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-07-10T19:00:00"
     },
     {
