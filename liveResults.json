@@ -1,9 +1,9 @@
 {
-  "updated": "2026-07-12T04:49:33.523Z",
+  "updated": "2026-07-12T07:26:34.821Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 101,
+  "matchCount": 102,
   "matches": [
     {
       "id": "2391728",
@@ -1426,6 +1426,20 @@
       "status": "scheduled",
       "rawStatus": "NS",
       "ts": "2026-07-14T19:00:00"
+    },
+    {
+      "id": "2528727",
+      "date": "2026-07-15",
+      "round": "0",
+      "homeId": "england",
+      "awayId": "argentina",
+      "home": "England",
+      "away": "Argentina",
+      "hs": null,
+      "as": null,
+      "status": "scheduled",
+      "rawStatus": null,
+      "ts": "2026-07-15T19:00:00"
     }
   ]
 }
