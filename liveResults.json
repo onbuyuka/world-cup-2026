@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-14T20:07:32.885Z",
+  "updated": "2026-07-14T21:29:54.654Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1422,9 +1422,9 @@
       "home": "France",
       "away": "Spain",
       "hs": 0,
-      "as": 1,
+      "as": 2,
       "status": "live",
-      "rawStatus": "HT",
+      "rawStatus": "2H",
       "ts": "2026-07-14T19:00:00"
     },
     {
