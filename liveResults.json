@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-15T22:55:01.956Z",
+  "updated": "2026-07-18T22:13:46.294Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1449,10 +1449,10 @@
       "awayId": "england",
       "home": "France",
       "away": "England",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 2,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-07-18T21:00:00"
     },
     {
