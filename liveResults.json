@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-18T23:24:58.394Z",
+  "updated": "2026-07-19T20:08:23.040Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1463,10 +1463,10 @@
       "awayId": "argentina",
       "home": "Spain",
       "away": "Argentina",
-      "hs": null,
-      "as": null,
-      "status": "scheduled",
-      "rawStatus": "NS",
+      "hs": 0,
+      "as": 0,
+      "status": "live",
+      "rawStatus": "1H",
       "ts": "2026-07-19T19:00:00"
     }
   ]
