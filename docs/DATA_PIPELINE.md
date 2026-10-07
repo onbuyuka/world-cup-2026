@@ -14,7 +14,7 @@ Working notes for populating team data in this app. Read this first if resuming.
   - `data/squads.ts` `SQUADS` → `t.squad` (+ sets `dataVerified`) ONLY if no inline squad.
   - Argentina squad + recentForm are inline in `data/teams.ts` (do not overwrite).
 - `types.ts` — `SquadPlayer { name, position:'GK'|'DF'|'MF'|'FW', club, number?, captain?, fmId? }`. `fmId` = mylineups photo id.
-- `components/PlayerAvatar.tsx` — renders `https://mylineups.app/builder-assets/players/fm-<fmId>.webp`, falls back to kit-coloured number badge.
+- `components/PlayerAvatar.tsx` — renders `https://cdn.mylineups.app/builder-assets/players/fm-<fmId>.webp`, falls back to kit-coloured number badge.
 
 ## Team id mapping (Wikipedia name → our id)
 Most are lowercase-hyphenated. Non-obvious ones:

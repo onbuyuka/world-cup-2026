@@ -3,7 +3,8 @@ import type { SquadPlayer } from '../types';
 // ---------------------------------------------------------------------------
 // World Cup squads (26 players each): name, shirt number, position and club
 // from the official "2026 FIFA World Cup squads" list, joined by shirt number
-// with mylineups.app player photo ids (fmId → builder-assets/players/fm-<id>.webp).
+// with mylineups.app player photo ids
+// (fmId → cdn.mylineups.app/builder-assets/players/fm-<id>.webp).
 //
 // Populated group by group. Teams present here override any inline squad in
 // data/teams.ts (Argentina remains defined inline there).

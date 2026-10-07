@@ -3,7 +3,7 @@ import type { Kit, SquadPlayer } from '../types';
 
 /** mylineups headshot URL for a player id. */
 const photoUrl = (fmId: string): string =>
-  `https://mylineups.app/builder-assets/players/fm-${fmId}.webp`;
+  `https://cdn.mylineups.app/builder-assets/players/fm-${fmId}.webp`;
 
 interface Props {
   player: SquadPlayer;

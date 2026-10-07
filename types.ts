@@ -39,7 +39,7 @@ export interface SquadPlayer {
   number?: number;
   /** Marks the captain. */
   captain?: boolean;
-  /** mylineups.app player id for the headshot (builder-assets/players/fm-<id>.webp). */
+  /** mylineups.app player id for the headshot (cdn.mylineups.app/builder-assets/players/fm-<id>.webp). */
   fmId?: string;
 }
 
