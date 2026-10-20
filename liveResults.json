@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-20T08:49:12.561Z",
+  "updated": "2026-10-20T14:05:17.166Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
@@ -1274,7 +1274,7 @@
     {
       "id": "2515305",
       "date": "2026-07-09",
-      "round": "0",
+      "round": "125",
       "homeId": "france",
       "awayId": "morocco",
       "home": "France",
@@ -1288,7 +1288,7 @@
     {
       "id": "2519345",
       "date": "2026-07-10",
-      "round": "0",
+      "round": "125",
       "homeId": "spain",
       "awayId": "belgium",
       "home": "Spain",
@@ -1302,7 +1302,7 @@
     {
       "id": "2517651",
       "date": "2026-07-11",
-      "round": "0",
+      "round": "125",
       "homeId": "norway",
       "awayId": "england",
       "home": "Norway",
@@ -1316,7 +1316,7 @@
     {
       "id": "2520608",
       "date": "2026-07-12",
-      "round": "0",
+      "round": "125",
       "homeId": "argentina",
       "awayId": "switzerland",
       "home": "Argentina",
@@ -1330,7 +1330,7 @@
     {
       "id": "2528031",
       "date": "2026-07-14",
-      "round": "0",
+      "round": "150",
       "homeId": "france",
       "awayId": "spain",
       "home": "France",
@@ -1344,7 +1344,7 @@
     {
       "id": "2528727",
       "date": "2026-07-15",
-      "round": "0",
+      "round": "150",
       "homeId": "england",
       "awayId": "argentina",
       "home": "England",
@@ -1358,7 +1358,7 @@
     {
       "id": "2533360",
       "date": "2026-07-18",
-      "round": "3",
+      "round": "160",
       "homeId": "france",
       "awayId": "england",
       "home": "France",
