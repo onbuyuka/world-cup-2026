@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-21T15:30:54.319Z",
+  "updated": "2026-10-21T19:30:38.760Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 99,
+  "matchCount": 102,
   "matches": [
     {
       "id": "2391728",
@@ -1314,6 +1314,78 @@
       "ts": "2026-07-06T19:00:00"
     },
     {
+      "id": "2507707",
+      "date": "2026-07-07",
+      "round": "16",
+      "homeId": "usa",
+      "awayId": "belgium",
+      "home": "USA",
+      "away": "Belgium",
+      "hs": 1,
+      "as": 4,
+      "status": "finished",
+      "rawStatus": "FT",
+      "ts": "2026-07-07T00:00:00"
+    },
+    {
+      "id": "2513670",
+      "date": "2026-07-07",
+      "round": "16",
+      "homeId": "argentina",
+      "awayId": "egypt",
+      "home": "Argentina",
+      "away": "Egypt",
+      "hs": 3,
+      "as": 2,
+      "status": "finished",
+      "rawStatus": "FT",
+      "ts": "2026-07-07T16:00:00"
+    },
+    {
+      "id": "2513671",
+      "date": "2026-07-07",
+      "round": "16",
+      "homeId": "switzerland",
+      "awayId": "colombia",
+      "home": "Switzerland",
+      "away": "Colombia",
+      "hs": 0,
+      "as": 0,
+      "hp": 4,
+      "ap": 3,
+      "status": "finished",
+      "rawStatus": "AP",
+      "ts": "2026-07-07T20:00:00"
+    },
+    {
+      "id": "2515305",
+      "date": "2026-07-09",
+      "round": "125",
+      "homeId": "france",
+      "awayId": "morocco",
+      "home": "France",
+      "away": "Morocco",
+      "hs": 2,
+      "as": 0,
+      "status": "finished",
+      "rawStatus": "FT",
+      "ts": "2026-07-09T20:00:00"
+    },
+    {
+      "id": "2519345",
+      "date": "2026-07-10",
+      "round": "125",
+      "homeId": "spain",
+      "awayId": "belgium",
+      "home": "Spain",
+      "away": "Belgium",
+      "hs": 2,
+      "as": 1,
+      "status": "finished",
+      "rawStatus": "FT",
+      "ts": "2026-07-10T19:00:00"
+    },
+    {
       "id": "2517651",
       "date": "2026-07-11",
       "round": "125",
@@ -1368,34 +1440,6 @@
       "status": "finished",
       "rawStatus": "FT",
       "ts": "2026-07-15T19:00:00"
-    },
-    {
-      "id": "2533360",
-      "date": "2026-07-18",
-      "round": "160",
-      "homeId": "france",
-      "awayId": "england",
-      "home": "France",
-      "away": "England",
-      "hs": 4,
-      "as": 6,
-      "status": "finished",
-      "rawStatus": "FT",
-      "ts": "2026-07-18T21:00:00"
-    },
-    {
-      "id": "2533361",
-      "date": "2026-07-19",
-      "round": "200",
-      "homeId": "spain",
-      "awayId": "argentina",
-      "home": "Spain",
-      "away": "Argentina",
-      "hs": 1,
-      "as": 0,
-      "status": "finished",
-      "rawStatus": "AET",
-      "ts": "2026-07-19T19:00:00"
     }
   ]
 }
