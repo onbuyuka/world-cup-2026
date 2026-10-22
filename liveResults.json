@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-22T17:29:21.020Z",
+  "updated": "2026-10-22T20:45:05.997Z",
   "season": "2026",
   "source": "TheSportsDB",
   "leagueId": 4429,
-  "matchCount": 98,
+  "matchCount": 97,
   "matches": [
     {
       "id": "2391728",
@@ -1368,20 +1368,6 @@
       "status": "finished",
       "rawStatus": "FT",
       "ts": "2026-07-18T21:00:00"
-    },
-    {
-      "id": "2533361",
-      "date": "2026-07-19",
-      "round": "200",
-      "homeId": "spain",
-      "awayId": "argentina",
-      "home": "Spain",
-      "away": "Argentina",
-      "hs": 1,
-      "as": 0,
-      "status": "finished",
-      "rawStatus": "AET",
-      "ts": "2026-07-19T19:00:00"
     }
   ]
 }
