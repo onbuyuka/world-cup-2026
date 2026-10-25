@@ -21,11 +21,13 @@ const KEY = '123';
 const BASE = `https://www.thesportsdb.com/api/v1/json/${KEY}`;
 const FIRST_DAY = '2026-06-11'; // tournament opener (kept for reference)
 const LAST_DAY = '2026-07-19';
-// The group stage is fetched by ROUND (each returns all 24 fixtures, unlike the
-// incomplete eventsday index). Days are only swept for the knockout stage,
-// whose TheSportsDB round numbers don't exist until it begins.
+// Every stage is fetched by ROUND: the eventsday index is incomplete and missed
+// six Round-of-16 fixtures. TheSportsDB numbers the knockout rounds 32 (R32),
+// 16 (R16), 125 (QF), 150 (SF), 160 (third place) and 200 (final). Days are still
+// swept for the knockout stage as a fallback for fixtures not yet given a round.
 const KO_FIRST_DAY = '2026-06-28';
 const GROUP_ROUNDS = ['1', '2', '3'];
+const KNOCKOUT_ROUNDS = ['32', '16', '125', '150', '160', '200'];
 const GAP_MS = 2600; // ~23 req/min, under TheSportsDB's 30/min free limit
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -181,16 +183,16 @@ async function main() {
     }
   };
 
-  // Group stage: fetch each matchday round (complete, 24 fixtures each).
-  for (const round of GROUP_ROUNDS) {
-    ingest(await getRound(round), '');
+  // Knockout stage: sweep by day first (catches fixtures before a round number
+  // is assigned), then fetch each complete round so its entries take precedence.
+  for (const day of eachDay(KO_FIRST_DAY, LAST_DAY)) {
+    ingest(await getDay(day), day);
     scanned++;
     await sleep(GAP_MS);
   }
 
-  // Knockout stage: sweep by day (round numbers aren't assigned until it begins).
-  for (const day of eachDay(KO_FIRST_DAY, LAST_DAY)) {
-    ingest(await getDay(day), day);
+  for (const round of [...GROUP_ROUNDS, ...KNOCKOUT_ROUNDS]) {
+    ingest(await getRound(round), '');
     scanned++;
     await sleep(GAP_MS);
   }

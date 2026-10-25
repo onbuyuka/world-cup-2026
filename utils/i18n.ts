@@ -85,21 +85,13 @@ const S = {
   'toolbar.thirds': { en: 'Best third-placed teams: {n}/8', tr: 'En iyi üçüncüler: {n}/8' },
   'toolbar.reset3rds': { en: 'Reset 3rds ↺', tr: '3.leri sıfırla ↺' },
   'toolbar.resetBracket': { en: 'Reset bracket', tr: 'Tahmini sıfırla' },
-  'toolbar.reset3rdsTitle': {
-    en: 'Discard your what-if 3rd-placed picks and snap back to the real best 8',
-    tr: 'Senaryo üçüncü seçimlerini bırak ve gerçek en iyi 8’e dön',
-  },
-  'hint.liveCustom': {
-    en: 'Live: you’ve hand-picked which 3rd-placed teams advance. Reset to snap back to the real best 8.',
-    tr: 'Canlı: hangi üçüncülerin geçeceğini elle seçtin. Gerçek en iyi 8’e dönmek için sıfırla.',
-  },
   'hint.liveAuto': {
-    en: 'Live: the 8 best 3rd-placed teams are auto-selected from real results. Tap “3rd ✓/＋” for “what-if” changes — your prediction stays separate.',
-    tr: 'Canlı: en iyi 8 üçüncü gerçek sonuçlara göre otomatik seçilir. Senaryo için “3.✓/＋”ye dokun — tahminin ayrı kalır.',
+    en: 'Live: real results, read-only. Your score grades your prediction — turn Live off to edit it.',
+    tr: 'Canlı: gerçek sonuçlar, salt okunur. Puanın tahminine göre — düzenlemek için Canlı’yı kapat.',
   },
   'hint.liveGroups': {
-    en: 'Live mode tracks real results automatically. You can still tweak for “what-if” scenarios.',
-    tr: 'Canlı mod gerçek sonuçları otomatik izler. Yine de “senaryo” için değişiklik yapabilirsin.',
+    en: 'Live mode shows real results (read-only). Turn Live off to edit your prediction.',
+    tr: 'Canlı mod gerçek sonuçları gösterir (salt okunur). Tahminini düzenlemek için Canlı’yı kapat.',
   },
   'hint.complete': {
     en: 'All eight third-placed qualifiers chosen — the Round of 32 is set.',
@@ -113,12 +105,7 @@ const S = {
   // Group card
   'group.label': { en: 'Group {id}', tr: 'Grup {id}' },
   'group.dragReorder': { en: 'drag to reorder', tr: 'sürükleyerek sırala' },
-  'group.liveDrag': { en: '● Live · drag for what-if', tr: '● Canlı · senaryo için sürükle' },
-  'group.customReset': { en: '✎ custom · reset ↺', tr: '✎ özel · sıfırla ↺' },
-  'group.customResetTitle': {
-    en: 'Discard your what-if order and snap back to live results',
-    tr: 'Senaryo sıralamanı bırak ve canlı sonuçlara dön',
-  },
+  'group.liveDrag': { en: '● Live · real results', tr: '● Canlı · gerçek sonuçlar' },
   'group.third': { en: '3rd +', tr: '3.+' },
   'group.thirdSel': { en: '3rd ✓', tr: '3.✓' },
   'group.thirdTitle': {

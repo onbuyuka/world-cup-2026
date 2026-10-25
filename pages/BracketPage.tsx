@@ -79,21 +79,12 @@ const LiveToggle: React.FC = () => {
 };
 
 const Toolbar: React.FC = () => {
-  const {
-    thirdCount,
-    resetAll,
-    liveActive,
-    groupStageComplete,
-    liveThirdsCustomized,
-    resetLiveThirds,
-  } = useBracket();
+  const { thirdCount, resetAll, liveActive, groupStageComplete } = useBracket();
   const { t } = useT();
   const complete = thirdCount === 8;
   const hint = liveActive
     ? groupStageComplete
-      ? liveThirdsCustomized
-        ? t('hint.liveCustom')
-        : t('hint.liveAuto')
+      ? t('hint.liveAuto')
       : t('hint.liveGroups')
     : complete
       ? t('hint.complete')
@@ -111,24 +102,16 @@ const Toolbar: React.FC = () => {
         {hint}
       </p>
       <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
-        {liveActive && liveThirdsCustomized && (
+        <LiveToggle />
+        {!liveActive && (
           <button
             type="button"
-            onClick={resetLiveThirds}
-            title={t('toolbar.reset3rdsTitle')}
-            className="whitespace-nowrap rounded-lg bg-sky-500/15 px-3 py-1.5 text-xs font-semibold text-sky-300 hover:bg-sky-500/25"
+            onClick={resetAll}
+            className="whitespace-nowrap rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5"
           >
-            {t('toolbar.reset3rds')}
+            {t('toolbar.resetBracket')}
           </button>
         )}
-        <LiveToggle />
-        <button
-          type="button"
-          onClick={resetAll}
-          className="whitespace-nowrap rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5"
-        >
-          {t('toolbar.resetBracket')}
-        </button>
       </div>
     </div>
   );

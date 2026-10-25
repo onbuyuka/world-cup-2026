@@ -59,7 +59,7 @@ const SortableRow: React.FC<{
 }> = ({ team, idx, stat, liveActive, isThird, thirdSelected, thirdDisabled, onToggleThird }) => {
   const { t, lang } = useT();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
-    useSortable({ id: team.id });
+    useSortable({ id: team.id, disabled: liveActive });
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -73,17 +73,19 @@ const SortableRow: React.FC<{
         POS_STYLE[idx]
       } ${isDragging ? 'relative z-10 shadow-lg ring-1 ring-white/20' : ''}`}
     >
-      <button
-        type="button"
-        ref={setActivatorNodeRef}
-        {...attributes}
-        {...listeners}
-        aria-label={t('group.dragRowAria', { team: teamName(team.id, team.name, lang) })}
-        title={t('group.dragTitle')}
-        className="-my-1 -ml-1 cursor-grab touch-none rounded-sm px-1 py-2 text-slate-500 hover:text-slate-200 active:cursor-grabbing"
-      >
-        <GripIcon />
-      </button>
+      {!liveActive && (
+        <button
+          type="button"
+          ref={setActivatorNodeRef}
+          {...attributes}
+          {...listeners}
+          aria-label={t('group.dragRowAria', { team: teamName(team.id, team.name, lang) })}
+          title={t('group.dragTitle')}
+          className="-my-1 -ml-1 cursor-grab touch-none rounded-sm px-1 py-2 text-slate-500 hover:text-slate-200 active:cursor-grabbing"
+        >
+          <GripIcon />
+        </button>
+      )}
       <span className="w-4 text-center text-xs font-bold text-slate-400">{idx + 1}</span>
       <TeamHover team={team} className="flex min-w-0 flex-1 items-center gap-1.5">
         <Flag team={team} size={16} />
@@ -94,12 +96,12 @@ const SortableRow: React.FC<{
         <button
           type="button"
           onClick={onToggleThird}
-          disabled={thirdDisabled}
-          title={thirdDisabled ? t('group.thirdFull') : t('group.thirdTitle')}
+          disabled={thirdDisabled || liveActive}
+          title={liveActive ? undefined : thirdDisabled ? t('group.thirdFull') : t('group.thirdTitle')}
           className={`mr-1 rounded px-1.5 py-0.5 text-[10px] font-bold transition ${
             thirdSelected
               ? 'bg-amber-400 text-amber-950'
-              : thirdDisabled
+              : thirdDisabled || liveActive
                 ? 'cursor-not-allowed bg-white/5 text-slate-600'
                 : 'bg-white/10 text-amber-300 hover:bg-amber-400/20'
           }`}
@@ -139,7 +141,7 @@ const SortableRow: React.FC<{
 };
 
 export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
-  const { thirdCount, reorderGroup, toggleThird, groupView, liveActive, resetLiveGroup, effectiveThirds } =
+  const { thirdCount, reorderGroup, toggleThird, groupView, liveActive, effectiveThirds } =
     useBracket();
   const { t, lang } = useT();
   const view = groupView(group);
@@ -168,20 +170,9 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
           {t('group.label', { id: group })}
         </h3>
         {liveActive ? (
-          view.manual ? (
-            <button
-              type="button"
-              onClick={() => resetLiveGroup(group)}
-              title={t('group.customResetTitle')}
-              className="rounded-sm bg-sky-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-300 hover:bg-sky-500/25"
-            >
-              {t('group.customReset')}
-            </button>
-          ) : (
-            <span className="rounded-sm bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-300">
-              {t('group.liveDrag')}
-            </span>
-          )
+          <span className="rounded-sm bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-300">
+            {t('group.liveDrag')}
+          </span>
         ) : (
           <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
             {t('group.dragReorder')}

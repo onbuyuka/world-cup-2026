@@ -2,8 +2,8 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
-  useRef,
   useState,
   useCallback,
 } from 'react';
@@ -28,8 +28,6 @@ interface GroupView {
   table: Record<string, TeamStat>;
   /** True when the bracket is in Live mode. */
   live: boolean;
-  /** True when this group's live order was manually overridden ("what-if"). */
-  manual: boolean;
   /** Finished matches counted within the group. */
   playedMatches: number;
 }
@@ -38,27 +36,24 @@ interface Store {
   state: BracketState;
   resolved: ResolvedBracket;
   thirdCount: number;
-  /** True when Live mode is on (independent of whether results exist yet). */
+  /**
+   * True when Live mode is on (independent of whether results exist yet). Live
+   * mode is a read-only view of real results; edits only apply to the prediction.
+   */
   liveActive: boolean;
   /** Group ids whose third-placed team currently advances (live or predicted). */
   effectiveThirds: GroupId[];
   /** True in live mode once the group stage is complete (best-8 is real). */
   groupStageComplete: boolean;
-  /** True when the live best-3rds selection has been hand-edited. */
-  liveThirdsCustomized: boolean;
   /** Per-group effective order + live table. */
   groupView: (group: GroupId) => GroupView;
   /**
    * Move a team within its group by drag-and-drop: `activeId` is dropped onto
-   * `overId`'s position. In Live mode this edits the what-if order only.
+   * `overId`'s position. Ignored in Live mode.
    */
   reorderGroup: (group: GroupId, activeId: string, overId: string) => void;
   toggleThird: (group: GroupId) => void;
   pickWinner: (matchId: number, teamId: string) => void;
-  /** Discard a group's live what-if order, snapping back to real results. */
-  resetLiveGroup: (group: GroupId) => void;
-  /** Discard the live best-3rds override, snapping back to the real best 8. */
-  resetLiveThirds: () => void;
   resetAll: () => void;
   /** Live score of the current prediction vs real results. */
   score: ScoreBreakdown;
@@ -91,7 +86,13 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
     else setOwnState(updater);
   };
 
-  const { matches, liveMode } = useLive();
+  const { matches, liveMode, setLiveMode } = useLive();
+
+  // A shared link always opens on the sender's prediction, not the viewer's
+  // remembered Live view (which would show real results instead of their picks).
+  useLayoutEffect(() => {
+    if (sharedInitial) setLiveMode(false);
+  }, [sharedInitial, setLiveMode]);
 
   // Only the viewer's own bracket is persisted; a previewed shared bracket is not.
   useEffect(() => {
@@ -122,17 +123,13 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, []);
 
-  // Live mode shows the standings view (points) and lets the user reorder for
-  // "what-if" scenarios. Even with zero results everyone simply sits on 0 pts.
+  // Live mode is a read-only view of real results (points tables, real best 8
+  // thirds, real knockout winners). Even with zero results everyone sits on 0 pts.
   const liveActive = liveMode;
-
-  // Latest auto-computed best-8 thirds, kept in a ref so toggleThird can seed
-  // from it without being recreated on every standings change.
-  const autoThirdsRef = useRef<GroupId[]>([]);
 
   const reorderGroup = useCallback(
     (group: GroupId, activeId: string, overId: string) => {
-      if (activeId === overId) return;
+      if (liveActive || activeId === overId) return;
       // Move activeId to overId's slot, shifting the rest (drag-and-drop).
       const apply = (order: GroupStanding): GroupStanding => {
         const from = order.indexOf(activeId);
@@ -142,41 +139,18 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
         next.splice(to, 0, next.splice(from, 1)[0]);
         return next as GroupStanding;
       };
-      if (liveActive) {
-        // Reorder the live "what-if" order; never touch the prediction.
-        setState((prev) => {
-          const current =
-            prev.liveOverrides?.[group] ??
-            (orderGroupByLive(prev.groups[group], matches).order as GroupStanding);
-          return {
-            ...prev,
-            liveOverrides: { ...prev.liveOverrides, [group]: apply(current) },
-          };
-        });
-        return;
-      }
       setState((prev) => ({
         ...prev,
         groups: { ...prev.groups, [group]: apply(prev.groups[group]) },
       }));
     },
-    [liveActive, matches],
+    [liveActive],
   );
 
   const toggleThird = useCallback(
     (group: GroupId) => {
+      if (liveActive) return;
       setState((prev) => {
-        if (liveActive) {
-          // Edit the live "what-if" best-3rds set, seeded from the real best 8
-          // (or the user's existing custom set). Never touches the prediction.
-          const base = prev.liveThirds ?? autoThirdsRef.current;
-          const has = base.includes(group);
-          let next: GroupId[];
-          if (has) next = base.filter((g) => g !== group);
-          else if (base.length < 8) next = [...base, group];
-          else return prev; // already 8 selected
-          return { ...prev, liveThirds: next };
-        }
         const has = prev.thirdPlaceQualifiers.includes(group);
         let next = prev.thirdPlaceQualifiers;
         if (has) {
@@ -194,35 +168,12 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const pickWinner = useCallback(
     (matchId: number, teamId: string) => {
-      setState((prev) => {
-        if (liveActive) {
-          // Live "what-if": toggle an override on the live knockout. Clicking
-          // the current pick again reverts to the real (auto-advanced) result.
-          const cur = prev.liveWinners?.[matchId];
-          const next = { ...prev.liveWinners };
-          if (cur === teamId) delete next[matchId];
-          else next[matchId] = teamId;
-          return { ...prev, liveWinners: next };
-        }
-        // Predict mode: a new winner clears downstream picks via re-resolution.
-        return { ...prev, winners: { ...prev.winners, [matchId]: teamId } };
-      });
+      if (liveActive) return;
+      // A new winner clears downstream picks via re-resolution.
+      setState((prev) => ({ ...prev, winners: { ...prev.winners, [matchId]: teamId } }));
     },
     [liveActive],
   );
-
-  const resetLiveGroup = useCallback((group: GroupId) => {
-    setState((prev) => {
-      if (!prev.liveOverrides?.[group]) return prev;
-      const next = { ...prev.liveOverrides };
-      delete next[group];
-      return { ...prev, liveOverrides: next };
-    });
-  }, []);
-
-  const resetLiveThirds = useCallback(() => {
-    setState((prev) => (prev.liveThirds === undefined ? prev : { ...prev, liveThirds: undefined }));
-  }, []);
 
   const resetAll = useCallback(() => {
     if (sharedView) setSharedState(createInitialState());
@@ -234,18 +185,15 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
     (Object.keys(state.groups) as GroupId[]).forEach((g) => {
       const predicted = state.groups[g];
       const computed = orderGroupByLive(predicted, matches);
-      const manual = Boolean(state.liveOverrides?.[g]);
-      const liveOrder = (state.liveOverrides?.[g] ?? computed.order) as GroupStanding;
       out[g] = {
-        order: liveActive ? liveOrder : predicted,
+        order: liveActive ? (computed.order as GroupStanding) : predicted,
         table: computed.table,
         live: liveActive,
-        manual: liveActive && manual,
         playedMatches: computed.playedMatches,
       };
     });
     return out;
-  }, [state.groups, state.liveOverrides, matches, liveActive]);
+  }, [state.groups, matches, liveActive]);
 
   // Group stage is "complete" once every group has all six of its matches
   // finished — only then is the best-third-placed ranking real (not provisional).
@@ -280,33 +228,25 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
     );
     return entries.slice(0, 8).map((e) => e.g);
   }, [liveActive, groupStageComplete, groupViews]);
-  autoThirdsRef.current = autoThirds;
 
-  // Which thirds advance right now: the user's live override if set, else the
-  // real best 8 (live mode); the saved prediction otherwise.
-  const effectiveThirds = useMemo<GroupId[]>(
-    () => (liveActive ? (state.liveThirds ?? autoThirds) : state.thirdPlaceQualifiers),
-    [liveActive, state.liveThirds, autoThirds, state.thirdPlaceQualifiers],
-  );
+  // Which thirds advance right now: the real best 8 (live mode); the saved
+  // prediction otherwise.
+  const effectiveThirds = liveActive ? autoThirds : state.thirdPlaceQualifiers;
 
-  // The state used to resolve the knockout bracket: effective group orders,
-  // best-3rds and live "what-if" knockout picks in live mode; raw predictions otherwise.
+  // The state used to resolve the knockout bracket: real group orders and
+  // best-3rds with no picks in live mode (so real results auto-advance); the
+  // raw prediction otherwise.
   const effectiveState = useMemo<BracketState>(() => {
     if (!liveActive) return state;
     const groups = {} as Record<GroupId, GroupStanding>;
     (Object.keys(groupViews) as GroupId[]).forEach((g) => {
       groups[g] = groupViews[g].order;
     });
-    return {
-      ...state,
-      groups,
-      thirdPlaceQualifiers: effectiveThirds,
-      winners: state.liveWinners ?? {},
-    };
-  }, [state, groupViews, effectiveThirds, liveActive]);
+    return { groups, thirdPlaceQualifiers: autoThirds, winners: {} };
+  }, [state, groupViews, autoThirds, liveActive]);
 
-  // In live mode, real decisive knockout results auto-advance (cascading);
-  // `liveWinners` overrides them for hypotheticals. Predict mode ignores results.
+  // In live mode, real decisive knockout results auto-advance (cascading).
+  // Predict mode ignores results.
   const resolved = useMemo(
     () => resolveBracket(effectiveState, liveActive ? matches : undefined),
     [effectiveState, liveActive, matches],
@@ -315,8 +255,8 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const groupView = useCallback((group: GroupId) => groupViews[group], [groupViews]);
 
   // Live score always grades the *prediction* (raw group orders, thirds,
-  // winners), never the live what-if view, so it reflects "how good was your
-  // call". Uses the viewer's own bracket, or the shared one when previewing.
+  // winners) so it reflects "how good was your call". Uses the viewer's own
+  // bracket, or the shared one when previewing.
   const score = useMemo<ScoreBreakdown>(
     () =>
       scorePrediction(
@@ -348,13 +288,10 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
       liveActive,
       effectiveThirds,
       groupStageComplete,
-      liveThirdsCustomized: liveActive && state.liveThirds !== undefined,
       groupView,
       reorderGroup,
       toggleThird,
       pickWinner,
-      resetLiveGroup,
-      resetLiveThirds,
       resetAll,
       score,
       buildShareUrl,
@@ -372,8 +309,6 @@ export const BracketProvider: React.FC<{ children: React.ReactNode }> = ({ child
       reorderGroup,
       toggleThird,
       pickWinner,
-      resetLiveGroup,
-      resetLiveThirds,
       resetAll,
       score,
       buildShareUrl,

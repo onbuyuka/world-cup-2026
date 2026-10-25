@@ -65,7 +65,7 @@ export function createInitialState(): BracketState {
   for (const g of GROUPS) {
     groups[g.id] = [...g.teamIds] as GroupStanding;
   }
-  return { groups, thirdPlaceQualifiers: [], winners: {}, liveOverrides: {}, liveWinners: {} };
+  return { groups, thirdPlaceQualifiers: [], winners: {} };
 }
 
 export interface ResolvedMatch {
@@ -85,8 +85,8 @@ export interface ResolvedBracket {
  * knockout match (any of which may be null while still undecided).
  *
  * When `liveMatches` is supplied (Live mode), a knockout match with a decisive
- * real result auto-advances the actual winner — unless the user has set a
- * "what-if" pick in `state.winners`, which always takes precedence. Results
+ * real result auto-advances the actual winner — unless `state.winners` holds a
+ * pick for that match, which always takes precedence. Results
  * cascade automatically because resolution is recursive. Knockouts level after
  * extra time are decided by the penalty-shootout score when the live data
  * carries it (see `liveWinner`).
@@ -152,7 +152,7 @@ export function resolveBracket(
     const away = resolveRef(match.away, id);
     const pick = state.winners[id] ?? null;
     const validPick = pick && (pick === home || pick === away) ? pick : null;
-    // User "what-if" pick wins; otherwise auto-advance a real decisive result.
+    // An explicit pick wins; otherwise auto-advance a real decisive result.
     const winner = validPick ?? liveWinner(home, away);
     return (cache[id] = { home, away, winner });
   };
@@ -167,7 +167,7 @@ export const championOf = (b: ResolvedBracket): string | null =>
 
 /**
  * Resolve the knockout bracket purely from real live results, ignoring any user
- * prediction or "what-if" state: group orders come from the live table and the
+ * prediction: group orders come from the live table and the
  * eight best third-placed teams from the completed group stage, then knockout
  * winners auto-advance from actual results (penalties included). Used by the
  * calendar to fill real knockout matchups instead of "Winner E" placeholders.
@@ -202,9 +202,6 @@ export function loadState(): BracketState {
       groups: { ...base.groups, ...(parsed.groups ?? {}) },
       thirdPlaceQualifiers: parsed.thirdPlaceQualifiers ?? [],
       winners: parsed.winners ?? {},
-      liveOverrides: parsed.liveOverrides ?? {},
-      liveWinners: parsed.liveWinners ?? {},
-      liveThirds: parsed.liveThirds,
     };
   } catch {
     return createInitialState();

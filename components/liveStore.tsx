@@ -20,6 +20,8 @@ import { fetchTodayLive, mergeLive } from '../utils/liveSource';
 const LIVE_MODE_KEY = 'wc2026-live-mode';
 const SNAPSHOT_MS = 5 * 60 * 1000; // re-read the committed snapshot every 5 min
 const LIVE_POLL_MS = 60 * 1000; // poll TheSportsDB for today's scores every 60s
+/** TheSportsDB round number of the final. */
+const FINAL_ROUND = '200';
 
 interface LiveStore {
   /** Normalized matches: committed baseline merged with fresh live scores. */
@@ -83,7 +85,9 @@ export const LiveProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   // Poll TheSportsDB directly for today's scores and merge over the baseline.
+  // Once the final is in the snapshot the tournament is over: stop polling.
   const pollLive = useCallback(async () => {
+    if (baselineRef.current.some((m) => m.round === FINAL_ROUND && m.status === 'finished')) return;
     const fresh = await fetchTodayLive();
     if (fresh.length === 0) return; // failed / rate-limited: keep baseline
     setLivePolling(true);

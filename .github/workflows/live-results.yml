@@ -4,11 +4,11 @@ name: Refresh live results
 # results from TheSportsDB. It updates ONLY the JSON file on the gh-pages branch
 # (no rebuild needed — the app fetches it at runtime), so it's fast and cheap.
 # Uses TheSportsDB's public free key, so no repository secret is required.
+#
+# The tournament is over and the final snapshot is committed, so this no longer
+# runs on a schedule. It can still be run manually to re-sync a correction.
 
 on:
-  schedule:
-    # Every 30 minutes. GitHub may delay scheduled runs under load; that's fine.
-    - cron: '*/30 * * * *'
   workflow_dispatch: {}
 
 # Avoid overlapping runs; let the newest win.

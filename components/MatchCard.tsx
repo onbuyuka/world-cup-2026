@@ -132,7 +132,7 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
           teamId={home}
           fallback={slotLabel(match.home, lang)}
           isWinner={rm?.winner === home && home !== null}
-          canPick={bothKnown}
+          canPick={bothKnown && !liveActive}
           goals={homeGoals}
         />
         <Slot
@@ -140,7 +140,7 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
           teamId={away}
           fallback={slotLabel(match.away, lang)}
           isWinner={rm?.winner === away && away !== null}
-          canPick={bothKnown}
+          canPick={bothKnown && !liveActive}
           goals={awayGoals}
         />
       </div>
