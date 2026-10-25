@@ -69,7 +69,7 @@ const SortableRow: React.FC<{
     <li
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-1.5 rounded-lg border-l-4 bg-white/[0.03] py-1 pl-1 pr-1 ${
+      className={`flex items-center gap-1.5 rounded-lg border-l-4 bg-white/3 py-1 pl-1 pr-1 ${
         POS_STYLE[idx]
       } ${isDragging ? 'relative z-10 shadow-lg ring-1 ring-white/20' : ''}`}
     >
@@ -80,7 +80,7 @@ const SortableRow: React.FC<{
         {...listeners}
         aria-label={t('group.dragRowAria', { team: teamName(team.id, team.name, lang) })}
         title={t('group.dragTitle')}
-        className="-my-1 -ml-1 cursor-grab touch-none rounded px-1 py-2 text-slate-500 hover:text-slate-200 active:cursor-grabbing"
+        className="-my-1 -ml-1 cursor-grab touch-none rounded-sm px-1 py-2 text-slate-500 hover:text-slate-200 active:cursor-grabbing"
       >
         <GripIcon />
       </button>
@@ -173,12 +173,12 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
               type="button"
               onClick={() => resetLiveGroup(group)}
               title={t('group.customResetTitle')}
-              className="rounded bg-sky-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-300 hover:bg-sky-500/25"
+              className="rounded-sm bg-sky-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-300 hover:bg-sky-500/25"
             >
               {t('group.customReset')}
             </button>
           ) : (
-            <span className="rounded bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-300">
+            <span className="rounded-sm bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-300">
               {t('group.liveDrag')}
             </span>
           )

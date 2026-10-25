@@ -93,6 +93,9 @@ dependency. Run the existing tests, Annex C validation and production build
 before accepting updates. Site deployment remains a separate `npm run deploy`
 step.
 
+Tailwind CSS 4 requires Safari 16.4+, Chrome 111+ or Firefox 128+. Its theme and
+compatibility styles are maintained in `index.css`.
+
 ## Project structure
 
 ```

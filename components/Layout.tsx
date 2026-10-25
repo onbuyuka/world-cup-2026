@@ -26,7 +26,7 @@ const TimezonePicker: React.FC<{ className?: string }> = ({ className }) => {
       <select
         value={timeZone}
         onChange={(e) => setTimeZone(e.target.value)}
-        className="min-w-0 max-w-[8rem] bg-transparent text-xs font-semibold text-slate-100 outline-none sm:max-w-[9.5rem]"
+        className="min-w-0 max-w-32 bg-transparent text-xs font-semibold text-slate-100 outline-hidden sm:max-w-38"
         title="Show all kickoff times in this time zone"
       >
         {/* The visitor's own zone is the default. */}
@@ -53,7 +53,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   return (
     <div className="min-h-screen bg-ink-900">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-ink-900/85 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-ink-900/85 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
           <Link to="/" className="order-1 flex items-center gap-2">
             <span className="text-2xl">🏆</span>

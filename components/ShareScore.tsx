@@ -490,11 +490,11 @@ export const WinnerCelebration: React.FC = () => {
       aria-modal="true"
       aria-label={t('winner.dialogLabel')}
       onClick={() => setShow(false)}
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-60 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs animate-fade-in"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md overflow-hidden rounded-2xl border border-amber-400/30 bg-gradient-to-b from-ink-850 to-ink-900 p-6 text-center shadow-2xl"
+        className="relative w-full max-w-md overflow-hidden rounded-2xl border border-amber-400/30 bg-linear-to-b from-ink-850 to-ink-900 p-6 text-center shadow-2xl"
       >
         <button
           type="button"
@@ -631,7 +631,7 @@ export const ScoreCard: React.FC = () => {
         type="button"
         onClick={toggle}
         aria-expanded={open}
-        className="inline-flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-500/[0.08] px-3 py-1.5 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500/15"
+        className="inline-flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-500/8 px-3 py-1.5 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500/15"
       >
         <span>📊</span>
         {open ? t('score.toggleClose') : t('score.toggleOpen')}
@@ -639,7 +639,7 @@ export const ScoreCard: React.FC = () => {
       </button>
 
       {open && (
-        <div className="mt-2 rounded-xl border border-emerald-400/30 bg-emerald-500/[0.06] p-3 animate-fade-in">
+        <div className="mt-2 rounded-xl border border-emerald-400/30 bg-emerald-500/6 p-3 animate-fade-in">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-3">
               <span className="text-xl">📊</span>

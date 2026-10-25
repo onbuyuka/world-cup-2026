@@ -60,7 +60,7 @@ export const TeamDetailPage: React.FC = () => {
       </button>
 
       {/* Header */}
-      <div className="mb-6 flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-gradient-to-r from-pitch-900/40 to-transparent p-5">
+      <div className="mb-6 flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-linear-to-r from-pitch-900/40 to-transparent p-5">
         <Flag team={team} size={46} />
         <div className="flex-1">
           <h1 className="font-display text-3xl font-extrabold tracking-tight text-white">
@@ -191,7 +191,7 @@ export const TeamDetailPage: React.FC = () => {
                         {players.map((p) => (
                           <li
                             key={p.name}
-                            className="flex items-center gap-2.5 rounded-lg bg-white/[0.03] px-2.5 py-1.5"
+                            className="flex items-center gap-2.5 rounded-lg bg-white/3 px-2.5 py-1.5"
                           >
                             <PlayerAvatar player={p} kit={team.kits?.home} size={40} />
                             <span className="w-5 text-center text-xs font-bold text-slate-500 tabular-nums">
@@ -201,7 +201,7 @@ export const TeamDetailPage: React.FC = () => {
                               <p className="truncate text-sm font-semibold text-slate-100">
                                 {p.name}
                                 {p.captain && (
-                                  <span className="ml-1.5 rounded bg-amber-400/20 px-1 text-[9px] font-bold text-amber-300">
+                                  <span className="ml-1.5 rounded-sm bg-amber-400/20 px-1 text-[9px] font-bold text-amber-300">
                                     C
                                   </span>
                                 )}

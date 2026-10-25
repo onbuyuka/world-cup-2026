@@ -27,7 +27,7 @@ export const TeamsPage: React.FC = () => {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder={t('teams.search')}
-          className="w-56 rounded-lg border border-white/10 bg-ink-850 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 outline-none focus:border-pitch-500"
+          className="w-56 rounded-lg border border-white/10 bg-ink-850 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 outline-hidden focus:border-pitch-500"
         />
       </div>
 

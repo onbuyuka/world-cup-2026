@@ -113,9 +113,9 @@ export const MatchCard: React.FC<{ matchId: number; compact?: boolean }> = ({
     played && live ? (live.homeId === home ? live.as : live.hs) : null;
 
   return (
-    <div className="w-44 overflow-hidden rounded-lg border border-white/10 bg-ink-850 shadow-sm">
+    <div className="w-44 overflow-hidden rounded-lg border border-white/10 bg-ink-850 shadow-xs">
       {!compact && (
-        <div className="flex items-center justify-between bg-white/[0.04] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-slate-500">
+        <div className="flex items-center justify-between bg-white/4 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-slate-500">
           <span>M{match.id}</span>
           {played ? (
             <span className="font-bold text-rose-300">{liveStatusLabel(live, lang)}</span>

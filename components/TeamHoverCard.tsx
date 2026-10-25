@@ -36,7 +36,7 @@ const LiveMatchList: React.FC<{ teamId: string; max?: number }> = ({ teamId, max
             {r ? (
               <ResultBadge r={r} size="sm" />
             ) : (
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-white/5 text-[10px] font-bold text-slate-500">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-white/5 text-[10px] font-bold text-slate-500">
                 ·
               </span>
             )}
@@ -67,12 +67,12 @@ export const TeamHoverContent: React.FC<{ team: Team }> = ({ team }) => {
   const live = liveMode && hasResults;
   return (
     <div className="w-[320px] overflow-hidden rounded-xl border border-white/10 bg-ink-850 shadow-2xl shadow-black/60 animate-pop-in">
-      <div className="flex items-start gap-3 border-b border-white/10 bg-gradient-to-r from-pitch-900/60 to-transparent p-3">
+      <div className="flex items-start gap-3 border-b border-white/10 bg-linear-to-r from-pitch-900/60 to-transparent p-3">
         <Flag team={team} size={30} />
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="font-display text-base font-extrabold text-white">{teamName(team.id, team.name, lang)}</h3>
-            <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-bold text-slate-200">
+            <span className="rounded-sm bg-white/10 px-1.5 py-0.5 text-[10px] font-bold text-slate-200">
               FIFA #{team.fifaRank}
             </span>
           </div>

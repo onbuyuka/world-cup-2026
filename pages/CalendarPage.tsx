@@ -168,7 +168,7 @@ export const CalendarPage: React.FC = () => {
       <div className="space-y-6">
         {days.map((day) => (
           <div key={day.key}>
-            <h2 className="sticky top-16 z-10 mb-2 bg-ink-900/90 py-1 font-display text-sm font-bold text-pitch-300 backdrop-blur">
+            <h2 className="sticky top-16 z-10 mb-2 bg-ink-900/90 py-1 font-display text-sm font-bold text-pitch-300 backdrop-blur-sm">
               {day.heading}
             </h2>
             <div className="space-y-2">
@@ -204,7 +204,7 @@ export const CalendarPage: React.FC = () => {
                           </span>
                         </div>
                       ) : (
-                        <span className="rounded bg-white/5 px-1.5 py-0.5 text-[10px] font-bold text-slate-400">
+                        <span className="rounded-sm bg-white/5 px-1.5 py-0.5 text-[10px] font-bold text-slate-400">
                           {m.group ? t('cal.grp', { g: m.group }) : 'v'}
                         </span>
                       )}
