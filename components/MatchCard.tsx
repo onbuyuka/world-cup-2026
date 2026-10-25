@@ -8,7 +8,7 @@ import { useClock, useT } from './settingsStore';
 import { TeamHover } from './TeamHoverCard';
 import { Flag } from './Flag';
 import { KNOCKOUT_START_DATE } from '../utils/bracket';
-import { resultForPair, scoreText, liveStatusLabel } from '../utils/liveTable';
+import { resultForPair, liveStatusLabel } from '../utils/liveTable';
 import { translate, teamName, type Lang } from '../utils/i18n';
 
 /** Human label for an unresolved slot, e.g. "Winner E", "3rd C/E/F/H/I". */

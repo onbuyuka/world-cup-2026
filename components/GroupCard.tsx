@@ -56,7 +56,7 @@ const SortableRow: React.FC<{
   thirdSelected: boolean;
   thirdDisabled: boolean;
   onToggleThird: () => void;
-}> = ({ group, team, idx, stat, liveActive, isThird, thirdSelected, thirdDisabled, onToggleThird }) => {
+}> = ({ team, idx, stat, liveActive, isThird, thirdSelected, thirdDisabled, onToggleThird }) => {
   const { t, lang } = useT();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
     useSortable({ id: team.id });
@@ -223,4 +223,3 @@ export const GroupCard: React.FC<{ group: GroupId }> = ({ group }) => {
     </div>
   );
 };
-

@@ -145,7 +145,7 @@ export const TeamDetailPage: React.FC = () => {
                         to={`/team/${opp?.id}`}
                         className="font-semibold text-slate-100 hover:text-pitch-300"
                       >
-                        {opp ? teamName(opp.id, opp.name, lang) : opp?.name}
+                        {opp ? teamName(opp.id, opp.name, lang) : null}
                       </Link>
                       {played && (
                         <span className="ml-auto flex items-center gap-1.5">

@@ -84,6 +84,15 @@ npm run deploy   # build + publish dist/ to the gh-pages branch
 Deployed as a GitHub Pages project site, so `vite.config.ts` sets
 `base: '/world-cup-2026/'` and the app uses a `HashRouter` (no server rewrites needed).
 
+## Dependency maintenance
+
+[Dependabot](.github/dependabot.yml) checks npm dependencies and GitHub Actions
+weekly. Minor and patch npm version updates are grouped; major updates stay
+separate. Security updates run independently when GitHub detects a vulnerable
+dependency. Run the existing tests, Annex C validation and production build
+before accepting updates. Site deployment remains a separate `npm run deploy`
+step.
+
 ## Project structure
 
 ```
